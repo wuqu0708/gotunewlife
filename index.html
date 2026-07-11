@@ -14,25 +14,16 @@
         .pts-display span { color: #fcc419; font-size: 22px; font-weight: bold; }
         .attr-row { display: flex; align-items: center; justify-content: space-between; background: #1c2333; padding: 10px 16px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #253147; }
         .attr-row button { width: 32px; height: 32px; border: none; border-radius: 4px; background: #2c384e; color: #fff; font-size: 18px; cursor: pointer; }
-        
-        .talent-list { margin-bottom: 16px; }
-        .talent-item { background: #1c2333; padding: 12px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 2px solid transparent; }
-        .talent-item.selected { border-color: #1c7ed6; background: #22324d; }
-        .talent-name { font-weight: bold; color: #fcc419; margin-bottom: 4px; font-size: 14px; }
-        .talent-desc { font-size: 12px; color: #adb5bd; }
-
+        .attr-row .label { color: #adb5bd; font-size: 14px; }
         .btn { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; margin-top: 16px; cursor: pointer; transition: 0.2s; }
         .btn-start { background: #2c384e; color: #868e96; }
         .btn-start.active { background: #1c7ed6; color: #fff; box-shadow: 0 4px 12px rgba(28,126,214,0.3); }
         .btn-next { background: #1c7ed6; color: #fff; }
         .btn-danger { background: #e03131; color: #fff; }
-        
-        .status-bar { background: #1c2333; border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 12px; border: 1px solid #253147; }
+        .status-bar { background: #1c2333; border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 12px; border: 1px solid #253147; flex-wrap: wrap; gap: 4px; }
         .log-wrap { height: 380px; overflow-y: auto; background: #090c12; border-radius: 8px; padding: 12px; display: flex; flex-direction: column-reverse; border: 1px solid #171f2e; }
         .log-item { padding: 8px 0; border-bottom: 1px solid #1c2333; font-size: 14px; line-height: 1.6; }
         .age-tag { color: #fcc419; font-weight: bold; margin-right: 8px; }
-        
-        /* 丰富色彩 */
         .good { color: #51cf66; } 
         .bad { color: #ff6b6b; } 
         .normal { color: #ced4da; } 
@@ -50,21 +41,24 @@
             <h1>人生重开模拟器</h1>
         </div>
 
+        <!-- 天赋选择 -->
         <div id="talentPanel">
             <div class="sub-title">请挑选一个能改变命运的天赋</div>
             <div class="talent-list" id="talentList"></div>
             <button class="btn btn-start" id="talentBtn" onclick="goToSetup()" disabled>请选择天赋</button>
         </div>
 
+        <!-- 属性分配（改回最开始的样子） -->
         <div id="setupPanel" class="hidden">
             <div class="pts-display">剩余点数 <span id="ptsNum">20</span></div>
             <div class="attr-row"><span class="label">颜值</span><button onclick="adj('f',-1)">−</button><span id="fVal">0</span><button onclick="adj('f',1)">+</button></div>
             <div class="attr-row"><span class="label">智力</span><button onclick="adj('i',-1)">−</button><span id="iVal">0</span><button onclick="adj('i',1)">+</button></div>
             <div class="attr-row"><span class="label">体质</span><button onclick="adj('h',-1)">−</button><span id="hVal">0</span><button onclick="adj('h',1)">+</button></div>
             <div class="attr-row"><span class="label">财富</span><button onclick="adj('m',-1)">−</button><span id="mVal">0</span><button onclick="adj('m',1)">+</button></div>
-            <button class="btn btn-start" id="startBtn" disabled>请分配完点数</button>
+            <button class="btn btn-start" id="startBtn" disabled onclick="startGame()">请分配完点数</button>
         </div>
 
+        <!-- 游戏面板 -->
         <div id="gamePanel" class="hidden">
             <div class="status-bar">
                 <span id="ageDisplay" style="color:#fcc419; font-weight:bold;">0岁</span>
@@ -88,6 +82,7 @@
             { name: "高燃赛博未来", desc: "满街都是会做家务的仿生机器人，老龄化问题靠全自动养老舱完美解决，出门全坐磁悬浮飞行器。人类整体幸福感飙升。" },
             { name: "修仙科技并存时代", desc: "炼丹靠3D打印，御剑飞行要考‘修仙驾照’，宗门长老天天在直播带货卖九转金丹。" },
             { name: "废土垃圾回收纪元", desc: "地球资源枯竭，人类全靠捡电子垃圾和过滤合成蛋白质糊糊度日，不过好在wifi还是免费的。" },
+            { name: "市井炊烟大时代", desc: "这是一个再普通不过的安稳时代。天下太平，百姓安居乐业。没有仙人漫天飞，也没有武林大乱斗，大家每天最大的烦恼就是明早吃肉包子还是菜包子。" },
             { name: "疯狂元宇宙虚拟时代", desc: "人类90%的时间肉体躺在营养舱里，精神在虚拟世界蹦迪，现实中只有疯狂上夜班的扫地机在乱跑。" }
         ];
 
@@ -102,6 +97,11 @@
                 triggerAge: [20, 35],
                 text: "【世界突变】天道服务器宕机，全天下雷劫系统发生致命Bug！本来是金丹劫，结果劈下来一亿伏特的纯净工业电。你差点被当场电熟。",
                 effect: () => { P.i += 2; P.h -= 1; }
+                "市井炊烟大时代": {
+    triggerAge: [24, 38],
+    text: "【世界突变】今年镇上突然掀起了‘全民套圈大热潮’！地摊老板摆出了各种传家宝让人用竹圈套。你高超的眼力让你用三个铜板套中了一尊金佛，一夜暴富！",
+    effect: () => { P.m += 4; }
+}
             },
             "废土垃圾回收纪元": {
                 triggerAge: [15, 30],
@@ -121,16 +121,28 @@
             { id: 3, name: '继承神秘矿山', desc: '初始财富 +5，智力 -1', effect: () => { P.m += 5; P.i -= 1; } },
             { id: 4, name: '量子养生大师', desc: '体质 +4，颜值 -1', effect: () => { P.h += 4; P.f -= 1; } },
             { id: 5, name: '欧皇转世', desc: '全属性随机分配 +2 点', effect: () => { P.f += 1; P.m += 1; } }
+            { name: '重金求子', desc: '初始财富 +5' },
+            { name: '美若天仙', desc: '颜值 +5' },
+            { name: '百年一遇', desc: '智力 +5' },
+            { name: '金刚不坏', desc: '体质 +5' },
+            { name: '财色双收', desc: '财富 +3，颜值 +2' },
+            { name: '智勇双全', desc: '智力 +3，体质 +2' },
+            { name: '龙精虎猛', desc: '体质 +4，智力 -1' },
+            { name: '天降横财', desc: '初始财富 +4，颜值 -1' }
         ];
 
         // 海量爆笑/玩梗/突发随机事件池
         const EVENTS = {
             child: [
-            { text: '你在班里掀起了“量子速读”的风潮，结果因为上课疯狂翻书声音太大，被班主任当成电风扇关掉了。', tag: 'funny' },
-{ text: '你在上学路上试图用意念控制红绿灯，驻足观看了半小时后，被路过的大妈怀疑是在发呆并拍视频发上了网。', tag: 'funny' },
-{ text: '你瞒着家长偷偷在游戏里买了一套“闪瞎狗眼”的黄金皮肤，结果第二天游戏宣布停服，你的私房钱瞬间归零。', tag: 'bad' },
-{ text: '因为在学校门口的自动贩卖机前表演“机械舞”，贩卖机误以为你在进行某种奇怪的摇晃，疯狂吐出了十瓶快乐水。', tag: 'good' },
-{ text: '你在全校大会上作为代表发言，结果因为太紧张，一开口把“老师同学们好”说成了“父老乡亲们好”，全场爆笑。', tag: 'funny' }{}
+                { text: '你在班里掀起了“量子速读”的风潮，结果因为上课疯狂翻书声音太大，被班主任当成电风扇关掉了。', tag: 'funny' },
+                { text: '你偶然在路边听到街头艺人弹奏狂野琵琶，灵魂受到震撼，从此顿悟了“大唐重金属”的真谛。', tag: 'good' },
+{ text: '你在私塾课上用两支毛笔在桌上疯狂敲击模拟架子鼓，因为节奏感太强，连教导主任都在窗外跟着踩点了半分钟。', tag: 'funny' },
+{ text: '你瞒着父母偷偷去铁匠铺定制了一把重达三十斤的铁琵琶，结果因为太重，第一天就把自己的脚趾头给砸飞了。', tag: 'bad' },
+{ text: '你尝试在村口大喊“Rock & Roll”并疯狂甩头，被路过的大妈误以为你脖子抽筋，强行给你抹了半瓶风油精。', tag: 'funny' }
+                { text: '你在上学路上试图用意念控制红绿灯，驻足观看了半小时后，被路过的大妈怀疑是在发呆并拍视频发上了网。', tag: 'funny' },
+                { text: '你瞒着家长偷偷在游戏里买了一套“闪瞎狗眼”的黄金皮肤，结果第二天游戏宣布停服，你的私房钱瞬间归零。', tag: 'bad' },
+                { text: '因为在学校门口的自动贩卖机前表演“机械舞”，贩卖机误以为你在进行某种奇怪的摇晃，疯狂吐出了十瓶快乐水。', tag: 'good' },
+                { text: '你在全校大会上作为代表发言，结果因为太紧张，一开口把“老师同学们好”说成了“父老乡亲们好”，全场爆笑。', tag: 'funny' },
                 { text: '你试图和家里的智能狗抢骨头吃，结果被智能狗用电击惩罚，你爸笑得录了视频发朋友圈。', tag: 'funny' },
                 { text: '你上幼儿园大班，用AI写了一篇三万字的小说，震惊了整个幼教界。', tag: 'good' },
                 { text: '平淡的一年，每天都在虚拟仓里和隔壁王路飞玩赛博泥巴。', tag: 'normal' },
@@ -142,13 +154,17 @@
             young: [
                 { text: '你跟风买了一种宣称能百分百赚钱的‘赛博空气币’，第二天发行方带着服务器跑路去火星了。', tag: 'bad' },
                 { text: '你相亲遇到了一个极其完美的结婚对象，直到聊了半小时后对方弹出了‘试用期已满，请充值续费’的提示。', tag: 'funny' },
+                { text: '你与几位志同道合的修士组建了一支名为“重金属炼丹炉”的摇滚乐队，在坊市高歌一曲，瞬间收获了成群的狂热歌迷。', tag: 'good' },
+{ text: '你在宗门大比上本该御剑对决，结果你把飞剑当成吉他疯狂弹拨狂飙重金属solo，把对手和裁判直接听懵了。', tag: 'funny' },
+{ text: '你尝试在客栈舞台上表演摇滚标志性的“飞身跃向观众席”，结果观众们误以为你在暗算他们，纷纷闪开，你精准拍在了地板上。', tag: 'bad' },
+{ text: '因为长期在乐队高强度担任主唱，你的嗓音变得极其沙哑沧桑，去买菜时甚至把卖豆腐的大婶吓得多给了你两块豆腐。', tag: 'funny' }
                 { text: '你熟练掌握了‘用AI帮老板写PPT，再用AI帮自己看老板脸色’的顶级职场生存技巧。', tag: 'good' },
                 { text: '你相亲遇到了一个聊得极其投缘的对象，直到最后对方大方承认：其实我是为了完成我妈KPI，出来兼职赚个群演费。', tag: 'funny' },
-{ text: '你加入了考公大军，每天高强度复习。晚上做梦都在背题，甚至在梦里给主考官画了个重点。', tag: 'normal' },
-{ text: '你跟风报名了“3天速成短视频大师”网课，折腾了三个月，唯一的粉丝是你用来检查播放量的备用号。', tag: 'funny' },
-{ text: '入职新公司后，你凭借“用模板写周报、用假笑做PPT、用眼神敷衍领导”的精湛技术，成功获封“办公室摸鱼大师”。', tag: 'good' },
-{ text: '下定决心去健身房办了年卡，结果第二天教练跑路，健身房变成了共享自习室，你被迫在跑步机上背了一年单词。', tag: 'funny' },
-{ text: '你尝试跟风炒股，精准踩中了所有的暴跌节点，你的账户绿得像一片充满希望的大草原。', tag: 'bad' }
+                { text: '你加入了考公大军，每天高强度复习。晚上做梦都在背题，甚至在梦里给主考官画了个重点。', tag: 'normal' },
+                { text: '你跟风报名了“3天速成短视频大师”网课，折腾了三个月，唯一的粉丝是你用来检查播放量的备用号。', tag: 'funny' },
+                { text: '入职新公司后，你凭借“用模板写周报、用假笑做PPT、用眼神敷衍领导”的精湛技术，成功获封“办公室摸鱼大师”。', tag: 'good' },
+                { text: '下定决心去健身房办了年卡，结果第二天教练跑路，健身房变成了共享自习室，你被迫在跑步机上背了一年单词。', tag: 'funny' },
+                { text: '你尝试跟风炒股，精准踩中了所有的暴跌节点，你的账户绿得像一片充满希望的大草原。', tag: 'bad' },
                 { text: '去相亲，对方问你现实中几套房，你高傲地回答：我在元宇宙有三座城堡，被对方当场泼了冷水。', tag: 'funny' },
                 { text: '恋爱了！对方是一个为了逃避上班把自己脑电波上传的野生程序员，你们经常在云端约会。', tag: 'good' },
                 { text: '由于经常熬夜在赛博酒吧蹦迪，你的头发脱落速度超过了基因修复速度，头顶开始反光。', tag: 'funny' },
@@ -162,6 +178,10 @@
                 { text: '因为长期的无意义加班，你终于成功获得了‘全公司最能摸鱼的中层干部’荣誉勋章。', tag: 'good' },
                 { text: '你尝试在阳台无土栽培‘变异韭菜’，结果韭菜长得比你还高，每天晚上还在发出叹气声。', tag: 'funny' },
                 { text: '你终于攒够了钱，给自己的腰椎换成了钛合金不锈钢版本的，现在下雨天走路会发出交响乐。', tag: 'good' },
+                { text: '人到中年，你依然没有放弃摇滚梦，挺着啤酒肚在茶馆里和老哥们高唱“曾经的年轻修士”，感动了全场的中年打工人。', tag: 'good' },
+{ text: '你试图教你那正在考取功名的儿子弹摇滚古筝，结果由于节奏太狂野，你儿子直接在夫子面前把诗经给唱成了黑金属。', tag: 'funny' },
+{ text: '由于年轻时疯狂甩头导致颈椎磨损严重，你的体检报告上多了一项极其摇滚的“摇滚后遗症：重度颈椎退化”。', tag: 'bad' },
+{ text: '你在打坐冥想时，脑子里全是昨天排练的劲爆鼓点，结果功法逆流，差点把体内的灵气当成音浪给喷了出来。', tag: 'funny' }
                 { text: '在家庭群里转发《震惊！长期喝纯净水会导致体内的纳米机器人死机》，被大义灭亲赶出群聊。', tag: 'funny' }
             ],
             old: [
@@ -170,12 +190,15 @@
                 { text: '你突然看透了年轻时执着的许多密码和存单，因为你发现自己已经完全忘记了密码。', tag: 'special' },
                 { text: '隔壁张大爷用高科技手段钓鱼作弊被你当场戳穿，张大爷气得把自己的假牙砸向了你。', tag: 'funny' },
                 { text: '身体零部件老化严重，你现在去医院体检，医生第一句话总是：‘你这主板该清灰了’。', tag: 'bad' },
-                { text: '每天躺在量子养生椅上，最大的乐趣就是看窗外那群年轻的无产阶级赛博特种兵早八挤飞船。', tag: 'normal' }
+                { text: '每天躺在量子养生椅上，最大的乐趣就是看窗外那群年轻的无产阶级赛博特种兵早八挤飞船。', tag: 'normal' },
                 { text: '你在小区广场舞争霸赛中因为穿了一双自带彩灯的运动鞋，跳出了一套极其硬核的动作，全场老头老太太集体起立鼓掌。', tag: 'good' },
-{ text: '你报了一个“特价豪华夕阳红旅行团”，结果一路上全是被拉去买乳胶床垫和假玉石，你在购物店里跟导游聊了一夜家常。', tag: 'funny' },
-{ text: '遭遇了专门针对老年人的“神医包治百病”磁场床垫骗局，幸好你银行卡里没钱，骗子直呼晦气并把你拉黑了。', tag: 'funny' },
-{ text: '隔壁张大爷在公园下棋时用大袖子里藏棋子作弊被你当场戳穿，张大爷气得把他的假牙直接砸向了你。', tag: 'funny' },
-{ text: '你突然看透了年轻时执着的很多存单和股票账户，因为你发现自己现在已经完全记不起密码是什么了。', tag: 'special' }
+                { text: '你报了一个“特价豪华夕阳红旅行团”，结果一路上全是被拉去买乳胶床垫和假玉石，你在购物店里跟导游聊了一夜家常。', tag: 'funny' },
+                { text: '遭遇了专门针对老年人的“神医包治百病”磁场床垫骗局，幸好你银行卡里没钱，骗子直呼晦气并把你拉黑了。', tag: 'funny' },
+                { text: '隔壁张大爷在公园下棋时用大袖子里藏棋子作弊被你当场戳穿，张大爷气得把他的假牙直接砸向了你。', tag: 'funny' },
+                { text: '你突然看透了年轻时执着的很多存单和股票账户，因为你发现自己现在已经完全记不起密码是什么了。', tag: 'special' }
+                { text: '你在小区的仙鹤广场舞争霸赛中，用一把魔改的大电琵琶伴奏，带领全场老头老太太完成了有史以来第一次“赛博硬摇滚蹦迪”。', tag: 'good' },
+{ text: '隔壁张大爷嫌你的摇滚乐太吵，提着二胡来找你斗琴，你们俩从天黑拉到天亮，最后握手言和决定组合出道。', tag: 'funny' },
+{ text: '你突发奇想戴上墨镜和铆钉皮长袍去河边钓鱼，结果由于气场过于叛逆，一整天连一条鱼的影子都没看到。', tag: 'funny' }
             ]
         };
 
@@ -192,7 +215,6 @@
                 item.onclick = () => selectTalent(item, t);
                 listDiv.appendChild(item);
             });
-            // 随机抽取一个世界背景
             currentWorld = WORLD_BACKGROUNDS[Math.floor(Math.random() * WORLD_BACKGROUNDS.length)];
         };
 
@@ -211,6 +233,7 @@
             document.getElementById('setupPanel').classList.remove('hidden');
         }
 
+        // 属性调整（纯数字，没有特殊效果）
         function adj(key, delta) {
             if ((rem <= 0 && delta > 0) || (P[key] <= 0 && delta < 0)) return;
             P[key] += delta; rem -= delta;
@@ -218,10 +241,17 @@
             document.getElementById(key + 'Val').textContent = P[key];
             
             const btn = document.getElementById('startBtn');
-            btn.disabled = rem !== 0;
-            btn.className = rem === 0 ? 'btn btn-start active' : 'btn btn-start';
-            btn.textContent = rem === 0 ? '开始重开人生' : '请分配完点数';
-            if (rem === 0) btn.onclick = startGame;
+            if (rem === 0) {
+                btn.disabled = false;
+                btn.className = 'btn btn-start active';
+                btn.textContent = '开始重开人生';
+                btn.onclick = startGame;
+            } else {
+                btn.disabled = true;
+                btn.className = 'btn btn-start';
+                btn.textContent = '请分配完点数';
+                btn.onclick = null;
+            }
         }
 
         function startGame() {
@@ -243,7 +273,7 @@
             if (age === 18) return [{ text: '你18岁成年了！这标志着你必须开始独立面对这个光怪陆离的宏大世界。', tag: 'special' }];
             if (age === 60) return [{ text: '你六十岁退休了。领到了第一笔数字退休金，你立刻给自己升舱了豪华量子养老椅。', tag: 'special' }];
 
-            // ---- 世界观突变大事件检查 ----
+            // 世界观突变大事件
             const mutation = MUTATION_EVENTS[currentWorld.name];
             if (!mutationTriggered && mutation.triggerAge.includes(age) && Math.random() < 0.5) {
                 mutationTriggered = true;
@@ -251,7 +281,6 @@
                 return [{ text: mutation.text, tag: 'mutation' }];
             }
 
-            // 正常抽取年龄池
             let pool = EVENTS.child;
             if (age >= 60) pool = EVENTS.old;
             else if (age >= 36) pool = EVENTS.middle;
@@ -282,7 +311,6 @@
                 wrap.innerHTML = `<div class="log-item"><span class="age-tag">${age}岁</span><span class="${ev.tag}">${ev.text}</span></div>` + wrap.innerHTML;
             });
 
-            // 寿终与夭折逻辑
             let die = false;
             if (age <= 5 && P.h <= 2 && Math.random() < 0.15) die = true;
             let dieChance = (age - 68) * 0.022 - (P.h * 0.005);
@@ -291,7 +319,7 @@
             if (age >= 105) die = true;
 
             if (die) {
-                wrap.innerHTML = `<div class="log-item"><span class="age-tag">${age}岁</span><span class="special">【游戏结束】你在这一年闭上了双眼（享年${age}岁）。你这一生经历了世界的大风大浪，也算是一场精彩的赛博梦境。</span></div>` + wrap.innerHTML;
+                wrap.innerHTML = `<div class="log-item"><span class="age-tag">${age}岁</span><span class="special">【游戏结束】你在这一年闭上了双眼（享年${age}岁）。你这一生经历了世界的大风大浪，也算是一场精彩的梦境。</span></div>` + wrap.innerHTML;
                 const btn = document.getElementById('nextBtn');
                 btn.textContent = '再次重开';
                 btn.className = 'btn btn-danger';
