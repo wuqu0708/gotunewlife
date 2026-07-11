@@ -3,328 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>人生重开模拟器 - 成就完全体版</title>
+    <title>人生重开模拟器 - 摇滚不灭版</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #07090e; font-family: -apple-system, sans-serif; color: #e4e7eb; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        
-        .container { width: 100%; max-width: 600px; background: #0f131a; border-radius: 16px; padding: 28px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); border: 1px solid #1a202c; }
-        .header { text-align: center; margin-bottom: 20px; position: relative; }
-        .header h1 { font-size: 28px; letter-spacing: 2px; color: #fff; font-weight: 700; }
-        
-        /* 极简顶栏按钮 */
-        .top-bar-btns { display: flex; justify-content: center; gap: 12px; margin-top: 10px; }
-        .tab-btn { background: #1a212d; border: 1px solid #2d3748; color: #a0aec0; padding: 6px 16px; border-radius: 20px; font-size: 13px; cursor: pointer; }
-        .tab-btn.active { background: #3182ce; color: #fff; border-color: #3182ce; }
-
-        .sub-title, .pts-display { text-align: center; font-size: 15px; color: #a0aec0; margin-bottom: 20px; line-height: 1.5; }
-        .pts-display span { color: #ecc94b; font-size: 28px; font-weight: bold; }
-        
-        .list-container { max-height: 380px; overflow-y: auto; margin-bottom: 20px; padding-right: 4px; }
-        .card-item { background: #161d26; padding: 14px 18px; border-radius: 10px; margin-bottom: 10px; cursor: pointer; border: 2px solid transparent; transition: 0.15s; }
-        .card-item.selected { border-color: #3182ce; background: #1c2635; }
-        .card-name { font-weight: bold; color: #ecc94b; margin-bottom: 4px; font-size: 16px; }
-        .card-desc { font-size: 13px; color: #a0aec0; line-height: 1.4; }
-        .card-bonus { font-size: 12px; color: #48bb78; font-weight: bold; margin-top: 4px; }
-
-        .attr-row { display: flex; align-items: center; justify-content: space-between; background: #161d26; padding: 12px 20px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #232d3d; }
-        .attr-row button { width: 44px; height: 44px; border: none; border-radius: 6px; background: #232d3d; color: #fff; font-size: 22px; cursor: pointer; }
-        .attr-row button:active { background: #2b394e; }
-        .attr-row .label { color: #cbd5e0; font-size: 16px; font-weight: 500; }
-        .attr-row span[id$="Val"] { font-size: 20px; font-weight: bold; color: #fff; min-width: 30px; text-align: center; }
-        
-        .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; margin-top: 15px; cursor: pointer; transition: 0.2s; }
-        .btn-start { background: #232d3d; color: #718096; }
-        .btn-start.active { background: #3182ce; color: #fff; }
-        .btn-next { background: #3182ce; color: #fff; }
-        .btn-danger { background: #e53e3e; color: #fff; }
-        
-        .status-bar { background: #161d26; border-radius: 10px; padding: 12px 16px; display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 15px; border: 1px solid #232d3d; }
-        
-        .log-wrap { height: 420px; overflow-y: auto; background: #0b0e14; border-radius: 10px; padding: 16px; display: flex; flex-direction: column-reverse; border: 1px solid #161d26; }
-        .log-item { padding: 10px 0; border-bottom: 1px solid #161d26; font-size: 15px; line-height: 1.6; }
-        .age-tag { color: #ecc94b; font-weight: bold; margin-right: 10px; min-width: 42px; display: inline-block; }
-        
-        /* 成就面板样式 */
-        .achieve-item { background: #161d26; padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #4a5568; }
-        .achieve-item.unlocked { border-left-color: #ecc94b; background: #1f2733; }
-        .achieve-title { font-weight: bold; font-size: 15px; color: #cbd5e0; display: flex; justify-content: space-between; }
-        .achieve-item.unlocked .achieve-title { color: #ecc94b; }
-        .achieve-cond { font-size: 12px; color: #718096; margin-top: 4px; }
-        .achieve-status { font-size: 12px; font-weight: bold; }
-
-        .good { color: #48bb78; } 
-        .bad { color: #f56565; } 
-        .normal { color: #e2e8f0; } 
-        .funny { color: #ed8936; } 
-        .special { color: #9f7aea; font-weight: bold; }
-        .disaster { color: #f56565; font-weight: bold; background: rgba(245, 101, 101, 0.1); padding: 4px 6px; border-radius: 4px; border: 1px dashed #f56565; }
+        * { margin: 0; padding: 0; box-sizing: border-box; background: transparent; }
+        body { background: #050505; font-family: monospace, sans-serif; color: #b0b0b0; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 550px; line-height: 1.6; font-size: 14px; }
+        h1 { font-size: 20px; color: #ffffff; text-align: center; margin-bottom: 20px; letter-spacing: 2px; }
+        .section-title { color: #ffffff; margin: 15px 0 5px 0; font-weight: bold; border-bottom: 1px solid #333; padding-bottom: 3px; }
+        .sub-desc { color: #777777; font-size: 12px; margin-bottom: 10px; }
+        .option-item { padding: 8px 0; cursor: pointer; border-bottom: 1px dashed #222; }
+        .option-item.selected { color: #ffcc00; font-weight: bold; }
+        .option-name { font-size: 14px; }
+        .option-desc { color: #777777; font-size: 12px; }
+        .attr-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed #222; }
+        .attr-btn { color: #ffffff; border: none; padding: 0 15px; font-size: 18px; cursor: pointer; }
+        .attr-val { font-weight: bold; color: #ffffff; }
+        .text-btn { display: block; width: 100%; text-align: center; color: #ffffff; font-weight: bold; padding: 12px 0; border: 1px solid #444; margin-top: 20px; cursor: pointer; text-decoration: none; font-size: 14px; }
+        .text-btn:hover { border-color: #ffcc00; color: #ffcc00; }
+        .text-btn:disabled { color: #444444; border-color: #222222; cursor: not-allowed; }
+        .status-bar { padding: 8px 0; border-bottom: 1px solid #333; margin-bottom: 15px; font-size: 13px; color: #ffffff; }
+        .log-wrap { display: flex; flex-direction: column-reverse; }
+        .log-item { padding: 6px 0; border-bottom: 1px dashed #151515; text-align: left; }
+        .age-tag { color: #ffcc00; font-weight: bold; margin-right: 8px; }
+        .achieve-list { margin-top: 10px; max-height: 260px; overflow-y: auto; }
+        .achieve-item { padding: 4px 0; border-bottom: 1px dashed #222; font-size: 12px; }
+        .achieve-item.unlocked { color: #ffcc00; }
+        .achieve-item.hidden-lock { color: #444444; }
+        .good { color: #44aa44; } 
+        .bad { color: #aa4444; } 
+        .funny { color: #dd8833; } 
+        .special { color: #9955ff; font-weight: bold; }
+        .disaster { color: #ff3333; font-weight: bold; background: #200000; padding: 2px 4px; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="header">
-            <h1>人生重开模拟器</h1>
-            <div class="top-bar-btns">
-                <button class="tab-btn active" id="tabGame" onclick="switchTab('game')">游戏世界</button>
-                <button class="tab-btn" id="tabAchieve" onclick="switchTab('achieve')">查看成就栏</button>
+        <h1>人生重开模拟器</h1>
+
+        <div id="startMenu">
+            <div id="poolSection">
+                <div class="section-title">◇ 每次随机5选3（背景与天赋混合池）</div>
+                <div class="sub-desc" id="poolSelectHint">请选择 3 个作为你的开局词条 (0/3)</div>
+                <div id="poolList"></div>
+                <button class="text-btn" id="poolBtn" onclick="goToSetup()" disabled>确认组合，前往分配点数</button>
             </div>
+
+            <div id="setupSection" class="hidden">
+                <div class="section-title">◇ 自由属性分配</div>
+                <div class="sub-desc">剩余可用属性点: <span id="ptsNum" style="color:#ffcc00; font-weight:bold;">20</span></div>
+                <div class="attr-row"><span>颜值</span><div><button class="attr-btn" onclick="adj('f',-1)">-</button><span id="fVal" class="attr-val">0</span><button class="attr-btn" onclick="adj('f',1)">+</button></div></div>
+                <div class="attr-row"><span>智力</span><div><button class="attr-btn" onclick="adj('i',-1)">-</button><span id="iVal" class="attr-val">0</span><button class="attr-btn" onclick="adj('i',1)">+</button></div></div>
+                <div class="attr-row"><span>体质</span><div><button class="attr-btn" onclick="adj('h',-1)">-</button><span id="hVal" class="attr-val">0</span><button class="attr-btn" onclick="adj('h',1)">+</button></div></div>
+                <div class="attr-row"><span>财富</span><div><button class="attr-btn" onclick="adj('m',-1)">-</button><span id="mVal" class="attr-val">0</span><button class="attr-btn" onclick="adj('m',1)">+</button></div></div>
+                <button class="text-btn" id="startBtn" onclick="startGame()" disabled>请分配完所有点数</button>
+            </div>
+
+            <div class="section-title" style="margin-top:30px;">🏆 荣誉成就室</div>
+            <div class="sub-desc">包含50个手写普通成就与20个绝密隐藏大成。</div>
+            <div class="achieve-list" id="achieveList"></div>
         </div>
 
-        <div id="gameContent">
-            <div id="worldPanel">
-                <div class="sub-title">请选择降生的世界背景（自带基础属性加成）</div>
-                <div class="list-container" id="worldList"></div>
-                <button class="btn btn-start" id="worldBtn" onclick="goToTalent()" disabled>请选择世界背景</button>
+        <div id="gamePanel" class="hidden">
+            <div class="status-bar">
+                <span id="ageDisplay" style="color:#ffcc00; font-weight:bold;">0岁</span> | 
+                💰<span id="mDisp">0</span> 🧠<span id="iDisp">0</span> 💪<span id="hDisp">0</span> 😊<span id="fDisp">0</span> | 性别: <span id="gDisp">-</span>
             </div>
-
-            <div id="talentPanel" class="hidden">
-                <div class="sub-title">请挑选一个能改变命运的天赋</div>
-                <div class="list-container" id="talentList"></div>
-                <button class="btn btn-start" id="talentBtn" onclick="goToSetup()" disabled>请选择天赋</button>
-            </div>
-
-            <div id="setupPanel" class="hidden">
-                <div class="pts-display">剩余自由分配点数 <span id="ptsNum">20</span></div>
-                <div class="attr-row"><span class="label">颜值</span><button onclick="adj('f',-1)">−</button><span id="fVal">0</span><button onclick="adj('f',1)">+</button></div>
-                <div class="attr-row"><span class="label">智力</span><button onclick="adj('i',-1)">−</button><span id="iVal">0</span><button onclick="adj('i',1)">+</button></div>
-                <div class="attr-row"><span class="label">体质</span><button onclick="adj('h',-1)">−</button><span id="hVal">0</span><button onclick="adj('h',1)">+</button></div>
-                <div class="attr-row"><span class="label">财富</span><button onclick="adj('m',-1)">−</button><span id="mVal">0</span><button onclick="adj('m',1)">+</button></div>
-                <button class="btn btn-start" id="startBtn" disabled onclick="startGame()">请分配完点数</button>
-            </div>
-
-            <div id="gamePanel" class="hidden">
-                <div class="status-bar">
-                    <span id="ageDisplay" style="color:#ecc94b; font-weight:bold;">0岁</span>
-                    <div>
-                        🧑<span id="gDisp"></span> 💰<span id="mDisp"></span> 🧠<span id="iDisp"></span> 💪<span id="hDisp"></span> 😊<span id="fDisp"></span>
-                    </div>
-                </div>
-                <div class="log-wrap" id="logWrap"></div>
-                <button class="btn btn-next" id="nextBtn" onclick="nextYear()">下一年</button>
-            </div>
-        </div>
-
-        <div id="achievePanel" class="hidden">
-            <div class="sub-title" style="margin-bottom:12px;">🏆 隐藏成就库（达成条件即自动解锁）</div>
-            <div class="list-container" id="achieveList" style="max-height:480px;"></div>
+            <div class="log-wrap" id="logWrap"></div>
+            <button class="text-btn" id="nextBtn" onclick="nextYear()">下一年</button>
         </div>
     </div>
 
     <script>
-        let P = { f: 0, i: 0, h: 0, m: 0 }, rem = 20, age = -1, gender = '随机', selectedTalent = null, currentWorld = null;
-        let isGameOver = false;
+        let P = { f: 0, i: 0, h: 0, m: 0 }, rem = 20, age = -1, gender = '随机';
+        let selectedItems = [], currentBackground = null, isGameOver = false;
+        let rockCount = 0; // 记录经历的摇滚大事件数量
+        let maxStats = { f: 0, i: 0, h: 0, m: 0 };
 
-        // 本地成就存贮库状态
-        let unlockedAchievements = JSON.parse(localStorage.getItem('re_achievements') || "[]");
+        // 载入本地持久化成就
+        let unlockedArr = JSON.parse(localStorage.getItem('re_rock_ach_v3') || "[]");
 
-        const ACHIEVEMENTS = [
-            { id: "A1", name: "流浪神豪", cond: "财富归零触发流浪结局，且生前曾拥有过高于8点财富", check: () => P.m <= 0 && maxStats.m >= 8 },
-            { id: "A2", name: "无理智开水壶", cond: "智力归零触发精神病院结局", check: () => P.i <= 0 },
-            { id: "A3", name: "生化杀伤性武器", cond: "颜值归零触发吓死人结局", check: () => P.f <= 0 },
-            { id: "A4", name: "脆皮豆腐", cond: "体质归零触发暴毙身亡", check: () => P.h <= 0 },
-            { id: "A5", name: "天降鸿福", cond: "财富值达到 12 点及以上", check: () => P.m >= 12 },
-            { id: "A6", name: "爱因斯坦转世", cond: "智力值达到 12 点及以上", check: () => P.i >= 12 },
-            { id: "A7", name: "倾国倾城", cond: "颜值值达到 12 点及以上", check: () => P.f >= 12 },
-            { id: "A8", name: "长寿老怪", cond: "活到 90 岁以上", check: () => age >= 90 },
-            { id: "A9", name: "大难不死", cond: "经历一次S级突发世界灾难并存活", check: () => false }, // 逻辑内部单独标记
-            { id: "A10", name: "英年早逝", cond: "在 10 岁以前因各种意外或体弱夭折", check: () => isGameOver && age < 10 }
+        // ======= 50个纯手写普通成就定义 =======
+        const NORMAL_ACHIEVEMENTS = [
+            { id: "N1", name: "一无所有", cond: "财富跌至 0 触发流浪生存结局", check: () => P.m <= 0 },
+            { id: "N2", name: "高级动物", cond: "智力降低至 0 沦为精神病院水壶", check: () => P.i <= 0 },
+            { id: "N3", name: "无地自容", cond: "颜值归零异变成生化杀伤兵器被逮捕", check: () => P.f <= 0 },
+            { id: "N4", name: "脆弱肉身", cond: "体质归零引发大面积器官衰竭", check: () => P.h <= 0 },
+            { id: "N5", name: "流浪神豪", cond: "财富归零且生前曾拥有过高额财富(>=8)", check: () => P.m <= 0 && maxStats.m >= 8 },
+            { id: "N6", name: "新长征序曲", cond: "在一生中经历 3 次或以上的中国摇滚事件", check: () => rockCount >= 3 },
+            { id: "N7", name: "向阳花", cond: "颜值曾达到 10 点以上", check: () => maxStats.f >= 10 },
+            { id: "N8", name: "完美信仰", cond: "智力曾达到 10 点以上", check: () => maxStats.i >= 10 },
+            { id: "N9", name: "铁骨铮铮", cond: "体质曾达到 10 点以上", check: () => maxStats.h >= 10 },
+            { id: "N10", name: "大富大贵", cond: "财富曾达到 10 点以上", check: () => maxStats.m >= 10 },
+            { id: "N11", name: "顺利启航", cond: "成功活过婴儿期(达到 4 岁)", check: () => age >= 4 },
+            { id: "N12", name: "阳光少年", cond: "成功度过少儿期(达到 13 岁)", check: () => age >= 13 },
+            { id: "N13", name: "热血青年", cond: "成功度过青春期(达到 19 岁)", check: () => age >= 19 },
+            { id: "N14", name: "而立之年", cond: "年龄达到 30 岁", check: () => age >= 30 },
+            { id: "N15", name: "不惑之年", cond: "年龄达到 40 岁", check: () => age >= 40 },
+            { id: "N16", name: "知天命", cond: "年龄达到 50 岁", check: () => age >= 50 },
+            { id: "N17", name: "花甲之年", cond: "成功活到老年期(达到 60 岁)", check: () => age >= 60 },
+            { id: "N18", name: "古稀长者", cond: "年龄达到 70 岁", check: () => age >= 70 },
+            { id: "N19", name: "耄耋老怪", cond: "年龄达到 80 岁", check: () => age >= 80 },
+            { id: "N20", name: "长寿神话", cond: "活到 90 岁以上", check: () => age >= 90 },
+            { id: "N21", name: "平庸一生", cond: "没有任何一项属性超过 5 岁数却到了 50 岁", check: () => age >= 50 && maxStats.f <= 5 && maxStats.i <= 5 && maxStats.h <= 5 && maxStats.m <= 5 },
+            { id: "N22", name: "倾国倾城", cond: "颜值达到 12 点及以上", check: () => P.f >= 12 },
+            { id: "N23", name: "爱因斯坦", cond: "智力达到 12 点及以上", check: () => P.i >= 12 },
+            { id: "N24", name: "金刚之躯", cond: "体质达到 12 点及以上", check: () => P.h >= 12 },
+            { id: "N25", name: "富可敌国", cond: "财富达到 12 点及以上", check: () => P.m >= 12 },
+            { id: "N26", name: "穷困潦倒", cond: "在青年期时财富低于 0", check: () => age >= 19 && age <= 35 && P.m < 0 },
+            { id: "N27", name: "病魔缠身", cond: "体质低于 -2 但还没死", check: () => P.h < -2 && !isGameOver },
+            { id: "N28", name: "智障边缘", cond: "智力低于 -2 但还没死", check: () => P.i < -2 && !isGameOver },
+            { id: "N29", name: "东施效颦", cond: "颜值低于 -2 但还没死", check: () => P.f < -2 && !isGameOver },
+            { id: "N30", name: "债台高筑", cond: "财富低于 -2 但还没死", check: () => P.m < -2 && !isGameOver },
+            { id: "N31", name: "小有名气", cond: "在游戏中经历 1 次摇滚大事件", check: () => rockCount >= 1 },
+            { id: "N32", name: "摇滚先锋", cond: "在游戏中经历 2 次摇滚大事件", check: () => rockCount >= 2 },
+            { id: "N33", name: "百折不挠", cond: "体质在低于1的状态下存活了 5 年", check: () => false }, // 特殊逻辑内部判定
+            { id: "N34", name: "极端的头脑", cond: "智力极高(>=11)且体质极差(<=1)", check: () => P.i >= 11 && P.h <= 1 },
+            { id: "N35", name: "花瓶乐手", cond: "颜值极高(>=11)且智力极低(<=1)", check: () => P.f >= 11 && P.i <= 1 },
+            { id: "N36", name: "暴发户", cond: "财富极高(>=11)且智力极低(<=1)", check: () => P.m >= 11 && P.i <= 1 },
+            { id: "N37", name: "四肢发达", cond: "体质极高(>=11)且智力极低(<=1)", check: () => P.h >= 11 && P.i <= 1 },
+            { id: "N38", name: "全能型天才", cond: "所有属性同时大于或等于 6", check: () => P.f >= 6 && P.i >= 6 && P.h >= 6 && P.m >= 6 },
+            { id: "N39", name: "极端的贫富差", cond: "曾拥有超过 8 点财富，随后跌至 -3 以下", check: () => maxStats.m >= 8 && P.m <= -3 },
+            { id: "N40", name: "红磡常客", cond: "生命中触发了与红磡相关的摇滚大事件", check: () => false }, // 内部事件触发
+            { id: "N41", name: "黑豹之友", cond: "生命中触发了与黑豹乐队相关的摇滚大事件", check: () => false },
+            { id: "N42", name: "崔健门徒", cond: "生命中触发了与崔健相关的摇滚大事件", check: () => false },
+            { id: "N43", name: "仙人指路", cond: "生命中触发了与窦唯相关的摇滚大事件", check: () => false },
+            { id: "N44", name: "魔岩三杰忠粉", cond: "生命中触发了张楚、何勇或红磡复刻事件", check: () => false },
+            { id: "N45", name: "世纪末的钟声", cond: "触发过《钟鼓楼》相关事件", check: () => false },
+            { id: "N46", name: "荒漠绿洲", cond: "触发过《走出荒漠》或《太阳》事件", check: () => false },
+            { id: "N47", name: "无罪快活", cond: "触发过《快活无罪》相关事件", check: () => false },
+            { id: "N48", name: "梦回唐朝者", cond: "触发过《梦回唐朝》或《飞翔鸟》相关事件", check: () => false },
+            { id: "N49", name: "彻底清醒", cond: "触发过《假行僧》或《花房姑娘》相关事件", check: () => false },
+            { id: "N50", name: "摇滚不死", cond: "成功活到 80 岁以上且经历过摇滚大事件", check: () => age >= 80 && rockCount >= 1 }
         ];
 
-        let maxStats = { f:0, i:0, h:0, m:0 };
-        let survivedDisaster = false;
-
-        const WORLD_BACKGROUNDS = [
-            { id:1, name: "高燃赛博未来", desc: "满街都是全自动养老舱与磁悬浮飞行器。", bonusDesc: "初始财富 +2，颜值 +1", effect: () => { P.m += 2; P.f += 1; } },
-            { id:2, name: "修仙科技并存时代", desc: "炼丹靠3D打印，宗门长老天天在线直播卖九转金丹。", bonusDesc: "初始智力 +3", effect: () => { P.i += 3; } },
-            { id:3, name: "废土垃圾回收纪元", desc: "地球资源枯竭，人类全靠捡电子垃圾度日。", bonusDesc: "初始体质 +2，财富 -1", effect: () => { P.h += 2; P.m -= 1; } },
-            { id:4, name: "市井炊烟大时代", desc: "天下一统，百姓安居乐业，每天最大烦恼是明早吃啥。", bonusDesc: "初始体质 +1，财富 +1", effect: () => { P.h += 1; P.m += 1; } },
-            { id:5, name: "疯狂元宇宙虚拟时代", desc: "人类90%时间躺在营养舱里，精神在虚拟网络蹦迪。", bonusDesc: "初始智力 +2，体质 -1", effect: () => { P.i += 2; P.h -= 1; } },
-            { id:6, name: "蒸汽朋克飞艇帝国", desc: "齿轮与飞艇遮天蔽日，随处可见烧煤的机械外骨骼。", bonusDesc: "初始财富 +2，体质 +1", effect: () => { P.m += 2; P.h += 1; } },
-            { id:7, name: "魔法与巨龙低保世界", desc: "魔法学院毕业包分配，魔法使们骑着电动扫帚扫大街。", bonusDesc: "初始智力 +2，颜值 +1", effect: () => { P.i += 2; P.f += 1; } },
-            { id:8, name: "克苏鲁触手海鲜档", desc: "天空中长着古神眼球，海鲜档的章鱼触手开始自己跳舞。", bonusDesc: "初始智力 -2，财富 +4", effect: () => { P.i -= 2; P.m += 4; } },
-            { id:9, name: "规则怪谈恐怖高校", desc: "不要在凌晨吃辣条，不要直视穿红衣服的扫地机器人。", bonusDesc: "初始智力 +2", effect: () => { P.i += 2; } },
-            { id:10, name: "远古石器疯狂原始人", desc: "野兽横行，人类每天提着木棒去追猛犸象。", bonusDesc: "初始体质 +4，智力 -2", effect: () => { P.h += 4; P.i -= 2; } }
+        // ======= 20个手写隐藏成就（未解锁条件显示为 ???） =======
+        const HIDDEN_ACHIEVEMENTS = [
+            { id: "H1", name: "隐藏传说: 新长征路", cond: "完美避开赛博未来灾难并存活", check: () => false },
+            { id: "H2", name: "隐藏传说: 黑豹狂吼", cond: "完美避开修仙时代天劫并存活", check: () => false },
+            { id: "H3", name: "隐藏传说: 仙人骑车", cond: "在老年期完美触发窦唯骑车炸酱面剧情", check: () => false },
+            { id: "H4", name: "隐藏传说: 红磡绝唱", cond: "触发红磡复刻全息演唱会并在台下喊爆嗓子", check: () => false },
+            { id: "H5", name: "隐藏传说: 一块红布", cond: "触发红布蒙眼吹小号大叔事件并获得金币", check: () => false },
+            { id: "H6", name: "隐藏传说: 魔岩三杰", cond: "在青春期高强度集齐红磡与经典摇滚回响", check: () => false },
+            { id: "H7", name: "隐藏传说: 孤独人无耻", cond: "在青年期失业阶段触发《孤独的人是可耻的》", check: () => false },
+            { id: "H8", name: "隐藏传说: 高级动物", cond: "在中年危机时用保温杯泡枸杞听何勇", check: () => false },
+            { id: "H9", name: "隐藏传说: 无地自容", cond: "抓周时精准抓中黑豹乐队黑胶唱片", check: () => false },
+            { id: "H10", name: "隐藏传说: 快活无罪", cond: "在10岁以前由于英年早逝意外夭折", check: () => false },
+            { id: "H11", name: "隐藏传说: 梦回唐朝", cond: "破解学校广播站全校外放唐朝乐队震撼全场", check: () => false },
+            { id: "H12", name: "隐藏传说: 飞翔鸟", cond: "在公园高唱《飞翔鸟》把年轻医生震麻", check: () => false },
+            { id: "H13", name: "隐藏传说: 垃圾场", cond: "少儿期将作文作业写成《垃圾场》毁灭小说", check: () => false },
+            { id: "H14", name: "隐藏传说: 钟鼓楼", cond: "在元旦晚会上用破吉他弹唱《钟鼓楼》", check: () => false },
+            { id: "H15", name: "隐藏传说: 一无所有", cond: "襁褓中听崔健一无所有并飞踢飞襁褓", check: () => false },
+            { id: "H16", name: "隐藏传说: 假行僧", cond: "在公园跳舞跟着假行僧伴奏闪到腰", check: () => false },
+            { id: "H17", name: "隐藏传说: 花房姑娘", cond: "宿舍楼下唱花房姑娘被泼高能冷凝水", check: () => false },
+            { id: "H18", name: "隐藏传说: 走出荒漠", cond: "从最危险的S级大灾难中奇迹般活下来", check: () => false },
+            { id: "H19", name: "隐藏传说: 太阳", cond: "活到100岁打破人类衰老枷锁", check: () => false },
+            { id: "H20", name: "隐藏传说: 摇滚不死", cond: "带着‘摇滚不坏金身’天赋活到100岁", check: () => false }
         ];
 
-        // 10大毁灭性世界大灾难（绑定背景）
+        const ALL_ACHIEVEMENTS = [...NORMAL_ACHIEVEMENTS, ...HIDDEN_ACHIEVEMENTS];
+
+        // 5选3 词条池：包含5个世界背景和5个强力天赋
+        const MIXED_POOL = [
+            { type: 'w', id: 1, name: "🌍 高燃赛博未来", desc: "自动养老舱遍地。初始财富+2，颜值+1", effect: () => { P.m+=2; P.f+=1; currentBackground="赛博"; } },
+            { type: 'w', id: 2, name: "🌍 修仙科技时代", desc: "3D打印炼丹，九转金丹在线热卖。初始智力+3", effect: () => { P.i+=3; currentBackground="修仙"; } },
+            { type: 'w', id: 3, name: "🌍 废土垃圾纪元", desc: "地球枯竭捡垃圾度日。初始体质+2，财富-1", effect: () => { P.h+=2; P.m-=1; currentBackground="废土"; } },
+            { type: 'w', id: 4, name: "🌍 市井炊烟时代", desc: "安居乐业吃喝不愁。初始体质+1，财富+1", effect: () => { P.h+=1; P.m+=1; currentBackground="市井"; } },
+            { type: 'w', id: 5, name: "🌍 虚拟元宇宙", desc: "精神在虚拟网蹦迪。初始智力+2，体质-1", effect: () => { P.i+=2; P.h-=1; currentBackground="元宇宙"; } },
+            { type: 't', id: 6, name: "⭐ 纳米面部重塑", desc: "面部细胞科技改写：颜值 +4，初始财富 -1", effect: () => { P.f+=4; P.m-=1; } },
+            { type: 't', id: 7, name: "⭐ 脑机超频植入", desc: "思维算力跨越：智力 +3，初始体质 -1", effect: () => { P.i+=3; P.h-=1; } },
+            { type: 't', id: 8, name: "⭐ 继承神秘矿山", desc: "家里有矿：初始财富 +5，初始智力 -1", effect: () => { P.m+=5; P.i-=1; } },
+            { type: 't', id: 9, name: "⭐ 量子养生大师", desc: "养生血脉：初始体质 +4，初始颜值 -1", effect: () => { P.h+=4; P.f-=1; } },
+            { type: 't', id: 10, name: "⭐ 摇滚不坏金身", desc: "摇滚不灭：初始体质 +3，音乐大事件免疫伤害", effect: () => { P.h+=3; } }
+        ];
+
+        // 10大灭绝性灾难（强弱判定判定）
         const DISASTER_EVENTS = {
-            "高燃赛博未来": { age: 24, text: "🔥【S级世界灾难：仿生人暴动】全城AI疯狂屠戮！因你【智力不足3】没能破解电子锁，被困房间吸入大量浓烟！（体质-4，财富-2）", check: () => { if(P.i < 3) { P.h -= 4; P.m -= 2; } else { survivedDisaster = true; P.m -= 1; } } },
-            "修仙科技并存时代": { age: 30, text: "⚡【S级世界灾难：天劫雷暴降临】雷劫系统中毒无差别轰炸！因你【体质低于4】无法硬抗，护体元气被震碎！（体质-5）", check: () => { if(P.h < 4) { P.h -= 5; } else { survivedDisaster = true; P.h -= 1; P.i += 1; } } },
-            "废土垃圾回收纪元": { age: 16, text: "☢️【S级世界灾难：超能核辐射】由于你【财富太低(小于3)】买不起防护服，全身皮肤开始溃烂！（颜值-4，体质-3）", check: () => { if(P.m < 3) { P.f -= 4; P.h -= 3; } else { survivedDisaster = true; P.m -= 2; } } },
-            "市井炊烟大时代": { age: 45, text: "🌊【S级世界灾难：百年大洪水】决堤洪水淹没城镇！因你【体质极差(小于3)】，在洪水中毫无抵抗力！（体质-4）", check: () => { if(P.h < 3) { P.h -= 4; } else { survivedDisaster = true; P.h -= 1; } } },
-            "疯狂元宇宙虚拟时代": { age: 28, text: "💾【S级世界灾难：主脑大崩塌】全网遭遇赛博降维打击！因你【智力不足4】未及时备份，大脑严重萎缩！（智力-4，颜值-2）", check: () => { if(P.i < 4) { P.i -= 4; P.f -= 2; } else { survivedDisaster = true; P.i -= 1; } } },
-            "蒸汽朋克飞艇帝国": { age: 35, text: "⚙️【S级世界灾难：高压蒸汽大爆炸】巨型飞艇坠毁！因你【体质不够(小于4)】，胸口被飞来的巨大齿轮砸中！（体质-5）", check: () => { if(P.h < 4) { P.h -= 5; } else { survivedDisaster = true; P.h -= 2; } } },
-            "魔法与巨龙低保世界": { age: 22, text: "🐉【S级世界灾难：冰霜巨龙逆袭】全街被冻结！因你【财富太低(小于4)】交不起护盾续费，双腿被冻坏！（体质-4，财富-2）", check: () => { if(P.m < 4) { P.h -= 4; P.m -= 2; } else { survivedDisaster = true; P.m -= 3; } } },
-            "克苏鲁触手海鲜档": { age: 33, text: "👁️【S级世界灾难：古神之眼睁开】不可名状的低语在耳边狂吼！因你【智力低于3】无法解析，疯狂撕咬自己的脸！（智力-3，颜值-4）", check: () => { if(P.i < 3) { P.i -= 3; P.f -= 4; } else { survivedDisaster = true; P.i -= 1; } } },
-            "规则怪谈恐怖高校": { age: 19, text: "🚨【S级世界灾难：怪谈规则暴走】‘不穿红衣交出心脏’！因你【智力太低(小于4)】没反应过来是陷阱，被抽取精血！（体质-4，财富-3）", check: () => { if(P.i < 4) { P.h -= 4; P.m -= 3; } else { survivedDisaster = true; P.i -= 1; } } },
-            "远古石器疯狂原始人": { age: 15, text: "🦖【S级世界灾难：史前霸王龙围攻】营地被毁！因你【体质极差(小于5)】跑得太慢，被狂暴的巨兽踩踏！（体质-6）", check: () => { if(P.h < 5) { P.h -= 6; } else { survivedDisaster = true; P.h -= 2; } } }
+            "赛博": { age: 24, text: "🔥【S级世界灾难：AI仿生人暴动】因你【智力不足3】未能破解电子安全锁，吸入高浓烟雾！（体质-5）", check: () => { if(P.i<3) P.h-=5; else { triggerHidden(1); triggerNormal("N46"); } } },
+            "修仙": { age: 30, text: "⚡【S级世界灾难：天劫系统短路】雷暴大无差别轰炸！因你【体质低于4】护体元气碎裂！（体质-6）", check: () => { if(P.h<4) P.h-=6; else { triggerHidden(2); triggerNormal("N46"); } } },
+            "废土": { age: 16, text: "☢️【S级世界灾难：超能核爆辐射】因你【财富值小于3】买不起辐射防护服，全身皮肤化脓！（颜值-5，体质-2）", check: () => { if(P.m<3) { P.f-=5; P.h-=2; } else { triggerHidden(18); triggerNormal("N46"); } } },
+            "市井": { age: 45, text: "🌊【S级世界灾难：百年特大洪水泥石流】因你【体质低于3】在洪水中瞬间失去反抗力！（体质-5）", check: () => { if(P.h<3) P.h-=5; else { triggerHidden(18); triggerNormal("N46"); } } },
+            "元宇宙": { age: 28, text: "💾【S级世界灾难：主脑意识海大坍塌】因你【智力不足4】未及时切断脑机连接，精神受损！（智力-5）", check: () => { if(P.i<4) P.i-=5; else { triggerHidden(18); triggerNormal("N46"); } } }
         };
 
-        // 50个精心划分年龄段的常规交互事件库
+        // 细化为6大年龄阶段的50个常规与【中国摇滚专属】核心事件库
         const STAGE_EVENTS = {
-            baby: [ // 0-3岁
-                { text: "你在襁褓中试图翻身，结果用力过猛从婴儿床上滚了下来，摔青了额头。（体质-1）", tag: "bad", eff: () => P.h -= 1 },
-                { text: "你抓周时越过所有金银财宝，精准抓起了一只尖叫鸡，逗得全家哈哈大笑。", tag: "funny", eff: () => {} },
-                { text: "因为长得太软糯可爱，路过的居委会王大妈非要塞给你两百块大洋买糖吃。（财富+1）", tag: "good", eff: () => P.m += 1 },
-                { text: "你学会了通过眨眼频率给家里的智能管家下达关灯指令，隔壁神童自愧不如。（智力+1）", tag: "good", eff: () => P.i += 1 },
-                { text: "误把爸爸的纳米机械手表当做磨牙棒，嚼了半天表没坏，牙被咯掉了两颗。（颜值-1）", tag: "bad", eff: () => P.f -= 1 },
-                { text: "你哭声极其嘹亮，直接震碎了客厅的声控感应灯，护士直呼好一具铁肺。（体质+1）", tag: "good", eff: () => P.h += 1 },
-                { text: "你天天喝高能配方奶粉，由于吸收太好，两岁就已经长得像个圆滚滚的冬瓜。", tag: "normal", eff: () => {} },
-                { text: "隔壁的小女孩试图抢你的奶嘴，你用一套流利的婴儿拳法把她当场吓哭。", tag: "funny", eff: () => {} }
+            baby: [ // 0-3岁 婴儿期
+                { text: "你在襁褓中听到收音机放崔健的《一无所有》，你热血沸腾竟然跟着节奏猛烈飞踢，踹飞了尿布。（体质+1）", tag: "funny", eff: () => { P.h+=1; rockCount++; triggerHidden(15); triggerNormal("N42"); } },
+                { text: "抓周时你越过所有算盘，死死抓住了半张破旧的黑豹乐队黑胶唱片。（智力+1）", tag: "good", eff: () => { P.i+=1; triggerHidden(9); triggerNormal("N41"); } },
+                { text: "试图翻身时用力过猛，一头撞在婴儿床合金护栏上，额头肿了个大包。（体质-1）", tag: "bad", eff: () => P.h-=1 },
+                { text: "你长得太白嫩讨喜，路过的摇滚老炮邻居峦树非要塞给你一叠零花钱去买糖吃。（财富+1）", tag: "good", eff: () => P.m+=1 },
+                { text: "你哭声极其高亢，父亲惊呼：这沙哑的撕裂声简直是天生的重金属死嗓苗子！", tag: "normal", eff: () => {} },
+                { text: "喝配方奶粉不小心呛到，打了个响亮的饱嗝，吐了正在练吉他的父亲一裤子。", tag: "funny", eff: () => {} },
+                { text: "你学会了通过眨眼频率给家里的智能音箱下指令，每天循环播放唐朝乐队。 （智力+1）", tag: "good", eff: () => P.i+=1 },
+                { text: "隔壁的小女孩试图抢走你的机械奶嘴，你用一套愤怒的摇滚咆哮当场把她吓哭。", tag: "funny", eff: () => {} }
             ],
-            child: [ // 4-12岁
-                { text: "班里掀起‘量子速读’风潮，由于你翻书声音比抽风机还大，被班主任当场没收书本。", tag: "funny", eff: () => {} },
-                { text: "你瞒着父母去定制重达三十斤的玄铁琵琶，结果抬起时砸青了自己的大脚趾。（体质-1）", tag: "bad", eff: () => P.h -= 1 },
-                { text: "在学校自动贩卖机前狂跳霹雳舞，贩卖机判定故障，哗啦啦吐出十瓶快乐水。（财富+1）", tag: "good", eff: () => P.m += 1 },
-                { text: "上大班用AI写了一篇三万字硬核科幻小说，斩获全国少儿科幻一等奖。（智力+2）", tag: "good", eff: () => P.i += 2 },
-                { text: "试图抢智能机械狗嘴里的仿真骨头，被当场高压电击，头发变成了永久电击头。（体质-1）", tag: "bad", eff: () => P.h -= 1 },
-                { text: "在国旗下演讲，一开口把“老师好”喊成了“太上皇吉祥”，全校瞬间笑翻。", tag: "funny", eff: () => {} },
-                { text: "你把家里的智能马桶魔改成弹射赛车，结果彻底装不回去了，被暴揍。（财富-1）", tag: "bad", eff: () => P.m -= 1 },
-                { text: "你长得太清秀，被抓去给童装网店做兼职模特，赚到了人生第一笔零花钱。（财富+1，颜值+1）", tag: "good", eff: () => { P.m += 1; P.f += 1; } },
-                { text: "你疯狂练习单手倒立洗头，虽然经常一头栽进桶里，但颈椎肌肉大幅增强。（体质+1）", tag: "good", eff: () => P.h += 1 }
+            child: [ // 4-12岁 少儿期
+                { text: "你在街边看到一个用红布蒙着双眼吹小号的大叔。你冲过去大喊‘崔健牛逼’，大叔热泪盈眶塞给你十块大洋。（财富+1）", tag: "good", eff: () => { P.m+=1; rockCount++; triggerHidden(5); triggerNormal("N42"); } },
+                { text: "在学校元旦晚会上，你用一把破吉他沙哑弹唱《钟鼓楼》，把台下的教导主任听得目瞪口呆。（智力+1）", tag: "good", eff: () => { P.i+=1; rockCount++; triggerHidden(14); triggerNormal("N45"); } },
+                { text: "写作文《我的梦想》，由于AI代码短路，你把作业交成了一篇呼吁世界和平的硬核小说《垃圾场》。（智力+1）", tag: "funny", eff: () => { P.i+=1; triggerHidden(13); triggerNormal("N44"); } },
+                { text: "你偷偷用家里的钛合金零件魔改二胡，试图拉出重金属效果，结果崩断弦划伤了脸。（颜值-1）", tag: "bad", eff: () => P.f-=1 },
+                { text: "学校掀起‘脑域速读’风潮，你翻书声音比抽风机还大，被班主任当场通报批评。", tag: "funny", eff: () => {} },
+                { text: "你在智能自动贩卖机前蹦迪跳街舞，机器误判定故障，哗啦啦吐出五瓶可乐。（财富+1）", tag: "good", eff: () => P.m+=1 },
+                { text: "你长得清秀阳光，被抓去给复古摇滚童装网店做兼职模特，赚到了第一笔外快。（财富+1，颜值+1）", tag: "good", eff: () => { P.m+=1; P.f+=1; } },
+                { text: "试图抢邻居机械警犬嘴里的仿真骨头，被当场高压电击，头发变成了永久爆炸头。（体质-1）", tag: "bad", eff: () => P.h-=1 },
+                { text: "疯狂练习单手倒立洗头，虽然经常一头栽进桶里，但颈椎肌肉大幅增强。（体质+1）", tag: "good", eff: () => P.h+=1 }
             ],
-            teen: [ // 13-18岁
-                { text: "进入叛逆期，你坚信自己是光之巨人的化身，每天放学站在天台上大喊‘授受不亲’。", tag: "funny", eff: () => {} },
-                { text: "沉迷通宵拼装硬核机甲乐高，由于高强度熬夜，黑眼圈浓得像大熊猫。（颜值-1）", tag: "bad", eff: () => P.f -= 1 },
-                { text: "在后山废墟里捡到一块发光的古代晶片，擦干净后挂在闲鱼卖了高价。（财富+2）", tag: "good", eff: () => P.m += 2 },
-                { text: "情窦初开，你给隔壁虚拟班长写了封情书，结果被对方用防骚扰算法自动举报封号。", tag: "funny", eff: () => {} },
-                { text: "为了应付体测，你每天绑着重力铅块跑步，结果由于姿势错误导致半月板发炎。（体质-2）", tag: "bad", eff: () => P.h -= 2 },
-                { text: "自学黑客技术试图黑进学校食堂系统把鸡腿价格改成0，被当场抓获通报批评。（智力+1）", tag: "good", eff: () => P.i += 1 },
-                { text: "因为长相阳光清爽，收到了两封匿名情书，自信心膨胀，走起路来都带风。（颜值+1）", tag: "good", eff: () => P.f += 1 },
-                { text: "跟风购买学校门口推销的‘脑域开发口服液’，喝完拉了三天肚子，智商明显受损。（智力-1）", tag: "bad", eff: () => P.i -= 1 }
+            teen: [ // 13-18岁 青春期
+                { text: "你偷钱坐火车去看‘红磡摇滚乐势力’复刻全息演唱会！在台下把衣服撕碎跟着张楚何勇狂吼，嗓子当场喊废。（体质-1，智力+2）", tag: "special", eff: () => { P.h-=1; P.i+=2; rockCount++; triggerHidden(4); triggerHidden(6); triggerNormal("N40"); triggerNormal("N44"); } },
+                { text: "你破解了校广播站，午休全校外放《梦回唐朝》，高音震碎了教学楼三块大玻璃。（智力+1）", tag: "good", eff: () => { P.i+=1; rockCount++; triggerHidden(11); triggerNormal("N48"); } },
+                { text: "情窦初开，在女生宿舍楼下沙哑弹唱《花房姑娘》，被宿管大妈一盆高能冷凝水泼成落汤鸡。（funny）", tag: "funny", eff: () => { rockCount++; triggerHidden(17); triggerNormal("N49"); } },
+                { text: "你留起及腰长发，穿皮衣在街头狂吼《无地自容》，被居委会当做街头盲流驱逐。（颜值-1）", tag: "bad", eff: () => { P.f-=1; rockCount++; triggerNormal("N41"); } },
+                { text: "跟风购买了山寨飞天磁悬浮滑板，刚起飞就重摔落地，把门牙摔掉了两颗。（颜值-2）", tag: "bad", eff: () => P.f-=2 },
+                { text: "进入叛逆期，你深信自己是光之巨人的摇滚化身，每天放学站在天台上迎风大喊。", tag: "funny", eff: () => {} },
+                { text: "绑着沙袋在操场高强度跑步，由于姿势错误导致半月板急性发炎，躺了半个月。（体质-2）", tag: "bad", eff: () => P.h-=2 },
+                { text: "因为长相神似年轻时的窦唯，收到了两封匿名情书，自信心彻底膨胀。（颜值+1）", tag: "good", eff: () => { P.f+=1; triggerNormal("N43"); } }
             ],
-            young: [ // 19-35岁
-                { text: "你盲目买入自称能暴富的‘赛博空气币’，第二天项目方直接坐飞船跑路去火星。（财富-3）", tag: "bad", eff: () => P.m -= 3 },
-                { text: "下定决心去健身房狂练一整年，成功练出了令人羡慕的拉丝八块腹肌！（体质+2，颜值+1）", tag: "good", eff: () => { P.h += 2; P.f += 1; } },
-                { text: "发表了一篇《论量子力学如何应用在鹦鹉对骂中》，瞬间爆火并斩获大笔稿费。（智力+1，财富+2）", tag: "good", eff: () => { P.i += 1; P.m += 2; } },
-                { text: "相亲时你展示了高超的“单手单指敲代码”技术，对方起身边走边顺走了你的微单。（财富-1）", tag: "funny", eff: () => P.m -= 1 },
-                { text: "报名参加极限无装备翼装飞行，虽然捡回一条命，但左腿粉碎性骨折。（体质-3）", tag: "bad", eff: () => P.h -= 3 },
-                { text: "你凭借精湛的“做假PPT和写空话周报”的技术，在公司获封高级摸鱼带师。", tag: "normal", eff: () => {} },
-                { text: "去街边吃烧烤，旁边的仿生人因为短路突然大跳霹雳舞，把你刚烤好的鸡翅震飞。", tag: "funny", eff: () => {} },
-                { text: "用攒了三年的钱买了一套高科技面部微调服务，医生手一抖给你整成了绝世网红。（颜值+2）", tag: "good", eff: () => P.f += 2 }
+            young: [ // 19-35岁 青年期
+                { text: "你在酒吧蹦迪买醉，偶遇一位喝着可乐的秃顶大叔。他拍着你肩膀叹息：‘年轻人，现在都不听窦唯了吗？’你大受震撼。（智力+2）", tag: "good", eff: () => { P.i+=2; rockCount++; triggerHidden(3); triggerNormal("N43"); } },
+                { text: "组建废土重金属乐队，在一场Live上因为和乐迷疯狂Pogo对撞，胸椎不慎被撞断两根。（体质-2）", tag: "bad", eff: () => P.h-=2 },
+                { text: "盲目买入自称能暴富的‘赛博摇滚概念空气币’，第二天项目方卷款逃往火星。（财富-3）", tag: "bad", eff: () => P.m-=3 },
+                { text: "疯狂健身练出拉丝八块腹肌，在Live舞台上脱掉上衣大秀身材，女粉丝疯狂尖叫。（颜值+2）", tag: "good", eff: () => P.f+=2 },
+                { text: "因失业你坚信‘孤独的人是可耻的’，天天躺在废土天桥底下吃泡面看日落，拒绝社交。", tag: "normal", eff: () => { triggerHidden(7); triggerNormal("N44"); } },
+                { text: "相亲时你给对方展示了极其硬核的吉他速弹技术，对方翻了个白眼起身边走边顺走了你的微单。（财富-1）", tag: "funny", eff: () => P.m-=1 },
+                { text: "发表科幻论文《论崔健歌词与量子力学的共振性》，意外在学术界爆火获得大笔稿费。（智力+1，财富+2）", tag: "good", eff: () => { P.i+=1; P.m+=2; rockCount++; triggerNormal("N42"); } },
+                { text: "花光积蓄买了高科技面部重塑，医生手一抖，不小心把你整成了绝世复古网红。（颜值+2）", tag: "good", eff: () => P.f+=2 }
             ],
-            middle: [ // 36-59岁
-                { text: "人到中年危机爆发，你的发际线遭遇了地心引力的毁灭性打击，头顶寸草不生。（颜值-2）", tag: "bad", eff: () => P.f -= 2 },
-                { text: "投资了火星大闸蟹养殖计划，因为火星上根本没有一滴水，项目瞬间暴雷破产。（财富-3）", tag: "bad", eff: () => P.m -= 3 },
-                { text: "买了个二手全自动颈椎按摩仪，设备系统中毒，按摩时差点把你脑袋旋转360度。（体质-1）", tag: "funny", eff: () => P.h -= 1 },
-                { text: "为防止脱发戴了强力生发头盔，辐射太高导致头更秃了，但脑部算力飙升。（智力+2）", tag: "good", eff: () => P.i += 2 },
-                { text: "在小区里和张大爷因为一盘残局发生激烈争执，最后通过掰手腕完胜对方。（体质+1）", tag: "good", eff: () => P.h += 1 },
-                { text: "由于经验丰富，你成功晋升为了公司的核心总监，工资暴涨，卡里数字大增。（财富+3）", tag: "good", eff: () => P.m += 3 },
-                { text: "辅导孩子做‘反物质核聚变物理作业’，由于孩子太笨，你气得高血压当场发作。", tag: "funny", eff: () => {} },
-                { text: "因长期久坐不动弹，你的腰椎间盘高调突出，疼得在床上直挺挺平躺了半个月。（体质-1）", tag: "bad", eff: () => P.h -= 1 },
-                { text: "翻箱倒柜时意外发现了自己十五年前藏在全息相框夹层里的私房钱，热泪盈眶。（财富+1）", tag: "good", eff: () => P.m += 1 }
+            middle: [ // 36-59岁 中年期
+                { text: "人到中年，你买了个保温杯在里面泡满枸杞，每天坐在阳台放何勇的《高级动物》叹气。（智力+1）", tag: "normal", eff: () => { rockCount++; triggerHidden(8); triggerNormal("N47"); } },
+                { text: "发际线遭遇了毁灭性的秃头打击。你摸着光头终于理解为什么当年的老炮最后都剪了短发。（颜值-2）", tag: "bad", eff: () => P.f-=2 },
+                { text: "投资‘火星复古黑胶磁带生产线’，因太阳系早已实现脑电波感应，项目暴雷破产。（财富-3）", tag: "bad", eff: () => P.m-=3 },
+                { text: "半夜上厕所由于严重颈椎病，一头撞在钛合金马桶盖上当场晕了过去。（体质-1）", tag: "bad", eff: () => P.h-=1 },
+                { text: "翻箱倒柜时意外在旧吉他音孔夹层里，发现了自己十五年前藏的私房钱。（财富+1）", tag: "good", eff: () => P.m+=1 },
+                { text: "由于职场摸鱼技术极其精湛，你混成了公司的核心总监，薪资迎来大暴涨。（财富+3）", tag: "good", eff: () => P.m+=3 },
+                 { text: "辅导孩子做‘反物质物理作业’，孩子半天开不了窍，你气得高血压发作差点脑溢血。", tag: "funny", eff: () => {} },
+                { text: "长期久坐不动，腰椎间盘高调突出，疼得你在床上直挺挺平躺了整整半个月。（体质-1）", tag: "bad", eff: () => P.h-=1 }
             ],
-            old: [ // 60岁+
-                { text: "社区广场舞大赛，你开启外骨骼辅助器跳出一套极其硬核的震感舞，震惊全场。（颜值+1）", tag: "good", eff: () => P.f += 1 },
-                { text: "身体零件老化，体检时AI医生叹了口气对你说：‘老哥，你这主板再不清灰就烧了’。（体质-1）", tag: "bad", eff: () => P.h -= 1 },
-                { text: "遭遇针对老年人的磁场床垫骗局，幸好你卡里为0，骗子直呼晦气当场把你踢出群聊。", tag: "funny", eff: () => {} },
-                { text: "你变得越来越健忘，出门不仅经常忘了穿裤子，还把脑机内存条落在了菜市场。（智力-1）", tag: "bad", eff: () => P.i -= 1 },
-                { text: "坚持每天在公园打量子太极拳，骨骼硬朗，体检把负责的年轻医生惊呆了。（体质+2）", tag: "good", eff: () => P.h += 2 },
-                { text: "在老年大学自学了全息重金属水彩画，作品被赞誉为迷幻流派巅峰，大卖了一笔。（财富+2）", tag: "good", eff: () => P.m += 2 },
-                { text: "坐在藤椅上晒太阳，突然顿悟了过去争夺的虚名不过是大脑皮层的电信号，心境圆满。（智力+1）", tag: "special", eff: () => P.i += 1 },
-                { text: "你给自己的假牙升级了无线蓝牙功能，晚上睡觉时你的嘴巴一直在大声外放重金属。", tag: "funny", eff: () => {} },
-                { text: "隔壁大爷邀你用算法下盲棋，因为算力不够导致你系统烧毁，赔了对方一笔低保费。（财富-1）", tag: "bad", eff: () => P.m -= 1 }
+            old: [ // 60岁+ 老年期
+                { text: "你活明白了。买了一辆二八大杠自行车，每天骑着它去吃胡同炸酱面，活成了古老的仙人窦唯。（智力+2，体质+1）", tag: "special", eff: () => { P.i+=2; P.h+=1; triggerHidden(3); triggerNormal("N43"); } },
+                { text: "去参加社区外骨骼跳舞大赛，你跟着崔健《假行僧》伴奏大跳硬核摇滚，结果把腰闪了。（体质-1）", tag: "funny", eff: () => { P.h-=1; rockCount++; triggerHidden(16); triggerNormal("N49"); } },
+                { text: "坚持每天在公园对着假山高唱唐朝乐队的《飞翔鸟》，中气十足，把年轻的主治医生惊呆。（体质+2）", tag: "good", eff: () => { P.h+=2; triggerHidden(12); triggerNormal("N48"); } },
+                { text: "脑机接口芯片极度老化，出门经常忘记穿衣服，逢人就问：黑豹乐队今年出新歌了吗？（智力-1）", tag: "bad", eff: () => P.i-=1 },
+                { text: "遭遇针对老年人的磁场养生床垫骗局，幸好你卡里为0，骗子大骂晦气把你踢出群聊。", tag: "funny", eff: () => {} },
+                { text: "在老年大学自学重金属水彩画，作品被赞誉为迷幻流派巅峰，意外大卖发了一笔财。（财富+2）", tag: "good", eff: () => P.m+=2 },
+                { text: "给自己的假牙升级了无线蓝牙功能，晚上睡觉时你的假牙一直在大声外放黑豹重金属。（funny）", tag: "funny", eff: () => { rockCount++; triggerNormal("N41"); } },
+                { text: "跟隔壁大爷用超级AI盲下围棋，因你脑部算力不足导致系统短路，赔了对方一笔低保费。（财富-1）", tag: "bad", eff: () => P.m-=1 },
+                { text: "你已经到了生命的最后边缘。你躺在病床上，耳朵里塞着破旧耳机，在一声声吉他狂轰滥炸中安详闭眼。", tag: "normal", eff: () => {} }
             ]
         };
 
-        const TALENT_POOL = [
-            { id: 1, name: '生而为男', desc: '性别必定为男', effect: () => { gender = '男'; } },
-            { id: 2, name: '面部纳米重塑', desc: '颜值 +4，初始财富 -1', effect: () => { P.f += 4; P.m -= 1; } },
-            { id: 3, name: '脑机接口超频', desc: '智力 +3，体质 -1', effect: () => { P.i += 3; P.h -= 1; } },
-            { id: 4, name: '继承神秘矿山', desc: '初始财富 +5，智力 -1', effect: () => { P.m += 5; P.i -= 1; } },
-            { id: 5, name: '量子养生大师', desc: '体质 +4，颜值 -1', effect: () => { P.h += 4; P.f -= 1; } },
-            { id: 6, name: '欧皇转世', desc: '全属性各分配 +1 点', effect: () => { P.f += 1; P.m += 1; P.i += 1; P.h += 1; } },
-            { id: 7, name: '美若天仙', desc: '颜值 +5', effect: () => { P.f += 5; } },
-            { id: 8, name: '百年一遇', desc: '智力 +5', effect: () => { P.i += 5; } },
-            { id: 9, name: '金刚不坏', desc: '体质 +5', effect: () => { P.h += 5; } }
-        ];
+        // ============================================================
+        // 游戏核心引擎逻辑
+        // ============================================================
+        let frozenHealthCount = 0;
 
-        // ============================================================
-        // 控制切换和游戏主逻辑
-        // ============================================================
         window.onload = function() {
-            renderWorldSelection();
+            rollOpeningOptions();
             renderAchievements();
         };
 
-        function switchTab(type) {
-            document.getElementById('tabGame').classList.toggle('active', type === 'game');
-            document.getElementById('tabAchieve').classList.toggle('active', type === 'achieve');
-            
-            document.getElementById('gameContent').classList.toggle('hidden', type !== 'game');
-            document.getElementById('achievePanel').classList.toggle('hidden', type !== 'achieve');
-            if(type === 'achieve') renderAchievements();
-        }
-
-        function renderWorldSelection() {
-            const worldDiv = document.getElementById('worldList');
-            worldDiv.innerHTML = "";
-            WORLD_BACKGROUNDS.forEach(w => {
-                const item = document.createElement('div');
-                item.className = 'card-item';
-                item.innerHTML = `<div class="card-name">🌍 ${w.name}</div><div class="card-desc">${w.desc}</div><div class="card-bonus">🎁 加成：${w.bonusDesc}</div>`;
-                item.onclick = () => {
-                    document.querySelectorAll('#worldList .card-item').forEach(el => el.classList.remove('selected'));
-                    item.classList.add('selected');
-                    currentWorld = w;
-                    const btn = document.getElementById('worldBtn');
-                    btn.disabled = false;
-                    btn.className = 'btn btn-start active';
-                    btn.textContent = '下一步：挑选出生天赋';
+        function rollOpeningOptions() {
+            const listDiv = document.getElementById('poolList');
+            listDiv.innerHTML = "";
+            selectedItems = [];
+            let shuffled = [...MIXED_POOL].sort(() => 0.5 - Math.random()).slice(0, 5);
+            shuffled.forEach(item => {
+                const dom = document.createElement('div');
+                dom.className = 'option-item';
+                dom.innerHTML = `<div class="option-name">${item.name}</div><div class="option-desc">${item.desc}</div>`;
+                dom.onclick = () => {
+                    if (selectedItems.includes(item)) {
+                        selectedItems = selectedItems.filter(x => x !== item);
+                        dom.classList.remove('selected');
+                    } else {
+                        if (selectedItems.length >= 3) return;
+                        selectedItems.push(item);
+                        dom.classList.add('selected');
+                    }
+                    document.getElementById('poolSelectHint').textContent = `请选择 3 个作为你的开局词条 (${selectedItems.length}/3)`;
+                    const btn = document.getElementById('poolBtn');
+                    if (selectedItems.length === 3) {
+                        btn.disabled = false;
+                        btn.textContent = "确认组合，前往分配点数";
+                    } else {
+                        btn.disabled = true;
+                        btn.textContent = "未选满3个选项";
+                    }
                 };
-                worldDiv.appendChild(item);
+                listDiv.appendChild(dom);
             });
         }
 
         function renderAchievements() {
             const div = document.getElementById('achieveList');
             div.innerHTML = "";
-            ACHIEVEMENTS.forEach(a => {
-                const isUnlocked = unlockedAchievements.includes(a.id);
+            ALL_ACHIEVEMENTS.forEach(a => {
+                const isUnlocked = unlockedArr.includes(a.id);
+                const isHidden = a.id.startsWith('H');
                 const item = document.createElement('div');
-                item.className = `achieve-item ${isUnlocked ? 'unlocked' : ''}`;
-                item.innerHTML = `
-                    <div class="achieve-title">
-                        <span>🏆 ${a.name}</span>
-                        <span class="achieve-status" style="color:${isUnlocked ? '#ecc94b':'#718096'}">${isUnlocked ? '已解锁':'未解锁'}</span>
-                    </div>
-                    <div class="achieve-cond">条件：${a.cond}</div>
-                `;
+                if (isHidden) {
+                    if (isUnlocked) {
+                        item.className = 'achieve-item unlocked';
+                        item.innerHTML = `🌟 [隐藏传说] 《${a.name}》 - 已达成！`;
+                    } else {
+                        item.className = 'achieve-item hidden-lock';
+                        item.innerHTML = `🔒 [隐藏传说] ??? - 未解锁（条件绝对保密）`;
+                    }
+                } else {
+                    item.className = `achieve-item ${isUnlocked ? 'unlocked' : ''}`;
+                    item.innerHTML = `🏆 ${a.name} - ${isUnlocked ? '【已解锁】' : '【未解锁】'} (条件: ${a.cond})`;
+                }
                 div.appendChild(item);
             });
         }
 
-        function goToTalent() {
-            currentWorld.effect();
-            document.getElementById('worldPanel').classList.add('hidden');
-            document.getElementById('talentPanel').classList.remove('hidden');
-            
-            const listDiv = document.getElementById('talentList');
-            listDiv.innerHTML = "";
-            const shuffled = [...TALENT_POOL].sort(() => 0.5 - Math.random());
-            shuffled.slice(0, 3).forEach(t => {
-                const item = document.createElement('div');
-                item.className = 'card-item';
-                item.innerHTML = `<div class="card-name">【${t.name}】</div><div class="card-desc">${t.desc}</div>`;
-                item.onclick = () => {
-                    document.querySelectorAll('#talentList .card-item').forEach(el => el.classList.remove('selected'));
-                    item.classList.add('selected');
-                    selectedTalent = t;
-                    const btn = document.getElementById('talentBtn');
-                    btn.disabled = false;
-                    btn.className = 'btn btn-start active';
-                    btn.textContent = '下一步：精细分配属性';
-                };
-                listDiv.appendChild(item);
-            });
-        }
-
         function goToSetup() {
-            document.getElementById('talentPanel').classList.add('hidden');
-            document.getElementById('setupPanel').classList.remove('hidden');
+            selectedItems.forEach(item => item.effect());
+            document.getElementById('poolSection').classList.add('hidden');
+            document.getElementById('setupSection').classList.remove('hidden');
             updateAttrDisplay();
         }
 
@@ -340,23 +337,19 @@
             if ((rem <= 0 && delta > 0) || (P[key] + delta < -5 && delta < 0)) return; 
             P[key] += delta; rem -= delta;
             updateAttrDisplay();
-            
             const btn = document.getElementById('startBtn');
             if (rem === 0) {
                 btn.disabled = false;
-                btn.className = 'btn btn-start active';
-                btn.textContent = '签生死状，开始重开';
+                btn.textContent = '点数已分配好，开启重开人生';
             } else {
                 btn.disabled = true;
-                btn.className = 'btn btn-start';
-                btn.textContent = '请分配完所有自由点数';
+                btn.textContent = '自由分配点数必须全部用完';
             }
         }
 
         function startGame() {
-            if (selectedTalent) selectedTalent.effect();
-            if (gender !== '男') gender = Math.random() < 0.5 ? '男' : '女';
-            document.getElementById('setupPanel').classList.add('hidden');
+            gender = Math.random() < 0.5 ? '男' : '女';
+            document.getElementById('startMenu').classList.add('hidden');
             document.getElementById('gamePanel').classList.remove('hidden');
             age = 0;
             renderYear(0);
@@ -364,23 +357,19 @@
 
         function getEvents(age) {
             if (age === 0) {
-                let desc = `【世界背景：${currentWorld.name}】${currentWorld.desc}<br>你在此处出生，性别【${gender}】，天赋【${selectedTalent.name}】。`;
-                return [{ text: desc, tag: 'special', eff: () => {} }];
+                let sNames = selectedItems.map(x=>x.name).join(' | ');
+                return [{ text: `你降生了。携带初始特质：[ ${sNames} ]。系统随机分配性别为【${gender}】。`, tag: 'special', eff: () => {} }];
             }
-
-            // 1. 判断并触发世界大灾难（强判定）
-            const disaster = DISASTER_EVENTS[currentWorld.name];
-            if (disaster && disaster.age === age) {
-                return [{ text: disaster.text, tag: 'disaster', eff: disaster.check }];
+            if (currentBackground && DISASTER_EVENTS[currentBackground]) {
+                const dis = DISASTER_EVENTS[currentBackground];
+                if (dis.age === age) return [{ text: dis.text, tag: 'disaster', eff: dis.check }];
             }
-
-            // 2. 根据细化年龄段抽取事件
-            let pool = STAGE_EVENTS.baby;     // 0-3岁 婴儿期
-            if (age >= 60) pool = STAGE_EVENTS.old;         // 60+岁 老年期
-            else if (age >= 36) pool = STAGE_EVENTS.middle; // 36-59岁 中年期
-            else if (age >= 19) pool = STAGE_EVENTS.young;  // 19-35岁 青年期
-            else if (age >= 13) pool = STAGE_EVENTS.teen;   // 13-18岁 青春期
-            else if (age >= 4) pool = STAGE_EVENTS.child;   // 4-12岁 少儿期
+            let pool = STAGE_EVENTS.baby;
+            if (age >= 60) pool = STAGE_EVENTS.old;
+            else if (age >= 36) pool = STAGE_EVENTS.middle;
+            else if (age >= 19) pool = STAGE_EVENTS.young;
+            else if (age >= 13) pool = STAGE_EVENTS.teen;
+            else if (age >= 4) pool = STAGE_EVENTS.child;
 
             const ev = pool[Math.floor(Math.random() * pool.length)];
             return [{ text: ev.text, tag: ev.tag, eff: ev.eff }];
@@ -391,24 +380,36 @@
             renderYear(age);
         }
 
-        function checkAchievements() {
-            ACHIEVEMENTS.forEach(a => {
-                if (!unlockedAchievements.includes(a.id)) {
-                    // 大难不死特殊检查
-                    if (a.id === "A9" && survivedDisaster) {
-                        unlock(a);
-                    } else if (a.check()) {
-                        unlock(a);
-                    }
-                }
-            });
+        function triggerHidden(num) {
+            const hidId = `H${num}`;
+            if(!unlockedArr.includes(hidId)) {
+                unlockedArr.push(hidId);
+                localStorage.setItem('re_rock_ach_v3', JSON.stringify(unlockedArr));
+                const target = ALL_ACHIEVEMENTS.find(x => x.id === hidId);
+                const wrap = document.getElementById('logWrap');
+                wrap.innerHTML = `<div class="log-item" style="color:#ffcc00; font-weight:bold;">✨【解锁绝密隐藏成就】《${target.name}》已载入地下成名堂！</div>` + wrap.innerHTML;
+            }
         }
 
-        function unlock(a) {
-            unlockedAchievements.push(a.id);
-            localStorage.setItem('re_achievements', JSON.stringify(unlockedAchievements));
-            const wrap = document.getElementById('logWrap');
-            wrap.innerHTML = `<div class="log-item" style="border: 1px solid #ecc94b; background: rgba(236, 201, 75, 0.1); padding: 8px; border-radius: 6px;"><span class="special">👑 【解锁隐藏成就】《${a.name}》</span><br><span style="font-size:12px; color:#a0aec0;">条件：${a.cond}</span></div>` + wrap.innerHTML;
+        function triggerNormal(id) {
+            if(!unlockedArr.includes(id)) {
+                unlockedArr.push(id);
+                localStorage.setItem('re_rock_ach_v3', JSON.stringify(unlockedArr));
+                const target = ALL_ACHIEVEMENTS.find(x => x.id === id);
+                const wrap = document.getElementById('logWrap');
+                wrap.innerHTML = `<div class="log-item" style="color:#ffcc00;">🏆【达成普通成就】《${target.name}》已解锁！</div>` + wrap.innerHTML;
+            }
+        }
+
+        function checkNormalAchievements() {
+            NORMAL_ACHIEVEMENTS.forEach(a => {
+                if (!unlockedArr.includes(a.id) && a.check()) {
+                    unlockedArr.push(a.id);
+                    localStorage.setItem('re_rock_ach_v3', JSON.stringify(unlockedArr));
+                    const wrap = document.getElementById('logWrap');
+                    wrap.innerHTML = `<div class="log-item" style="color:#ffcc00;">🏆【达成普通成就】《${a.name}》已解锁！</div>` + wrap.innerHTML;
+                }
+            });
         }
 
         function renderYear(age) {
@@ -417,16 +418,23 @@
             
             events.forEach(ev => {
                 ev.eff();
+                // 摇滚不坏金身天赋保命判定
+                if(selectedItems.some(x=>x.name.includes("摇滚不坏金身")) && ev.tag === "disaster") {
+                    P.h += 6; // 强行拉回伤点
+                    wrap.innerHTML = `<div class="log-item" style="color:#9955ff;">🛡️【天赋免疫】你凭借“摇滚不坏金身”强行抗下了这场世界末日！</div>` + wrap.innerHTML;
+                }
                 wrap.innerHTML = `<div class="log-item"><span class="age-tag">${age}岁</span><span class="${ev.tag}">${ev.text}</span></div>` + wrap.innerHTML;
             });
 
-            // 记录峰值属性值用于成就判定
             if (P.f > maxStats.f) maxStats.f = P.f;
             if (P.i > maxStats.i) maxStats.i = P.i;
             if (P.h > maxStats.h) maxStats.h = P.h;
             if (P.m > maxStats.m) maxStats.m = P.m;
 
-            // 数据渲染
+            if (P.h < 1) frozenHealthCount++;
+            else frozenHealthCount = 0;
+            if (frozenHealthCount >= 5) triggerNormal("N33");
+
             document.getElementById('ageDisplay').textContent = age + '岁';
             document.getElementById('gDisp').textContent = gender;
             document.getElementById('mDisp').textContent = P.m;
@@ -434,50 +442,32 @@
             document.getElementById('hDisp').textContent = P.h;
             document.getElementById('fDisp').textContent = P.f;
 
-            // ============================================================
-            // 严厉的死线归零及正常衰老死亡判定
-            // ============================================================
             let dieReason = "";
-
-            if (P.h <= 0) {
-                isGameOver = true;
-                dieReason = "【属性归零暴毙】你的体质在浩劫或亚健康中降低到了 0。免疫系统全面崩溃，突发器官衰竭当场去世。";
-            } else if (P.m <= 0) {
-                isGameOver = true;
-                dieReason = "【属性归零流浪】你的财富跌至 0。你失去了赖以生存的居所和面包，最终沦落街头在寒风的桥洞下抢狗剩饭，艰难流浪度日。";
-            } else if (P.i <= 0) {
-                isGameOver = true;
-                dieReason = "【属性归零开水壶】你的智力退化到了 0。严重的脑部创伤让你丧失了全部心智与常识，坚信自己是一只高频尖叫的开水壶，被护卫队强制送进疯人院终身关押。";
-            } else if (P.f <= 0) {
-                isGameOver = true;
-                dieReason = "【属性归零生化兵器】你的颜值归零。因为辐射、重塑失败或剧毒污染，面容长得极其违背生物学。你出门买盐时当场吓死了街边三名无辜群众，作为大规模生化杀伤武器被捕处决。";
-            }
+            if (P.h <= 0) { isGameOver = true; dieReason = "【体质归零】免疫系统在这一年崩溃，引发大面积器官衰竭英年早逝。"; }
+            else if (P.m <= 0) { isGameOver = true; dieReason = "【财富归零】没有面包和居所，最终在深冬寒冷的桥洞下停止了呼吸。"; }
+            else if (P.i <= 0) { isGameOver = true; dieReason = "【智力归零】丧失了人类基本心智与常识，沦为高频尖叫的疯人院开水壶。"; }
+            else if (P.f <= 0) { isGameOver = true; dieReason = "【颜值归零】异变成极度反生物的骇人面容，出门买盐当场吓死三名无辜群众，作为危险兵器被捕处决。"; }
 
             if (!isGameOver) {
-                if (age <= 5 && P.h <= 2 && Math.random() < 0.15) {
-                    isGameOver = true;
-                    dieReason = "幼年夭折：你因体质过于单薄，没能挨过今年寒冷的冬天。";
-                }
+                if (age <= 5 && P.h <= 2 && Math.random() < 0.15) { isGameOver = true; dieReason = "【幼年夭折】你因体质过于单薄，没能熬过今年异常凛冽的冬天。"; }
                 let dieChance = (age - 68) * 0.026 - (P.h * 0.005);
                 if (dieChance < 0.01) dieChance = 0.01;
-                if (age >= 72 && Math.random() < dieChance) {
-                    isGameOver = true;
-                    dieReason = "寿终正寝：你活完了波澜壮阔的一生，在温暖的睡梦中安详地闭上了双眼。";
-                }
-                if (age >= 120) {
-                    isGameOver = true;
-                    dieReason = "打破极限：你活到了120岁，身体细胞分裂达到了人类不可逾越的绝对上限。";
-                }
+                if (age >= 72 && Math.random() < dieChance) { isGameOver = true; dieReason = "【寿终正寝】你完成了波澜壮阔的一生，在温暖的睡梦中安详闭眼。"; }
+                if (age >= 120) { isGameOver = true; dieReason = "【天道极限】你活到了 120 岁，身体细胞分裂彻底达到了人类绝对上限。"; }
             }
 
-            // 检查成就达成状况
-            checkAchievements();
+            if (isGameOver && age < 10) triggerHidden(10);
+            if (age >= 100) {
+                triggerHidden(19);
+                if(selectedItems.some(x=>x.name.includes("摇滚不坏金身"))) triggerHidden(20);
+            }
+
+            checkNormalAchievements();
 
             if (isGameOver) {
-                wrap.innerHTML = `<div class="log-item"><span class="age-tag">${age}岁</span><span class="bad" style="font-weight:bold; font-size:16px;">💥【游戏结束】${dieReason}（享年${age}岁）。</span></div>` + wrap.innerHTML;
+                wrap.innerHTML = `<div class="log-item"><span class="age-tag">${age}岁</span><span class="bad" style="font-weight:bold;">💥【游戏结束】${dieReason}（享年${age}岁）。</span></div>` + wrap.innerHTML;
                 const btn = document.getElementById('nextBtn');
-                btn.textContent = '命数已尽，再次重开';
-                btn.className = 'btn btn-danger';
+                btn.textContent = '命数已尽，点此再度重开';
                 btn.onclick = () => location.reload();
             }
         }
