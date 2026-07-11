@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>人生重开 - 家庭副本</title>
+    <title>人生重开</title>
     <style>
         body { margin: 0; padding: 15px; background: #121212; color: #e0e0e0; font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; box-sizing: border-box; }
         button { background: #2a2a2a; color: #fff; border: 1px solid #444; padding: 12px; border-radius: 8px; font-size: 16px; margin: 5px 0; cursor: pointer; }
         button:hover { background: #3a3a3a; }
         .row { display: flex; justify-content: space-between; align-items: center; margin: 8px 0; }
-        #log { flex: 1; overflow-y: auto; background: #1a1a1a; padding: 12px; border-radius: 8px; margin: 10px 0; font-size: 14px; line-height: 1.8; border: 1px solid #2a2a2a; }
+        #log { flex: 1; overflow-y: auto; background: #1a1a1a; padding: 12px; border-radius: 8px; margin: 10px 0; font-size: 14px; line-height: 1.8; border: 1px solid #2a2a2a; display: flex; flex-direction: column-reverse; }
         #log p { margin: 4px 0; padding: 4px 0; border-bottom: 1px solid #1a1a1a; }
         #p1 { display: flex; flex-direction: column; height: 100%; overflow-y: auto; }
         #p2 { display: none; flex-direction: column; height: 100%; }
@@ -22,34 +22,32 @@
         .card.revealed { border-color: #4fc3f7; }
         .card .name { font-size: 22px; font-weight: bold; margin: 6px 0; }
         .card .desc { font-size: 13px; color: #aaa; margin: 6px 0; }
-        .card .debuff { font-size: 12px; color: #ff6b6b; margin-top: 6px; }
+        .card .tag { font-size: 12px; color: #ffd700; margin-top: 4px; }
 
         .btn-draw { background: #1a237e; border-color: #3949ab; font-size: 18px; padding: 14px; font-weight: bold; }
         .btn-draw:hover { background: #283593; }
-
         .btn-enter { background: #0d47a1; border-color: #1976d2; display: none; }
         .btn-enter:hover { background: #1565c0; }
-
         .attr-label { display: inline-block; width: 40px; }
+        .tag-family { color: #4fc3f7; }
+        .tag-job { color: #ffd700; }
     </style>
 </head>
 <body>
 
-<!-- ========== 第一屏：抽副本 ========== -->
 <div id="p1">
-    <h2 style="text-align:center; margin-bottom: 4px;">抽取你的原生家庭</h2>
-    <p style="text-align:center; color:#888; font-size:13px; margin-top:0;">每次开局随机获得一个家庭剧本</p>
+    <h2 style="text-align:center; margin-bottom: 4px;">抽取你的开局</h2>
+    <p style="text-align:center; color:#888; font-size:13px; margin-top:0;">家庭出身 或 命运走向</p>
 
     <div class="card" id="cardDisplay">
         <div style="font-size:48px; opacity:0.2; margin:10px 0;">?</div>
         <div style="color:#666; font-size:14px;">点击下方按钮抽取</div>
     </div>
 
-    <button class="btn-draw" id="drawBtn" onclick="drawCard()">抽取家庭</button>
+    <button class="btn-draw" id="drawBtn" onclick="drawCard()">抽取开局</button>
     <button class="btn-enter" id="enterBtn" onclick="enterGame()">进入人生</button>
 </div>
 
-<!-- ========== 第二屏：游戏 ========== -->
 <div id="p2">
     <div id="status"></div>
     <div id="log"></div>
@@ -57,183 +55,175 @@
 </div>
 
 <script>
-// ========== 所有家庭副本（无稀有度，纯体验） ==========
-const FAMILY_COPIES = [
+// ========== 所有开局（5个家庭 + 5个职业/命运） ==========
+const ALL_STARTS = [
+    // ----- 家庭类 -----
     {
-        name: '普通工薪家庭',
-        desc: '父母都有稳定工作，生活平淡安稳。没有大富大贵，也没有太多争吵。',
-        debuff: '无特殊负面效果',
-        birth: '你出生在一个普通家庭，父亲是工厂工人，母亲在超市上班。日子紧巴巴但能过得去。',
+        type: 'family',
+        name: '普通人家',
+        desc: '父母都是工人，生活紧巴但过得去。你从小就知道钱来得不容易。',
+        birth: '你出生在城中村的出租屋里，外面是车流声，屋里是父母的叹息。',
         events: {
-            6: '六岁了，上小学了。你爸说：好好学习，将来别像我们一样出苦力。',
-            18: '高考出分了，你考了个普通大学。你妈说：还行，比我们强。',
-            22: '大学毕业了，你找了份普通工作。你开始明白，平凡也是一种幸福。',
-            30: '三十岁了，你结婚了。婚礼上你爸哭了，你妈也哭了。'
+            6: '上小学了，你背的是表姐用过的旧书包。',
+            18: '高考出分了，你考了个普通大学。你爸说：能读就读，砸锅卖铁也供你。',
+            22: '大学毕业了，你找了份工作。你第一次给家里打钱，你妈在电话里哭了。'
         },
-        ending: '你平平凡凡地过完了一生，没有大起大落，但也没什么遗憾。'
+        ending: '你在大城市打拼了半辈子，终于在老家买了套房。你爸妈搬了进去，你说：这回不用再搬家了。'
     },
     {
-        name: '教师家庭',
-        desc: '父母都是老师，对你要求严格但讲道理。家里书多，规矩也多。',
-        debuff: '假期被安排补课，童年乐趣略减',
-        birth: '你出生在教师家庭，满屋子都是书。你爸说：知识改变命运。你妈说：作业写完了吗？',
+        type: 'family',
+        name: '书香门第',
+        desc: '家里书比米多，规矩比饭多。你从小被教育：做人要有骨气。',
+        birth: '你出生在筒子楼里，隔壁是棋牌室，你家却贴满了字画。你爷爷说：咱家穷，但不掉价。',
         events: {
-            6: '上小学了，你妈每天亲自辅导作业。你压力有点大，但成绩确实好。',
-            12: '上初中了，你妈说：你是老师的孩子，不能给爸妈丢脸。',
-            18: '高考出分了，你考得不错。你爸点头：还行，没白教。',
-            25: '你当了老师，你妈很满意。你觉得，这一生好像被安排好了。'
+            6: '上小学了，你爷爷每天教你背古诗。你背不出来不能吃饭。',
+            18: '高考出分了，你考上了重点大学。你爷爷点了点头：还行。',
+            22: '你成了家里第一个研究生。你爷爷去世前说：咱家终于出了个读书人。'
         },
-        ending: '你接过了父母的衣钵，成了一名老师。你教得很好，只是偶尔会想：如果当初选了别的路，会怎样？'
+        ending: '你后来当了老师，在讲台上站了一辈子。你教过的学生很多，你记得每一个。'
     },
     {
-        name: '隔代溺爱家庭',
-        desc: '父母在外打工，你由爷爷奶奶带大。你要什么给什么，但缺乏父母陪伴。',
-        debuff: '独立性成长较慢，成年后依赖性强',
-        birth: '你出生了，但父母很快就去外地打工了。爷爷奶奶把你当成心头肉，要什么给什么。',
+        type: 'family',
+        name: '单亲之家',
+        desc: '你只有妈妈，她打两份工把你养大。你知道自己不能倒下。',
+        birth: '你出生了，产房外只有你妈一个人。她抱着你说：咱娘俩以后就是彼此的依靠了。',
         events: {
-            6: '上小学了，爷爷每天接送你，给你买零食。你很想爸爸妈妈，但他们只有过年才回来。',
-            12: '上初中了，你开始叛逆。爷爷奶奶管不住你，你心里空落落的。',
-            18: '高考出分了，你考得一般。你爸在电话里说：没事，尽力就行。你第一次听到他声音有点哽咽。',
-            22: '大学毕业了，你回了老家。你想多陪陪爷爷奶奶，他们老了。'
+            6: '上小学了，你妈每天六点起床给你做早饭，然后赶去上班。',
+            18: '高考出分了，你考得不错。你妈笑了，那是你第一次见她笑得那么开心。',
+            22: '你工作了，第一件事就是让你妈别再打工了。你说：换我养你。'
         },
-        ending: '你一直陪着爷爷奶奶直到他们离世。你后来也成了家，但心里总有一个缺口，那是童年缺失的父母陪伴。'
+        ending: '你妈老了，你每天下班回家陪她吃饭。她说：这辈子最大的福气就是生了你。你说：我也是。'
     },
     {
-        name: '离异重组家庭',
-        desc: '父母离异，你跟着妈妈住进了新家。继父对你不冷不热，你学会了看脸色。',
-        debuff: '信任感较低，社交中习惯性讨好他人',
-        birth: '你出生时父母还很恩爱。但三年后他们离婚了，你跟着妈妈搬去了一个新家。',
+        type: 'family',
+        name: '老来得子',
+        desc: '你是父母四十多岁才有的孩子，他们把所有期望都压在了你身上。',
+        birth: '你出生时，你爸已经四十五了。他抱着你手都在抖：老X家终于有后了。',
         events: {
-            6: '上小学了，继父的儿子也在同一所学校。你们从不一起走。',
-            12: '你发现继父对他亲生的孩子和你不一样。你学会了懂事，不再提要求。',
-            18: '高考出分了，你考去了外地的大学。你想离这个家远一点。',
-            22: '大学毕业了，你留在外地工作。你妈打电话来说：有空回来看看。你说：好。但你很少回去。'
+            6: '上小学了，你爸每天接送，风雨无阻。同学都以为他是你爷爷。',
+            18: '高考出分了，你没考好。你爸什么都没说，只是叹了口气。那声叹息比骂你还难受。',
+            22: '你工作了，你爸身体越来越差。你说：爸，我养你。他摆了摆手：不用，你过好自己就行。'
         },
-        ending: '你一辈子都在寻找归属感。你成了家，对自己的孩子特别好，因为你不想让他经历你小时候的孤独。'
+        ending: '你爸走的那天，你坐在医院走廊里哭了很久。你后悔没多陪陪他。'
     },
     {
-        name: '扶弟魔永动机',
-        desc: '你是长女或长子，赚钱养弟弟是天经地义的事。你的工资有一半不属于你。',
-        debuff: '每月工资自动扣除百分之三十上缴家用',
-        birth: '你出生了，你爸第一句话是：以后弟弟就靠你了。',
+        type: 'family',
+        name: '小城富户',
+        desc: '你家在本地算有钱的，但你从小知道，那些钱跟你没关系。',
+        birth: '你出生在县城的独栋小楼里，你爸是做生意的。你妈说：以后这些都是你的。',
         events: {
-            6: '上小学了，你背的是弟弟的旧书包。你说：没事，我是姐姐。',
-            12: '你成绩很好，但你妈说：女孩子读那么多书干嘛，早点出来打工帮弟弟。',
-            18: '高考出分了，你考上了大学，但你妈说：家里没钱，你弟要上学。你撕了录取通知书。',
-            22: '你工作了，每月工资打一半回家。你弟上了大学，买了新手机，你什么都没说。',
-            30: '你弟结婚了，你出了大部分彩礼。你妈说：还是女儿贴心。你笑了笑。'
+            6: '上小学了，你是班里第一个有手机的人。同学们都羡慕你，你不知道这有什么好羡慕的。',
+            18: '高考出分了，你考了个普通大学。你爸说：没事，回来接班就行。',
+            22: '你回老家了，跟着你爸做生意。你发现这行水很深，你什么都不懂。'
         },
-        ending: '你供养弟弟直到他成家立业。你后来也结了婚，但一直没要孩子。你说：我当够了姐姐。'
+        ending: '你后来接手了家里的生意，做得不大不小。你爸退休后每天钓鱼，你忙得没时间陪他。'
+    },
+
+    // ----- 职业/命运类 -----
+    {
+        type: 'job',
+        name: '黄袍加身',
+        desc: '你没什么学历，但你有电瓶车。你接过的单子，比你吃过的饭还多。',
+        birth: '你出生了，你爸说：读书不是唯一的出路。你没听懂，后来你懂了。',
+        events: {
+            6: '上小学了，你成绩一般。老师说你聪明但不用功。',
+            18: '高考落榜了。你妈哭了一场，你说：没事，我去打工。',
+            22: '你成了一名外卖员，每天骑着电瓶车穿街过巷。你觉得也挺好的。',
+            30: '你跑外卖跑了八年，攒了些钱。你开始想：要不要做点别的？'
+        },
+        ending: '你后来开了一家小饭馆，专门做外卖。你雇了几个骑手，偶尔自己也跑两单。你说：还是骑车的时候最自在。'
     },
     {
-        name: '成绩单即生死状',
-        desc: '从小学开始，排名就是你在家里的呼吸权。考不好，你就是全家的罪人。',
-        debuff: '考试跌出前十名，寒暑假取消加没收手机',
-        birth: '你出生了，你妈抱着你翻黄历：这孩子以后必须考清北。',
+        type: 'job',
+        name: '浪子回头',
+        desc: '你年轻的时候混过，后来有人拉了你一把。你欠那个人一条命。',
+        birth: '你出生了，你爸是个酒鬼，你妈跑了。你从小没人管。',
         events: {
-            6: '上小学了，你第一次考试考了第三名。你妈说：怎么不是第一？',
-            12: '上初中了，你考了年级第二。你爸说：差第一多少分？',
-            18: '高考出分了，你没考上清北。你爸三天没跟你说话，你妈哭了整整一周。',
-            22: '你上了一个普通985。你妈说：也行吧，将就。你突然觉得，自己好像从来没让他们满意过。'
+            12: '你开始混社会，打架斗殴是家常便饭。你觉得自己这辈子就这样了。',
+            18: '你因为打架进了看守所，出来的时候你爸死了。你蹲在路边哭了很久。',
+            22: '你找了份正经工作，保安。每天站岗十二个小时，但你觉得踏实。',
+            30: '你成了保安队长，手底下管着十几个人。你偶尔会想起十几岁的自己，像做了一场梦。'
         },
-        ending: '你后来考上了研究生，找了一份体面的工作。你父母终于满意了。但你心里清楚，你从来没有为自己活过。'
+        ending: '你后来结了婚，有了孩子。你对你儿子说：别学你爸年轻时候的样子。你儿子问：爸你年轻时候什么样？你没说话。'
     },
     {
-        name: '情感勒索型母后',
-        desc: '你妈是PUA大师，善用 我心脏不好 我白养你了 等终极武器。你永远在愧疚中活着。',
-        debuff: '违抗母命需过意志检定，失败则愧疚感拉满',
-        birth: '你出生了，你妈看着你说：你要是男孩就好了。从那一刻起，你就觉得你欠她的。',
+        type: 'job',
+        name: '天选打工人',
+        desc: '你换过的工作比你换过的对象还多。不是你不稳定，是你总在找更好的。',
+        birth: '你出生了，你妈说：这孩子将来肯定坐不住。她没说错。',
         events: {
-            6: '你想学画画，你妈说：学那个有什么用？我身体不好，你别气我。',
-            12: '你想去同学家玩，你妈说：我白养你这么大了，你一点都不心疼我。',
-            18: '你想报外地的大学，你妈说：你是不是想离开我？我心脏不好，你想气死我是不是？',
-            22: '你留在了本地工作，住在家里。你妈每天念叨：你看那谁家孩子，月薪多少多少。',
-            30: '你妈让你相亲，你去了。你不喜欢那个人，但你还是嫁了。因为你妈说：你不结婚我死了都闭不上眼。'
+            6: '上小学了，你每学期换一个兴趣班，每个都没坚持超过三个月。',
+            18: '高考出分了，你考了个大专。你觉得无所谓，反正学历也没啥用。',
+            22: '你毕业后换了六份工作，每份平均干四个月。你爸妈急得不行。',
+            30: '你终于定下来了，在一家小公司干了三年。你发现自己其实也能坚持。'
         },
-        ending: '你活成了妈妈想要的样子。你有了家庭，有了孩子。有一天你发现，你对你孩子说的话，和你妈当年对你说的一模一样。'
+        ending: '你后来自己创业了，开了一家小公司。你招人的时候，最看重的是：这个人能不能坐得住。'
     },
     {
-        name: '父权一言堂',
-        desc: '你爸是家里的皇帝，饭桌即法庭。你说任何不同意见都会被 你懂什么 直接拍死。',
-        debuff: '表达欲永久下降，成年后不敢提反对意见',
-        birth: '你出生了，你爸给你取名：就叫铁柱，我说了算。',
+        type: 'job',
+        name: '文曲星下凡',
+        desc: '你从小就聪明，学什么都快。别人觉得难的事，你觉得不过如此。',
+        birth: '你出生了，接生护士说：这孩子眼睛里透着机灵。你妈信了。',
         events: {
-            6: '你想报兴趣班，你爸说：报什么报，好好学习就行了。',
-            12: '你想学文科，你爸说：理科才有出路，你懂什么？',
-            18: '你想报外省的大学，你爸说：不许去，就在省内。你懂什么？',
-            22: '你工作了，你爸说：回家考公务员。你懂什么？稳定最重要。',
-            30: '你考了公务员，结了婚，生了孩子。你爸说：这才像话。你没说话。'
+            6: '上小学了，你跳过一级。你比同班同学都小一岁，但成绩永远是第一。',
+            18: '高考出分了，你是全市状元。你爸摆了二十桌酒席。',
+            22: '你本科毕业，保送了顶尖大学的直博。别人都说你前途无量。',
+            30: '你博士毕业，进了一家大厂搞研发。你发现身边都是聪明人，你不再是那个最特别的了。'
         },
-        ending: '你成了另一个你爸。有一天你儿子对你说：爸，我想学音乐。你说：学那个有什么用？话出口的瞬间，你愣住了。'
+        ending: '你后来成了行业内小有名气的专家。你回老家过年，小学同学说：你果然不一样。你笑了笑，心里想：其实也都差不多。'
     },
     {
-        name: '房间没有门',
-        desc: '你的日记、手机、社交账号全部被监控。你妈常说：小孩子要什么隐私。',
-        debuff: '心理健康长期受压，成年后极度缺乏安全感',
-        birth: '你出生了，你妈正在拆婴儿房的窗帘：小孩子要什么隐私。',
+        type: 'job',
+        name: '逆天改命',
+        desc: '你出身不好，但不认命。你相信只要拼，总能翻盘。',
+        birth: '你出生在大山里的土坯房，接生婆用剪子剪断脐带。你哭得震天响。',
         events: {
-            6: '你写的第一篇日记，被你妈当着你的面念了出来。你哭了，她说：我是你妈，有什么不能看的？',
-            12: '你妈翻了你手机，把你和同学的聊天记录截图发到了家族群。',
-            18: '你上了大学，终于有了自己的房间。但你习惯性地把所有东西都锁起来。舍友说你怪怪的。',
-            22: '你工作了，搬出去住了。你妈打电话来说：你为什么不接我视频？你是不是有事瞒着我？'
+            6: '你每天走两个小时山路去上学，鞋底磨破了也舍不得换。',
+            18: '你考上了大学，是全村第一个大学生。你走的那天，全村人都来送你。',
+            22: '你留在了大城市工作，每个月往家里寄钱。你爸说：别寄了，留着自己花。',
+            30: '你在大城市买了房，把爸妈接了过来。你妈说：这楼房真高，看不见山了。'
         },
-        ending: '你去了一个很远很远的城市，换了手机号，和家里断了联系。你终于有了属于自己的空间，但每个深夜，你还是会下意识地检查门锁。'
-    },
-    {
-        name: '你是家庭的遮羞布',
-        desc: '在外你是幸福家庭的门面，在家你是所有情绪的垃圾桶。一旦你穿帮，迎接你的是冷暴力。',
-        debuff: '习惯性表演，长期处于讨好型人格状态',
-        birth: '你出生了，你妈给你穿上最贵的衣服：让亲戚看看咱们家多幸福。',
-        events: {
-            6: '过年亲戚问你：你爸妈对你好不好？你说：好。你妈在旁边满意地笑了。',
-            12: '你在亲戚面前说漏嘴了。回家的路上，车里安静得像冰窖。',
-            18: '你学会了演戏。同学都说你性格好，家庭幸福。只有你自己知道，那都是演出来的。',
-            22: '你工作了，谈了恋爱。你不敢带对象回家，因为你不知道该怎么介绍你的家人。'
-        },
-        ending: '你一辈子都在演戏。你演了一个好孩子，一个好员工，一个好配偶。最后你对着镜子，问自己：我原本是什么样子的？镜子没有回答。'
+        ending: '你后来有了孩子，你给他讲你小时候走山路的故事。他问：爸爸，山是什么样子的？你突然发现，你已经很多年没见过山了。'
     }
 ];
 
 // ========== 游戏状态 ==========
-let currentCopy = null;
+let currentStart = null;
 let p = { f:0, i:0, h:0, money:0 };
 let rem = 20;
 let age = -1;
 let alive = true;
 let gender = "";
-let gameStarted = false;
 
-// ========== 抽卡逻辑 ==========
 function drawCard() {
-    const idx = Math.floor(Math.random() * FAMILY_COPIES.length);
-    currentCopy = FAMILY_COPIES[idx];
+    const idx = Math.floor(Math.random() * ALL_STARTS.length);
+    currentStart = ALL_STARTS[idx];
 
     const card = document.getElementById('cardDisplay');
+    const typeLabel = currentStart.type === 'family' ? '🏠 家庭出身' : '🔮 命运走向';
+    const typeClass = currentStart.type === 'family' ? 'tag-family' : 'tag-job';
     card.className = 'card revealed';
     card.innerHTML = `
-        <div class="name">${currentCopy.name}</div>
-        <div class="desc">${currentCopy.desc}</div>
-        <div class="debuff">负面效果：${currentCopy.debuff}</div>
+        <div class="tag ${typeClass}">${typeLabel}</div>
+        <div class="name">${currentStart.name}</div>
+        <div class="desc">${currentStart.desc}</div>
     `;
 
     document.getElementById('enterBtn').style.display = 'block';
 }
 
-// ========== 进入游戏 ==========
 function enterGame() {
-    if (!currentCopy) return;
+    if (!currentStart) return;
 
     p = { f:0, i:0, h:0, money:0 };
     rem = 20;
     age = -1;
     alive = true;
     gender = Math.random() < 0.5 ? '男' : '女';
-    gameStarted = false;
 
     document.getElementById('p1').innerHTML = `
-        <h3 style="text-align:center;">家庭：${currentCopy.name}</h3>
-        <div style="text-align:center; font-size:13px; color:#888; margin-bottom:6px;">${currentCopy.desc}</div>
-        <div style="text-align:center; font-size:12px; color:#ff6b6b; margin-bottom:12px;">负面效果：${currentCopy.debuff}</div>
+        <h3 style="text-align:center;">开局：${currentStart.name}</h3>
+        <div style="text-align:center; font-size:13px; color:#888; margin-bottom:6px;">${currentStart.desc}</div>
         <hr>
         <h3 style="text-align:center;">属性分配 (剩余: <span id="pts">20</span>)</h3>
         <div class="row"><span class="attr-label">颜值</span><button onclick="add('f',-1)">-</button><span id="f">0</span><button onclick="add('f',1)">+</button></div>
@@ -255,7 +245,6 @@ function enterGame() {
     };
 
     window.startGame = function() {
-        gameStarted = true;
         document.getElementById('p1').style.display = 'none';
         document.getElementById('p2').style.display = 'flex';
         document.getElementById('log').innerHTML = '';
@@ -266,113 +255,99 @@ function enterGame() {
     };
 }
 
-// ========== 游戏主循环 ==========
 function next() {
     const log = document.getElementById('log');
     const btn = document.getElementById('btn');
 
     if (!alive) {
-        btn.innerText = '重新投胎';
+        btn.innerText = '重新开局';
         btn.onclick = function() { location.reload(); };
         return;
     }
 
     age++;
 
-    // ===== 生老病死自然结局 =====
+    // 自然死亡
     if (age > 70) {
-        const deathRoll = Math.random();
-        if (age > 90 || (age > 75 && deathRoll < 0.15) || (age > 80 && deathRoll < 0.3) || (age > 85 && deathRoll < 0.5)) {
+        const roll = Math.random();
+        if (age > 90 || (age > 75 && roll < 0.12) || (age > 80 && roll < 0.25) || (age > 85 && roll < 0.45)) {
             alive = false;
-            let deathMsg = '你安详地离开了这个世界。';
-            if (age > 90) deathMsg = '你活了' + age + '岁，是高寿。你走的时候，子孙都在身边。';
-            else if (age > 80) deathMsg = '你活了' + age + '岁。你走得很平静，没什么痛苦。';
-            else deathMsg = '你活了' + age + '岁。虽然不算太长，但你也尽力了。';
-            log.innerHTML = '<p style="color:#ffd700;"><b>【' + age + '岁】</b><br>' + deathMsg + '</p>' + log.innerHTML;
-            log.innerHTML += '<p style="color:#888; margin-top:12px;">' + currentCopy.ending + '</p>';
-            btn.innerText = '重新投胎';
+            let msg = '你安详地离开了。';
+            if (age > 90) msg = '你活了' + age + '岁，是真正的高寿。儿孙满堂，没什么遗憾。';
+            else if (age > 80) msg = '你活了' + age + '岁。走得很平静，该见的都见了。';
+            else msg = '你活了' + age + '岁。虽然不算太长，但也够本了。';
+            log.innerHTML = '<p style="color:#ffd700;"><b>【' + age + '岁】</b><br>' + msg + '</p>' + log.innerHTML;
+            log.innerHTML += '<p style="color:#888; margin-top:12px;">' + currentStart.ending + '</p>';
+            btn.innerText = '重新开局';
             btn.style.background = '#b71c1c';
             btn.onclick = function() { location.reload(); };
             return;
         }
     }
 
-    // ===== 夭折判定（幼年体质太差） =====
+    // 幼年夭折
     if (age >= 1 && age <= 10 && p.h <= 2 && Math.random() < 0.2) {
         alive = false;
-        log.innerHTML = '<p style="color:red;">【' + age + '岁】你因体质太差，生病夭折了。游戏结束。</p>' + log.innerHTML;
-        btn.innerText = '重新投胎';
+        log.innerHTML = '<p style="color:red;">【' + age + '岁】你体质太差，没能撑过去。</p>' + log.innerHTML;
+        btn.innerText = '重新开局';
         btn.style.background = '#b71c1c';
         btn.onclick = function() { location.reload(); };
         return;
     }
 
-    // ===== 生成事件文本 =====
+    // 生成事件
     let txt = '';
 
     if (age === 0) {
-        let mText = "";
-        if (p.money >= 8) mText = "你出生在大富大贵之家，住着别墅，保姆环绕。";
-        else if (p.money >= 5) mText = "你出生在一个富裕的中产家庭，生活无忧无虑。";
-        else if (p.money >= 3) mText = "你出生在一个普通的工薪家庭，父母工作稳定。";
-        else mText = "你出生在清贫的破旧平房里，父母正在为房租发愁。";
-
-        let fText = p.f >= 8 ? "接生护士惊呼这孩子太漂亮了。" : (p.f >= 4 ? "白白净净，挺可爱的。" : "长相普通，扔进人堆找不到。");
-        let iText = p.i >= 8 ? "眼神里闪着智慧的光。" : (p.i >= 4 ? "正常水准的聪明宝宝。" : "眼神呆滞，只知道啃手指。");
-        let hText = p.h >= 8 ? "哭声响彻医院，壮得像头小牛。" : (p.h >= 4 ? "身体指标健康。" : "出生就进了保温箱，体质虚弱。");
-
-        txt = currentCopy.birth + '<br>【财富】' + mText + '<br>【长相】' + fText + '<br>【智力】' + iText + '<br>【体质】' + hText + '<br>【性别】' + gender;
+        let mText = p.money >= 8 ? '大富大贵，含着金钥匙出生。' : (p.money >= 5 ? '家境殷实，不愁吃穿。' : (p.money >= 3 ? '普通家庭，比上不足比下有余。' : '家境贫寒，父母正在为奶粉钱发愁。'));
+        let fText = p.f >= 8 ? '漂亮得不像普通人家的孩子。' : (p.f >= 4 ? '长相端正，讨人喜欢。' : '长相普通，扔进人堆就找不着。');
+        let iText = p.i >= 8 ? '眼睛里透着一股机灵劲儿。' : (p.i >= 4 ? '正常水准，不笨也不聪明。' : '反应慢半拍，但还算健康。');
+        let hText = p.h >= 8 ? '哭声响亮，护士都说壮实。' : (p.h >= 4 ? '身体健康，指标正常。' : '体弱多病，保温箱里待了好几天。');
+        txt = currentStart.birth + '<br>【家境】' + mText + '<br>【相貌】' + fText + '<br>【天资】' + iText + '<br>【体质】' + hText + '<br>【性别】' + gender;
     }
     else if (age >= 1 && age <= 5) {
-        const events = [
-            '一岁了，你学会了爬。你爸妈在旁边看着你笑。',
-            '两岁了，你学会了说话。你说的第一个词是"妈"。',
-            '三岁了，你被送去了幼儿园。你哭着不想去。',
-            '四岁了，你在幼儿园交到了第一个朋友。',
-            '五岁了，你开始认字了。你妈很得意。'
-        ];
-        txt = events[age - 1] || '你慢慢长大了。';
+        const list = ['一岁了，你会爬了，满屋子乱窜。','两岁了，你开口叫了第一声"妈"。','三岁了，你被送去了幼儿园，哭了一整天。','四岁了，你在幼儿园交到了第一个朋友。','五岁了，你学会了写自己的名字。'];
+        txt = list[age-1] || '你慢慢长大了。';
     }
-    else if (currentCopy.events && currentCopy.events[age]) {
-        txt = currentCopy.events[age];
+    else if (currentStart.events && currentStart.events[age]) {
+        txt = currentStart.events[age];
     }
     else if (age === 6) {
-        txt = '六岁了，你上小学了。你背着新书包，觉得世界很大。';
+        txt = '六岁了，你上小学了。你背着新书包，觉得一切都很新鲜。';
     }
     else if (age === 12) {
-        txt = '十二岁了，你上初中了。你开始发现，人和人是不一样的。';
+        txt = '十二岁了，你上初中了。你开始有了自己的想法，不再什么都听爸妈的了。';
     }
     else if (age === 15) {
-        txt = '十五岁了，你上高中了。你第一次认真想：我以后想成为什么样的人？';
+        txt = '十五岁了，你上高中了。你第一次认真思考：我以后想做什么？';
     }
     else if (age === 18) {
-        const roll = Math.random();
-        if (roll < 0.3) txt = '十八岁，高考出分了。你考砸了。你觉得自己让所有人失望了。';
-        else if (roll < 0.7) txt = '十八岁，高考出分了。你考了个普通大学。不算好，也不算太差。';
-        else txt = '十八岁，高考出分了。你考上了重点大学！你第一次觉得自己挺厉害的。';
+        const r = Math.random();
+        if (r < 0.3) txt = '十八岁，高考出分了。你落榜了。你不知道该怎么面对父母。';
+        else if (r < 0.7) txt = '十八岁，高考出分了。你考了个普通大学。不算好，也不算差。';
+        else txt = '十八岁，高考出分了。你考上了重点大学！你爸妈高兴坏了。';
     }
     else if (age === 22) {
-        txt = '二十二岁，大学毕业了。你站在人生的十字路口，不知道该往哪走。';
+        txt = '二十二岁，你毕业了。你站在校门口，回头看了一眼，然后头也不回地走了。';
     }
     else if (age === 25) {
-        txt = '二十五岁，你开始被催婚。你妈说：你看看那谁家孩子都二胎了。';
+        txt = '二十五岁，你开始被催婚。你妈说：你看那谁谁，孩子都会打酱油了。';
     }
     else if (age === 30) {
-        txt = '三十岁了。你回头看了看走过的路，笑了笑，继续往前走。';
+        txt = '三十岁了。你发现自己不再年轻了，但还有很多事没做。';
     }
     else if (age % 5 === 0 && age > 30) {
-        txt = age + '岁了。日子过得很快，你开始珍惜每一天。';
+        txt = age + '岁了。日子过得越来越快，你开始数着天过。';
     }
     else if (age > 30) {
-        txt = '你 ' + age + ' 岁了，平静地度过了一年。';
+        txt = '你 ' + age + ' 岁了。平平淡淡，又一年。';
     }
     else {
         txt = '你 ' + age + ' 岁了。';
     }
 
-    // 更新状态栏
     document.getElementById('status').innerHTML = 
-        '家庭: ' + currentCopy.name + ' | ' + gender + 
+        '开局: ' + currentStart.name + ' | ' + gender + 
         ' | 财:' + p.money + ' 智:' + p.i + ' 体:' + p.h + ' 颜:' + p.f;
 
     log.innerHTML = '<p><b>【' + age + '岁】</b><br>' + txt + '</p>' + log.innerHTML;
