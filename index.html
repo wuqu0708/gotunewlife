@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>人生重开模拟器</title>
+    <style>
+        /* 消除手机浏览器默认边距，锁定全屏高度 */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        html, body { 
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden; /* 防止整个网页上下乱滚 */
+            background: #121212; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #ffffff;
+        }
+
+        /* 游戏主容器：撑满全屏，采用弹性布局 */
+        .box { 
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            padding-bottom: calc(20px + env(safe-area-inset-bottom)); /* 适配苹果刘海屏底部黑条 */
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 24px; 
+            padding: 10px 0;
+            color: #007bff;
+        }
+
+        /* 状态栏 */
+        #status { 
+            text-align: center; 
+            font-size: 16px; 
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+
+        /* 核心事件记录区：自动撑满屏幕剩余空间，自带滚动条 */
+        #log { 
+            flex: 1; 
+            overflow-y: auto; 
+            border: 1px solid #2a2a2a;
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 15px;
+            -webkit-overflow-scrolling: touch; /* 让手机端滚动更顺滑 */
+        }
+
+        p { 
+            margin-bottom: 12px; 
+            line-height: 1.5; 
+            font-size: 15px;
+            animation: fadeIn 0.3s ease; /* 新事件出现时的小动画 */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 底部按钮：固定在最下方，大尺寸方便手指点击 */
+        button { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 16px; 
+            border-radius: 10px; 
+            font-size: 18px; 
+            font-weight: bold;
+            cursor: pointer; 
+            margin-top: 15px;
+            width: 100%; 
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+            transition: background 0.2s;
+        }
+        button:active {
+            background: #0056b3; /* 按下去时变深色 */
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>人生重开模拟器</h2>
+    <div id="status">点击下方按钮，开启你的一生</div>
+    <div id="log"></div>
+    <button id="btn" onclick="nextYear()">开始重开</button>
+</div>
+
+<script>
+let age = -1;
+let alive = true;
+
+const events = [
+    "你出生了，是个普通的宝宝。",
+    "你学会了走路，但是摔了个大跟头。",
+    "你上幼儿园了，喜欢抢别的小朋友的玩具。",
+    "你上小学了，考试得了第一名！",
+    "你迷上了网络游戏，成绩开始下滑。",
+    "你向喜欢的人表白，但是被拒绝了。",
+    "你考上了理想的学校，决定开启新人生。",
+    "你开始工作了，成为了一个光荣的打工人。",
+    "你买彩票中了5块钱，高兴了一整天。",
+    "你扶老奶奶过马路，被大家表扬了。",
+    "你今天熬夜刷手机，第二天黑眼圈巨重。"
+];
+
+function nextYear() {
+    const statusDiv = document.getElementById('status');
+    const logDiv = document.getElementById('log');
+    const btn = document.getElementById('btn');
+
+    if (!alive) {
+        age = -1;
+        alive = true;
+        logDiv.innerHTML = "";
+        btn.innerText = "下一年";
+        statusDiv.innerText = "新的人生开始了！";
+        return;
+    }
+
+    age++;
+    btn.innerText = "下一年";
+
+    let randomEvent = events[Math.floor(Math.random() * events.length)];
+    
+    if (age > 5 && Math.random() < 0.12) {
+        alive = false;
+        // 新事件插在最上面
+        logDiv.innerHTML = `<p style="color:#ff4d4d; font-weight:bold;">【${age}岁】触发了意外事件，你无了。游戏结束。</p>` + logDiv.innerHTML;
+        statusDiv.innerText = `人生在 ${age} 岁终结。`;
+        btn.innerText = "再次重开";
+        logDiv.scrollTop = 0; // 滚动回最上方看死亡原因
+        return;
+    }
+
+    statusDiv.innerText = `当前年龄：${age} 岁`;
+    logDiv.innerHTML = `<p><b>【${age}岁】</b> ${randomEvent}</p>` + logDiv.innerHTML;
+    logDiv.scrollTop = 0; // 每次有新人生，自动把最新的事件顶在最上面可见位置
+}
+</script>
+
+</body>
+</html>
