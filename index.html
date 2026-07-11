@@ -3,342 +3,399 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>人生重开模拟器</title>
+    <title>疯狂地下城：卡牌肉鸽克星</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; background: transparent; user-select: none; }
-        body { background: #050505; font-family: monospace, sans-serif; color: #b0b0b0; padding: 20px 20px 80px 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 550px; line-height: 1.6; font-size: 14px; }
-        h1 { font-size: 20px; color: #ffffff; text-align: center; margin-bottom: 20px; letter-spacing: 2px; }
-        .section-title { color: #ffffff; margin: 15px 0 5px 0; font-weight: bold; border-bottom: 1px solid #333; padding-bottom: 3px; }
-        .sub-desc { color: #777777; font-size: 12px; margin-bottom: 10px; }
+        body { background: #0c0f12; font-family: 'Courier New', monospace, sans-serif; color: #d1d5db; padding: 15px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { width: 100%; max-width: 500px; background: #151b22; border: 2px solid #2d3748; border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
+        h1 { font-size: 22px; color: #f39c12; text-align: center; margin-bottom: 15px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         
-        .option-item { padding: 8px 0; cursor: pointer; border-bottom: 1px dashed #222; }
-        .option-item.selected { color: #ffcc00; font-weight: bold; }
-        .option-name { font-size: 14px; }
-        .option-desc { color: #777777; font-size: 12px; }
-        .attr-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed #222; }
-        .attr-btn { color: #ffffff; border: none; padding: 0 15px; font-size: 18px; cursor: pointer; }
-        .attr-val { font-weight: bold; color: #ffffff; }
-        
-        .text-btn { display: block; width: 100%; text-align: center; color: #ffffff; font-weight: bold; padding: 12px 0; border: 1px solid #444; margin-top: 20px; cursor: pointer; font-size: 14px; }
-        .text-btn:hover { border-color: #ffcc00; color: #ffcc00; }
-        .text-btn:disabled { color: #444444; border-color: #222222; cursor: not-allowed; }
-        
-        .fixed-btn-wrap { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; justify-content: center; background: #050505; padding: 10px 20px; border-top: 1px solid #222; z-index: 999; }
-        .fixed-btn { width: 100%; max-width: 550px; text-align: center; color: #ffffff; font-weight: bold; padding: 14px 0; border: 1px solid #ffcc00; cursor: pointer; font-size: 15px; background: #111; }
-        .fixed-btn:hover { background: #222; color: #ffcc00; }
+        /* 通用区块 */
+        .panel { border: 1px solid #3a4759; background: #1c232d; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+        .title { font-weight: bold; color: #ffffff; border-bottom: 1px solid #3a4759; padding-bottom: 5px; margin-bottom: 10px; font-size: 14px; }
+        .desc { color: #9ca3af; font-size: 12px; margin-bottom: 12px; }
 
-        .status-bar { padding: 8px 0; border-bottom: 1px solid #333; margin-bottom: 15px; font-size: 13px; color: #ffffff; }
-        .log-wrap { display: flex; flex-direction: column; margin-bottom: 20px; }
-        .log-item { padding: 6px 0; border-bottom: 1px dashed #151515; text-align: left; }
-        .age-tag { color: #ffcc00; font-weight: bold; margin-right: 8px; }
+        /* 分配属性样式 */
+        .attr-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed #2d3748; }
+        .attr-btn { color: #f39c12; border: none; padding: 0 15px; font-size: 20px; cursor: pointer; font-weight: bold; }
+        .attr-val { font-weight: bold; color: #ffffff; min-width: 20px; text-align: center; }
         
-        .achieve-list { margin-top: 10px; max-height: 260px; overflow-y: auto; }
-        .achieve-item { padding: 4px 0; border-bottom: 1px dashed #222; font-size: 12px; }
-        .achieve-item.unlocked { color: #ffcc00; }
-        .achieve-item.hidden-lock { color: #444444; }
+        /* 战斗舞台 */
+        .battle-stage { display: flex; justify-content: space-between; margin-bottom: 15px; gap: 10px; }
+        .entity-box { flex: 1; background: #222b35; border: 1px solid #4a5568; border-radius: 6px; padding: 10px; text-align: center; position: relative; }
+        .entity-name { font-weight: bold; color: #fff; font-size: 15px; margin-bottom: 4px; }
+        .hp-bar-wrap { background: #4a1515; height: 16px; border-radius: 4px; overflow: hidden; margin: 5px 0; position: relative; border: 1px solid #222; }
+        .hp-bar { background: #c0392b; height: 100%; width: 100%; transition: width 0.3s; }
+        .hp-text { position: absolute; width: 100%; top: 0; left: 0; font-size: 11px; color: #fff; font-weight: bold; line-height: 14px; }
+        .shield-badge { background: #2980b9; color: white; font-size: 11px; padding: 1px 5px; border-radius: 3px; font-weight: bold; display: inline-block; margin-top: 3px; }
+        .intent { color: #f1c40f; font-size: 12px; font-weight: bold; margin-top: 5px; min-height: 18px; }
+
+        /* 战报滚动 */
+        .log-box { height: 90px; overflow-y: auto; font-size: 12px; color: #a0aec0; border: 1px solid #2d3748; background: #0f1319; padding: 6px; border-radius: 4px; margin-bottom: 15px; line-height: 1.5; }
+        .log-entry { margin-bottom: 2px; }
+
+        /* 手牌区 */
+        .hand-container { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; min-height: 95px; align-items: flex-end; }
+        .card { width: 85px; height: 95px; background: #2c3e50; border: 2px solid #34495e; border-radius: 6px; padding: 6px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: transform 0.15s, border-color 0.15s; }
+        .card:hover { transform: translateY(-5px); border-color: #f1c40f; }
+        .card-name { font-size: 12px; font-weight: bold; color: #fff; text-align: center; border-bottom: 1px solid #455a64; padding-bottom: 2px; }
+        .card-cost { background: #e67e22; color: #fff; font-size: 10px; font-weight: bold; border-radius: 5px; padding: 0 4px; display: inline-block; align-self: flex-start; }
+        .card-desc { font-size: 10px; color: #bdc3c7; text-align: center; margin-top: 4px; line-height: 1.2; flex-grow: 1; display: flex; align-items: center; justify-content: center; }
+
+        /* 底部操作与卡牌奖励 */
+        .btn { display: block; width: 100%; text-align: center; color: #ffffff; font-weight: bold; padding: 12px 0; border: 1px solid #4a5568; background: #232d38; cursor: pointer; font-size: 14px; border-radius: 6px; }
+        .btn:hover:not(:disabled) { border-color: #f39c12; color: #f39c12; background: #2c3a49; }
+        .btn:disabled { color: #4a5568; border-color: #232d38; cursor: not-allowed; }
         
-        .good { color: #44aa44; } 
-        .bad { color: #aa4444; } 
-        .funny { color: #dd8833; } 
-        .special { color: #9955ff; font-weight: bold; }
-        .disaster { color: #ff3333; font-weight: bold; background: #200000; padding: 2px 4px; }
+        .reward-grid { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
+        .reward-card { width: 120px; height: 110px; background: #1e3a5f; border: 2px solid #3b82f6; }
+
         .hidden { display: none !important; }
+        .energy-txt { text-align: center; font-size: 13px; font-weight: bold; color: #00ffcc; margin-bottom: 8px; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>人生重开模拟器</h1>
+        <h1>疯狂地下城 ⚔️ 肉鸽卡牌</h1>
 
-        <div id="startMenu">
-            <div id="poolSection">
-                <div class="section-title">◇ 5选3词条</div>
-                <div class="sub-desc" id="poolSelectHint">请选择 3 个词条 (0/3)</div>
-                <div id="poolList"></div>
-                <button class="text-btn" id="poolBtn" onclick="goToSetup()" disabled>下一步</button>
-            </div>
-
-            <div id="setupSection" class="hidden">
-                <div class="section-title">◇ 点数分配</div>
-                <div class="sub-desc">剩余点数: <span id="ptsNum" style="color:#ffcc00; font-weight:bold;">20</span></div>
-                <div class="attr-row"><span>颜值</span><div><button class="attr-btn" onclick="adj('f',-1)">-</button><span id="fVal" class="attr-val">0</span><button class="attr-btn" onclick="adj('f',1)">+</button></div></div>
-                <div class="attr-row"><span>智力</span><div><button class="attr-btn" onclick="adj('i',-1)">-</button><span id="iVal" class="attr-val">0</span><button class="attr-btn" onclick="adj('i',1)">+</button></div></div>
-                <div class="attr-row"><span>体质</span><div><button class="attr-btn" onclick="adj('h',-1)">-</button><span id="hVal" class="attr-val">0</span><button class="attr-btn" onclick="adj('h',1)">+</button></div></div>
-                <div class="attr-row"><span>财富</span><div><button class="attr-btn" onclick="adj('m',-1)">-</button><span id="mVal" class="attr-val">0</span><button class="attr-btn" onclick="adj('m',1)">+</button></div></div>
-                <button class="text-btn" id="startBtn" onclick="startGame()" disabled>开启重开</button>
-            </div>
-
-            <div class="section-title" style="margin-top:30px;">🏆 高难荣誉殿堂 (极其难解锁)</div>
-            <div class="achieve-list" id="achieveList"></div>
+        <div id="setupPanel" class="panel">
+            <div class="title">◇ 探险者出生印记 (拥有20点可用点数)</div>
+            <div class="desc">力量影响攻击伤害，敏捷增加防御盾，体质折算血量上限，智力决定每回合抽卡数。</div>
+            <div class="sub-desc" style="color: #f1c40f; font-size: 12px; margin-bottom: 10px;">剩余点数: <span id="ptsNum">20</span></div>
+            
+            <div class="attr-row"><span>力量 (STR) - 增加攻击力</span><div><button class="attr-btn" onclick="adj('str',-1)">-</button><span id="strVal" class="attr-val">0</span><button class="attr-btn" onclick="adj('str',1)">+</button></div></div>
+            <div class="attr-row"><span>敏捷 (AGI) - 增加护盾值</span><div><button class="attr-btn" onclick="adj('agi',-1)">-</button><span id="agiVal" class="attr-val">0</span><button class="attr-btn" onclick="adj('agi',1)">+</button></div></div>
+            <div class="attr-row"><span>体质 (VIT) - 增加生命值</span><div><button class="attr-btn" onclick="adj('vit',-1)">-</button><span id="vitVal" class="attr-val">0</span><button class="attr-btn" onclick="adj('vit',1)">+</button></div></div>
+            <div class="attr-row"><span>智力 (INT) - 增加抽牌数</span><div><button class="attr-btn" onclick="adj('int',-1)">-</button><span id="intVal" class="attr-val">0</span><button class="attr-btn" onclick="adj('int',1)">+</button></div></div>
+            
+            <button class="btn" id="startBtn" onclick="startGame()" style="margin-top: 15px;" disabled>步入黑暗地下城</button>
         </div>
 
         <div id="gamePanel" class="hidden">
-            <div class="status-bar">
-                <span id="ageDisplay" style="color:#ffcc00; font-weight:bold;">0岁</span> | 
-                💰<span id="mDisp">0</span> 🧠<span id="iDisp">0</span> 💪<span id="hDisp">0</span> 😊<span id="fDisp">0</span> | 性别: <span id="gDisp">-</span>
+            <div class="sub-desc" style="text-align: center; color: #f39c12; font-weight: bold; margin-bottom: 10px; font-size: 15px;">
+                🏰 地下城第 <span id="floorDisp">1</span> 层
             </div>
-            <div class="log-wrap" id="logWrap"></div>
             
-            <div class="fixed-btn-wrap">
-                <button class="fixed-btn" id="nextBtn" onclick="nextYear()">下 一 年</button>
+            <div class="battle-stage">
+                <div class="entity-box">
+                    <div class="entity-name" style="color: #5dade2;">你 (勇者)</div>
+                    <div class="hp-bar-wrap"><div class="hp-bar" id="p_hpBar"></div><div class="hp-text" id="p_hpTxt">50/50</div></div>
+                    <div id="p_shield" class="shield-badge hidden">护盾: 0</div>
+                </div>
+                <div class="entity-box">
+                    <div class="entity-name" id="m_name" style="color: #ec7063;">恶魔史莱姆</div>
+                    <div class="hp-bar-wrap"><div class="hp-bar" id="m_hpBar" style="background: #922b21;"></div><div class="hp-text" id="m_hpTxt">30/30</div></div>
+                    <div id="m_shield" class="shield-badge hidden">护盾: 0</div>
+                    <div class="intent" id="m_intent">意图: 准备攻击 6 点</div>
+                </div>
             </div>
+
+            <div class="log-box" id="logBox"></div>
+
+            <div class="energy-txt">⚡ 当前行动点: <span id="energyDisp">3/3</span></div>
+
+            <div class="hand-container" id="handContainer"></div>
+
+            <button class="btn" id="endTurnBtn" onclick="endTurn()" style="border-color: #e67e22; color: #fff;">结束回合 (怪物行动)</button>
+        </div>
+
+        <div id="rewardPanel" class="panel hidden">
+            <div class="title" style="color: #2ecc71; text-align: center;">🎉 战斗胜利！请选择一张卡牌注入卡组</div>
+            <div class="desc" style="text-align: center;">构筑更强的卡组才能在更深层活下去！</div>
+            <div class="reward-grid" id="rewardGrid"></div>
+        </div>
+
+        <div id="overPanel" class="panel hidden" style="text-align: center;">
+            <div class="title" style="color: #e74c3c; font-size: 18px;">💥 你在黑暗中倒下了</div>
+            <div class="desc" id="overDesc" style="font-size: 14px; margin: 15px 0;">你在第 1 层被怪物击败。</div>
+            <button class="btn" onclick="location.reload()" style="border-color: #e74c3c; color: #fff;">再度苏醒 (重新开始)</button>
         </div>
     </div>
 
     <script>
-        let P = { f: 0, i: 0, h: 0, m: 0 }, rem = 20, age = -1, gender = '随机';
-        let selectedItems = [], currentBackground = null, isGameOver = false;
-        let rockCount = 0, eventChainFlags = {}; 
-        let maxStats = { f: 0, i: 0, h: 0, m: 0 };
-
-        let unlockedArr = JSON.parse(localStorage.getItem('re_rock_ach_v8') || "[]");
-
-        // 彻底重构的成就榜：去掉白给性质，全部改造成极端条件挑战
-        const HARD_ACHIEVEMENTS = [
-            { id: "A1", name: "天选之子", cond: "四项属性在漫长人生中全部达到15点以上", check: () => maxStats.f >= 15 && maxStats.i >= 15 && maxStats.h >= 15 && maxStats.m >= 15 },
-            { id: "A2", name: "终极韭菜", cond: "遭遇理财诈骗剧情，同时智力低于2、财富低于0且存活", check: () => eventChainFlags.scammed && P.i < 2 && P.m < 0 },
-            { id: "A3", name: "电竞活化石", cond: "成功触发夺冠神话并拿到千万级商业代言合同", check: () => eventChainFlags.esports_champion && P.m >= 12 },
-            { id: "A4", name: "荒诞活化石", cond: "年龄活过105岁，且颜值低于-3（异变存活长寿）", check: () => age >= 105 && P.f <= -3 },
-            { id: "A5", name: "反套路之王", cond: "智力超群，在欺诈事件中成功反向做空对方", check: () => eventChainFlags.counter_scam },
-            { id: "A6", name: "魔岩死忠魂", cond: "完美经历3次及以上红磡摇滚死战，并拥有摇滚金身", check: () => rockCount >= 3 && selectedItems.some(x=>x.name.includes("摇滚金身")) },
-            { id: "A7", name: "世纪福星", cond: "零资产开局，但在一生中完美躲过三次S级世界末日灾难", check: () => eventChainFlags.survived_disasters >= 3 },
-            { id: "A8", name: "天选美德", cond: "拒绝大厂诱惑去捡垃圾，却因绝世颜值引发风投并财富破10", check: () => eventChainFlags.scout_fame && P.m >= 10 }
+        // 核心动态库与卡牌池
+        const CARD_POOL = [
+            { id: 'c1', name: '重击', cost: 2, desc: '造成 12 点重型伤害', action: (p, m) => { damageMonster(12 + p.str); } },
+            { id: 'c2', name: '吸血打击', cost: 1, desc: '造成 5 点伤害，吸取 3 点生命', action: (p, m) => { damageMonster(5 + p.str); healPlayer(3); } },
+            { id: 'c3', name: '绝对壁垒', cost: 2, desc: '获得 14 点巨额护盾', action: (p, m) => { addPlayerShield(14 + p.agi); } },
+            { id: 'c4', name: '致命战意', cost: 1, desc: '造成 4 点伤害，并额外抽 1 张牌', action: (p, m) => { damageMonster(4 + p.str); drawCard(1); } },
+            { id: 'c5', name: '破甲震击', cost: 1, desc: '斩碎怪物所有护盾并造成 3 点基础伤害', action: (p, m) => { m.shield = 0; damageMonster(3 + p.str); } },
+            { id: 'c6', name: '圣疗秘术', cost: 2, desc: '恢复 12 点生命值值', action: (p, m) => { healPlayer(12); } }
         ];
 
-        const MIXED_POOL = [
-            { type: 'w', id: 1, name: "🌍 赛博未来", desc: "初始财富+2，颜值+1", effect: () => { P.m+=2; P.f+=1; currentBackground="赛博"; } },
-            { type: 'w', id: 2, name: "🌍 修仙科技", desc: "初始智力+3", effect: () => { P.i+=3; currentBackground="修仙"; } },
-            { type: 'w', id: 3, name: "🌍 废土垃圾", desc: "初始体质+2，财富-1", effect: () => { P.h+=2; P.m-=1; currentBackground="废土"; } },
-            { type: 'w', id: 4, name: "🌍 市井炊烟", desc: "初始体质+1，财富+1", effect: () => { P.h+=1; P.m+=1; currentBackground="市井"; } },
-            { type: 'w', id: 5, name: "🌍 虚拟元宇宙", desc: "初始智力+2，体质-1", effect: () => { P.i+=2; P.h-=1; currentBackground="元宇宙"; } },
-            { type: 't', id: 6, name: "⭐ 面部重塑", desc: "颜值+4，财富-1", effect: () => { P.f+=4; P.m-=1; } },
-            { type: 't', id: 7, name: "⭐ 脑机超频", desc: "智力+3，体质-1", effect: () => { P.i+=3; P.h-=1; } },
-            { type: 't', id: 8, name: "⭐ 继承矿山", desc: "初始财富+5，智力-1", effect: () => { P.m+=5; P.i-=1; } },
-            { type: 't', id: 9, name: "⭐ 量子养生", desc: "初始体质+4，颜值-1", effect: () => { P.h+=4; P.f-=1; } },
-            { type: 't', id: 10, name: "⭐ 摇滚金身", desc: "初始体质+3，大事件特殊保命判定", effect: () => { P.h+=3; } }
-        ];
+        let P_ATTR = { str: 0, agi: 0, vit: 0, int: 0 }, rem = 20;
+        let player = { hp: 50, maxHp: 50, shield: 0, energy: 3, maxEnergy: 3, str: 0, agi: 0, drawCount: 3 }, monster = {};
+        let deck = [], hand = [], discardPile = [];
+        let floor = 1;
+        let isPlayerTurn = true;
 
-        const DISASTER_EVENTS = {
-            "赛博": { age: 24, text: "🔥【AI暴动】因智力不足4未能破解电子安全锁，吸入高浓烟雾！（体质-5）", check: () => { if(P.i<4) P.h-=5; else { eventChainFlags.survived_disasters = (eventChainFlags.survived_disasters||0)+1; } } },
-            "修仙": { age: 30, text: "⚡【天劫短路】雷暴轰炸！因体质低于5护体元气碎裂！（体质-6）", check: () => { if(P.h<5) P.h-=6; else { eventChainFlags.survived_disasters = (eventChainFlags.survived_disasters||0)+1; } } },
-            "废土": { age: 16, text: "☢️【核爆辐射】因财富小于4买不起防护服，全身体表化脓！（颜值-5，体质-2）", check: () => { if(P.m<4) { P.f-=5; P.h-=2; } else { eventChainFlags.survived_disasters = (eventChainFlags.survived_disasters||0)+1; } } },
-            "市井": { age: 45, text: "🌊【特大洪水】因体质低于4在泥石流洪水中瞬间失去反抗力！（体质-5）", check: () => { if(P.h<4) P.h-=5; else { eventChainFlags.survived_disasters = (eventChainFlags.survived_disasters||0)+1; } } },
-            "元宇宙": { age: 28, text: "💾【意识坍塌】因智力不足5未及时切断高频脑机，精神永久受损！（智力-5）", check: () => { if(P.i<5) P.i-=5; else { eventChainFlags.survived_disasters = (eventChainFlags.survived_disasters||0)+1; } } }
-        };
-
-        // 彻底颠覆枯燥，融合属性动态分支机制（非摇滚为主，辅以高品质趣味事件）
-        const STAGE_EVENTS = {
-            baby: [
-                { text: "听到崔健《一无所有》，你猛烈飞踢踹飞了尿布。（体质+1）", tag: "funny", eff: () => { P.h+=1; rockCount++; } },
-                { text: "抓周抓到一只破旧的黑胶唱片，你死死不撒手。（智力+1）", tag: "good", eff: () => P.i+=1 },
-                { text: "试图放屁却不小心拉在裤子里，你陷入了对人生意义的沉思。", tag: "funny", eff: () => {} },
-                { text: "精准喷射口水泡泡，击中了路过大天狗无人机的摄像头。（智力+1）", tag: "good", eff: () => P.i+=1 },
-                { text: "试图啃自己的大脚趾，因为韧带太硬把自己掰翻在婴儿床里。", tag: "funny", eff: () => {} },
-                { text: "学猫叫把隔壁大肥猫吸引过来，并强行拔掉了它三根胡须。（体质+1）", tag: "good", eff: () => P.h+=1 }
-            ],
-            child: [
-                { text: "元旦晚会上用破吉他沙哑弹唱《钟鼓楼》，教导主任目瞪口呆。（智力+1）", tag: "good", eff: () => { P.i+=1; rockCount++; } },
-                { text: "【分支判定】遭遇同龄人抢辣条。因【体质>=3】你一记左勾拳当场夺回主权（体质+1）；否则你被抢走痛哭（智力-1）。", tag: "special", eff: () => { if(P.h>=3){ P.h+=1; }else{ P.i-=1; } } },
-                { text: "作文《我的梦想》交成了一篇硬核小说《垃圾场》，被语文老师痛批。（智力+1）", tag: "funny", eff: () => P.i+=1 },
-                { text: "倒立滑滑梯结果衣服挂在栏杆上，大庭广众之下裤子掉了。（颜值-2）", tag: "bad", eff: () => P.f-=2 },
-                { text: "把辣条偷偷夹进班主任教案里，班主任上课时顺手舔了一下，辣得满地找水。", tag: "funny", eff: () => {} },
-                { text: "玩泥巴捏了一座高达，路过富豪觉得极具毁灭艺术，花十块钱买下。（财富+2）", tag: "good", eff: () => P.m+=2 }
-            ],
-            teen: [
-                { text: "【分支判定】沉迷网络电竞。若【智力>=4】你打出神级意识被青训队看中（智力+2）；若【智力<4】你狂打三天喜提盒子，被父母吊起来打（体质-2）。", tag: "special", eff: () => { if(P.i>=4){ P.i+=2; eventChainFlags.esports_route=true; }else{ P.h-=2; } } },
-                { text: "在女生楼下弹唱《花房姑娘》，被宿管大妈一盆高能冷凝水泼成落汤鸡。", tag: "funny", eff: () => { rockCount++; } },
-                { text: "留长发穿皮衣狂吼《无地自容》，被居委会当做街头盲流驱逐。（颜值-1）", tag: "bad", eff: () => { P.f-=1; rockCount++; } },
-                { text: "【分支判定】校草/校花海选。若【颜值>=5】你直接被全校投成看板娘/草，情书塞满桌子（颜值+2）；若【颜值<5】你上台海选直接被全场喝退（颜值-1）。", tag: "special", eff: () => { if(P.f>=5){ P.f+=2; }else{ P.f-=1; } } },
-                { text: "网恋奔现遇到一个纯情萝莉，见面发现是拿保温杯的物理老师，你连夜买站票逃跑。", tag: "funny", eff: () => {} },
-                { text: "穿重金属破洞裤回家，隔壁热心张奶奶含泪帮你把所有的洞都用补丁缝死了。", tag: "funny", eff: () => {} }
-            ],
-            young: [
-                { text: "【分支判定】遭遇赛博金融空气币庞氏骗局。若【智力>=6】你一眼识破并高位做空反赚一笔（财富+5，智力+1，标记反套路）；若【智力<3】你盲目梭哈血本无归（财富-4，标记韭菜）。", tag: "special", eff: () => { 
-                    if(P.i>=6){ P.m+=5; P.i+=1; eventChainFlags.counter_scam=true; }
-                    else if(P.i<3){ P.m-=4; eventChainFlags.scammed=true; }
-                } },
-                { text: "【分支判定】若之前进入电竞线：你带队在世界总决赛力挽狂澜成功夺冠！（智力+3，财富+6，标记夺冠）；否则你在大厂加班导致腰椎间盘突出（体质-2）。", tag: "special", eff: () => {
-                    if(eventChainFlags.esports_route){ P.i+=3; P.m+=6; eventChainFlags.esports_champion=true; }
-                    else{ P.h-=2; }
-                } },
-                { text: "【分支判定】由于生存压力你去街头捡垃圾。若【颜值>=6】你因绝世美颜被路过星探拍下发到网上瞬间爆火，拉到千万风投（财富+8，颜值+2，标记风投）；否则你只捡到两个塑料瓶（财富+0）。", tag: "special", eff: () => {
-                    if(P.f>=6){ P.m+=8; P.f+=2; eventChainFlags.scout_fame=true; }
-                } },
-                { text: "大厂面试过度紧张，把‘请坐’听成‘请跪’，当场给三位面试官磕了个响头。", tag: "funny", eff: () => {} },
-                { text: "买了一双‘智能防重力运动鞋’，开机后它自动反向狂奔，拖着你倒立滑行了两公里。", tag: "funny", eff: () => {} }
-            ],
-            middle: [
-                { text: "【分支判定】中年危机理财。若【财富>=8】你靠收租过上枯燥的有钱人生活（财富+3）；若【财富<3】你为了生计一天打三份工，头发全掉光（颜值-3，体质-2）。", tag: "special", eff: () => { if(P.m>=8){ P.m+=3; }else{ P.f-=3; P.h-=2; } } },
-                { text: "发际线遭遇了毁灭性的脱发打击。摸着光头你终于理解老炮为什么最后都剪短发。（颜值-2）", tag: "bad", eff: () => P.f-=2 },
-                { text: "看美女太入神，一头撞在虚拟试衣镜里的全息钢化猛男广告上，鼻血直流。", tag: "funny", eff: () => {} },
-                { text: "用铁头功砸自称可以速成排毒的量子生核桃，核桃没碎，头肿了两个月。（体质-1）", tag: "bad", eff: () => P.h-=1 },
-                { text: "办公室加薪兴奋表演托马斯回旋，把老板珍藏的发财树一脚踹成了两截。（财富-2）", tag: "bad", eff: () => P.m-=2 }
-            ],
-            old: [
-                { text: "买了一辆二八大杠自行车，每天骑着去胡同吃炸酱面，活成了窦唯。（智力+2，体质+1）", tag: "special", eff: () => { P.i+=2; P.h+=1; } },
-                { text: "【分支判定】公园下象棋。若【智力>=6】你用神级残局把居委会王大爷杀得当场高血压（智力+2）；若【智力<3】你偷藏对方的“车”在假牙里，大笑时吞了下去（体质-2）。", tag: "special", eff: () => { if(P.i>=6){ P.i+=2; }else{ P.h-=2; } } },
-                { text: "跳广场舞太空步由于震动频率太高，假牙直接飞出去咬住了对面李大妈的裙角。", tag: "funny", eff: () => {} },
-                { text: "修仙防脱发AI天天半夜三点震动你的脑机接口，警告你再不睡觉灵魂就要飞升了。", tag: "funny", eff: () => {} },
-                { text: "出门遛弯把假发挂在树枝上，居委会当做新型高分子野生菌类把你隔离观察了三天。", tag: "funny", eff: () => {} },
-                { text: "走到了生命的最终边缘。病床上耳朵里塞着破旧耳机，在一声声吉他狂轰滥炸中安详闭眼。", tag: "normal", eff: () => {} }
-            ]
-        };
-
-        window.onload = function() {
-            rollOpeningOptions();
-            renderAchievements();
-        };
-
-        function rollOpeningOptions() {
-            const listDiv = document.getElementById('poolList');
-            listDiv.innerHTML = "";
-            selectedItems = [];
-            let shuffled = [...MIXED_POOL].sort(() => 0.5 - Math.random()).slice(0, 5);
-            shuffled.forEach(item => {
-                const dom = document.createElement('div');
-                dom.className = 'option-item';
-                dom.innerHTML = `<div class="option-name">${item.name}</div><div class="option-desc">${item.desc}</div>`;
-                dom.onclick = () => {
-                    if (selectedItems.includes(item)) {
-                        selectedItems = selectedItems.filter(x => x !== item);
-                        dom.classList.remove('selected');
-                    } else {
-                        if (selectedItems.length >= 3) return;
-                        selectedItems.push(item);
-                        dom.classList.add('selected');
-                    }
-                    document.getElementById('poolSelectHint').textContent = `已选择 (${selectedItems.length}/3)`;
-                    const btn = document.getElementById('poolBtn');
-                    btn.disabled = selectedItems.length !== 3;
-                };
-                listDiv.appendChild(dom);
-            });
-        }
-
-        function renderAchievements() {
-            const div = document.getElementById('achieveList');
-            div.innerHTML = "";
-            HARD_ACHIEVEMENTS.forEach(a => {
-                const isUnlocked = unlockedArr.includes(a.id);
-                const item = document.createElement('div');
-                item.className = `achieve-item ${isUnlocked ? 'unlocked' : ''}`;
-                item.innerHTML = isUnlocked ? `🌟 [神话成就达成] 《${a.name}》` : `🔒 [未解锁] 《${a.name}》 - 条件: ${a.cond}`;
-                div.appendChild(item);
-            });
-        }
-
-        function goToSetup() {
-            selectedItems.forEach(item => item.effect());
-            document.getElementById('poolSection').classList.add('hidden');
-            document.getElementById('setupSection').classList.remove('hidden');
-            updateAttrDisplay();
-        }
-
-        function updateAttrDisplay() {
-            document.getElementById('ptsNum').textContent = rem;
-            document.getElementById('fVal').textContent = P.f;
-            document.getElementById('iVal').textContent = P.i;
-            document.getElementById('hVal').textContent = P.h;
-            document.getElementById('mVal').textContent = P.m;
-        }
+        const MONSTER_NAMES = ["哥布林掠夺者", "红莲地狱犬", "遗迹魔偶", "深渊双头龙", "巫妖骨王", "暗影刺客"];
 
         function adj(key, delta) {
-            if ((rem <= 0 && delta > 0) || (P[key] + delta < -5 && delta < 0)) return; 
-            P[key] += delta; rem -= delta;
-            updateAttrDisplay();
+            if ((rem <= 0 && delta > 0) || (P_ATTR[key] + delta < 0)) return;
+            P_ATTR[key] += delta; rem -= delta;
+            document.getElementById('ptsNum').textContent = rem;
+            document.getElementById(key + 'Val').textContent = P_ATTR[key];
             document.getElementById('startBtn').disabled = rem !== 0;
         }
 
         function startGame() {
-            gender = Math.random() < 0.5 ? '男' : '女';
-            document.getElementById('startMenu').classList.add('hidden');
+            // 将分配属性代入战斗引擎
+            player.str = P_ATTR.str;
+            player.agi = P_ATTR.agi;
+            player.maxHp = 50 + (P_ATTR.vit * 6);
+            player.hp = player.maxHp;
+            player.drawCount = 3 + Math.floor(P_ATTR.int / 4); // 4点智力多抽一张牌
+
+            // 初始套牌：4斩击、3防御
+            deck = [
+                { name: '斩击', cost: 1, desc: '造成 6 点伤害', action: (p, m) => damageMonster(6 + p.str) },
+                { name: '斩击', cost: 1, desc: '造成 6 点伤害', action: (p, m) => damageMonster(6 + p.str) },
+                { name: '斩击', cost: 1, desc: '造成 6 点伤害', action: (p, m) => damageMonster(6 + p.str) },
+                { name: '斩击', cost: 1, desc: '造成 6 点伤害', action: (p, m) => damageMonster(6 + p.str) },
+                { name: '坚守', cost: 1, desc: '获得 6 点护盾', action: (p, m) => addPlayerShield(6 + p.agi) },
+                { name: '坚守', cost: 1, desc: '获得 6 点护盾', action: (p, m) => addPlayerShield(6 + p.agi) },
+                { name: '坚守', cost: 1, desc: '获得 6 点护盾', action: (p, m) => addPlayerShield(6 + p.agi) }
+            ];
+
+            document.getElementById('setupPanel').classList.add('hidden');
             document.getElementById('gamePanel').classList.remove('hidden');
-            age = 0;
-            renderYear(0);
-        }
-
-        function getEvents(age) {
-            if (age === 0) return [{ text: `降生。特质：[ ${selectedItems.map(x=>x.name).join(' | ')} ]。性别：【${gender}】。`, tag: 'special', eff: () => {} }];
-            if (currentBackground && DISASTER_EVENTS[currentBackground]) {
-                const dis = DISASTER_EVENTS[currentBackground];
-                if (dis.age === age) return [{ text: dis.text, tag: 'disaster', eff: dis.check }];
-            }
-            let pool = STAGE_EVENTS.baby;
-            if (age >= 60) pool = STAGE_EVENTS.old;
-            else if (age >= 36) pool = STAGE_EVENTS.middle;
-            else if (age >= 19) pool = STAGE_EVENTS.young;
-            else if (age >= 13) pool = STAGE_EVENTS.teen;
-            else if (age >= 4) pool = STAGE_EVENTS.child;
-
-            const ev = pool[Math.floor(Math.random() * pool.length)];
-            return [{ text: ev.text, tag: ev.tag, eff: ev.eff }];
-        }
-
-        function nextYear() {
-            age++;
-            renderYear(age);
-        }
-
-        function checkAchievements() {
-            HARD_ACHIEVEMENTS.forEach(a => {
-                if (!unlockedArr.includes(a.id) && a.check()) {
-                    unlockedArr.push(a.id);
-                    localStorage.setItem('re_rock_ach_v8', JSON.stringify(unlockedArr));
-                    document.getElementById('logWrap').innerHTML += `<div class="log-item" style="color:#ffcc00; font-weight:bold;">✨【解锁高难终极荣誉】《${a.name}》已载入成名堂！</div>`;
-                }
-            });
-        }
-
-        function renderYear(age) {
-            const wrap = document.getElementById('logWrap');
-            const events = getEvents(age);
             
-            events.forEach(ev => {
-                ev.eff();
-                if(selectedItems.some(x=>x.name.includes("摇滚金身")) && ev.tag === "disaster") {
-                    P.h += 6; 
-                    wrap.innerHTML += `<div class="log-item" style="color:#9955ff;">🛡️【免疫】你凭“摇滚金身”抗下了世界末日大劫！</div>`;
+            floor = 1;
+            spawnMonster();
+            startPlayerTurn();
+        }
+
+        function spawnMonster() {
+            let mName = MONSTER_NAMES[Math.floor(Math.random() * MONSTER_NAMES.length)];
+            let maxHp = 25 + (floor * 8);
+            monster = {
+                name: mName,
+                hp: maxHp,
+                maxHp: maxHp,
+                shield: 0,
+                nextIntent: {} // attack, defend
+            };
+            rollMonsterIntent();
+            updateUI();
+            logMsg(`➔ 遭遇了 [第 ${floor} 层] 强敌: <b>${monster.name}</b>！`);
+        }
+
+        function rollMonsterIntent() {
+            // 怪物随机意图：攻击或叠盾
+            let rand = Math.random();
+            let baseDmg = 5 + Math.floor(floor * 2.2);
+            let baseShld = 4 + Math.floor(floor * 1.5);
+            if (rand < 0.65) {
+                monster.nextIntent = { type: 'attack', val: baseDmg, desc: `意图: 准备攻击造成 ${baseDmg} 点伤害` };
+            } else {
+                monster.nextIntent = { type: 'defend', val: baseShld, desc: `意图: 准备集聚防守 ${baseShld} 点护盾` };
+            }
+        }
+
+        function startPlayerTurn() {
+            isPlayerTurn = true;
+            player.energy = player.maxEnergy;
+            player.shield = 0; // 每回合护盾刷新清空
+            
+            // 抽牌逻辑
+            if (deck.length < player.drawCount) {
+                deck = deck.concat(discardPile);
+                discardPile = [];
+            }
+            // 打乱抽牌
+            deck.sort(() => 0.5 - Math.random());
+            hand = deck.splice(0, player.drawCount);
+
+            updateUI();
+            document.getElementById('endTurnBtn').disabled = false;
+        }
+
+        function useCard(index) {
+            if (!isPlayerTurn) return;
+            let card = hand[index];
+            if (player.energy < card.cost) {
+                logMsg(`⚠️ 晶能点数不足！无法打出 [${card.name}]`);
+                return;
+            }
+
+            player.energy -= card.cost;
+            hand.splice(index, 1);
+            discardPile.push(card);
+
+            logMsg(`⚔️ 你使用了 <b>[${card.name}]</b>`);
+            card.action(player, monster);
+
+            updateUI();
+
+            // 检查怪物死亡
+            if (monster.hp <= 0) {
+                winBattle();
+            }
+        }
+
+        function endTurn() {
+            if (!isPlayerTurn) return;
+            isPlayerTurn = false;
+            document.getElementById('endTurnBtn').disabled = true;
+
+            // 怪物回合行动机制
+            setTimeout(() => {
+                logMsg(`👹 轮到 <b>${monster.name}</b> 的回合...`);
+                let intent = monster.nextIntent;
+                monster.shield = 0; // 清空怪兽上轮护盾
+
+                if (intent.type === 'attack') {
+                    let dmg = intent.val;
+                    if (player.shield >= dmg) {
+                        player.shield -= dmg;
+                        logMsg(`🛡️ 怪物猛袭！但完全被你的护盾完美拦截！`);
+                    } else {
+                        let actualDmg = dmg - player.shield;
+                        player.shield = 0;
+                        player.hp -= actualDmg;
+                        logMsg(`💥 怪物对你造成了 ${actualDmg} 点伤害！`);
+                    }
+                } else if (intent.type === 'defend') {
+                    monster.shield += intent.val;
+                    logMsg(`🛡️ 怪物进入防御防御姿态，获得了 ${intent.val} 点护盾值！`);
                 }
-                wrap.innerHTML += `<div class="log-item"><span class="age-tag">${age}岁</span><span class="${ev.tag}">${ev.text}</span></div>`;
+
+                updateUI();
+
+                // 检验玩家是否死亡
+                if (player.hp <= 0) {
+                    gameOver();
+                    return;
+                }
+
+                // 进入下个回合
+                rollMonsterIntent();
+                setTimeout(startPlayerTurn, 800);
+            }, 600);
+        }
+
+        // 核心战斗伤害控制
+        function damageMonster(val) {
+            if (monster.shield >= val) {
+                monster.shield -= val;
+                logMsg(` 怪物护盾抵消了 ${val} 点伤害`);
+            } else {
+                let realDmg = val - monster.shield;
+                monster.shield = 0;
+                monster.hp -= realDmg;
+                logMsg(` 击碎护盾！对怪物造成 ${realDmg} 点肉体创伤`);
+            }
+        }
+
+        function addPlayerShield(val) {
+            player.shield += val;
+            logMsg(`🛡️ 自身架起防线，增加 ${val} 点护盾力`);
+        }
+
+        function healPlayer(val) {
+            player.hp = Math.min(player.maxHp, player.hp + val);
+            logMsg(`💚 触发治愈神术，恢复了 ${val} 点生命值`);
+        }
+
+        function drawCard(num) {
+            for(let i=0; i<num; i++) {
+                if (deck.length === 0) {
+                    deck = [...discardPile];
+                    discardPile = [];
+                }
+                if (deck.length > 0) {
+                    hand.push(deck.pop());
+                }
+            }
+        }
+
+        function winBattle() {
+            logMsg(`🏆 你成功消灭了强敌！`);
+            document.getElementById('gamePanel').classList.add('hidden');
+            document.getElementById('rewardPanel').classList.remove('hidden');
+
+            // 随机抽取三张奖励稀有卡加入网格
+            const grid = document.getElementById('rewardGrid');
+            grid.innerHTML = "";
+            let rewardCards = [...CARD_POOL].sort(() => 0.5 - Math.random()).slice(0, 3);
+            
+            rewardCards.forEach(card => {
+                let div = document.createElement('div');
+                div.className = 'card reward-card';
+                div.innerHTML = `<div class="card-name">${card.name}</div><div class="card-cost">⚡ ${card.cost}</div><div class="card-desc">${card.desc}</div>`;
+                div.onclick = () => {
+                    // 挑选并添加新战力到玩家主卡组
+                    deck.push(card);
+                    deck = deck.concat(hand).concat(discardPile); // 回收全部手牌及弃牌堆
+                    hand = []; discardPile = [];
+                    
+                    floor++;
+                    document.getElementById('rewardPanel').classList.add('hidden');
+                    document.getElementById('gamePanel').classList.remove('hidden');
+                    spawnMonster();
+                    startPlayerTurn();
+                };
+                grid.appendChild(div);
             });
+        }
 
-            if (P.f > maxStats.f) maxStats.f = P.f;
-            if (P.i > maxStats.i) maxStats.i = P.i;
-            if (P.h > maxStats.h) maxStats.h = P.h;
-            if (P.m > maxStats.m) maxStats.m = P.m;
+        function gameOver() {
+            document.getElementById('gamePanel').classList.add('hidden');
+            document.getElementById('overPanel').classList.remove('hidden');
+            document.getElementById('overDesc').innerHTML = `你在深邃地下城的 [第 <b>${floor}</b> 层] 遭遇不幸。<br>最终属性：力量 ${player.str} | 敏捷 ${player.agi} | 最大生命 ${player.maxHp}`;
+        }
 
-            document.getElementById('ageDisplay').textContent = age + '岁';
-            document.getElementById('gDisp').textContent = gender;
-            document.getElementById('mDisp').textContent = P.m;
-            document.getElementById('iDisp').textContent = P.i;
-            document.getElementById('hDisp').textContent = P.h;
-            document.getElementById('fDisp').textContent = P.f;
-
-            let dieReason = "";
-            if (P.h <= 0) { isGameOver = true; dieReason = "体质归零，引发器官衰竭。"; }
-            else if (P.m <= -10) { isGameOver = true; dieReason = "负债彻底崩盘，在极端严寒中停止了呼吸。"; }
-            else if (P.i <= -5) { isGameOver = true; dieReason = "智力严重退化，彻底丧失基本生存本能。"; }
-            else if (P.f <= -8) { isGameOver = true; dieReason = "颜值异变得过于骇人，出门时惊吓过度被隔离。"; }
-
-            if (!isGameOver) {
-                if (age <= 5 && P.h <= 1 && Math.random() < 0.12) { isGameOver = true; dieReason = "幼年单薄，没能熬过凛冽冬天。"; }
-                let dieChance = (age - 65) * 0.03 - (P.h * 0.006);
-                if (dieChance < 0.01) dieChance = 0.01;
-                if (age >= 70 && Math.random() < dieChance) { isGameOver = true; dieReason = "寿终正寝，在温暖睡梦中安详闭眼。"; }
-                if (age >= 120) { isGameOver = true; dieReason = "天道极限，生命细胞分裂达到绝对上限。"; }
+        function updateUI() {
+            // 实时同步更新各项可视化DOM元素
+            document.getElementById('floorDisp').textContent = floor;
+            
+            let p_hpPct = Math.max(0, (player.hp / player.maxHp) * 100);
+            document.getElementById('p_hpBar').style.width = p_hpPct + '%';
+            document.getElementById('p_hpTxt').textContent = `${player.hp}/${player.maxHp}`;
+            
+            if(player.shield > 0){
+                document.getElementById('p_shield').classList.remove('hidden');
+                document.getElementById('p_shield').textContent = `护盾: ${player.shield}`;
+            } else {
+                document.getElementById('p_shield').classList.add('hidden');
             }
 
-            checkAchievements();
+            document.getElementById('m_name').textContent = monster.name;
+            let m_hpPct = Math.max(0, (monster.hp / monster.maxHp) * 100);
+            document.getElementById('m_hpBar').style.width = m_hpPct + '%';
+            document.getElementById('m_hpTxt').textContent = `${monster.hp}/${monster.maxHp}`;
 
-            if (isGameOver) {
-                wrap.innerHTML += `<div class="log-item"><span class="age-tag">${age}岁</span><span class="bad" style="font-weight:bold;">💥【游戏结束】${dieReason}（享年${age}岁）。</span></div>`;
-                const btn = document.getElementById('nextBtn');
-                btn.textContent = '再度重开';
-                btn.onclick = () => location.reload();
+            if(monster.shield > 0){
+                document.getElementById('m_shield').classList.remove('hidden');
+                document.getElementById('m_shield').textContent = `护盾: ${monster.shield}`;
+            } else {
+                document.getElementById('m_shield').classList.add('hidden');
             }
 
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            document.getElementById('m_intent').textContent = monster.nextIntent ? monster.nextIntent.desc : "";
+            document.getElementById('energyDisp').textContent = `${player.energy}/${player.maxEnergy}`;
+
+            // 重新绘制并刷新手牌区
+            const handContainer = document.getElementById('handContainer');
+            handContainer.innerHTML = "";
+            hand.forEach((card, idx) => {
+                let cDiv = document.createElement('div');
+                cDiv.className = 'card';
+                cDiv.innerHTML = `<div class="card-name">${card.name}</div><div class="card-cost">⚡ ${card.cost}</div><div class="card-desc">${card.desc}</div>`;
+                cDiv.onclick = () => useCard(idx);
+                handContainer.appendChild(cDiv);
+            });
+        }
+
+        function logMsg(msg) {
+            const logBox = document.getElementById('logBox');
+            let div = document.createElement('div');
+            div.className = 'log-entry';
+            div.innerHTML = msg;
+            logBox.appendChild(div);
+            logBox.scrollTop = logBox.scrollHeight;
         }
     </script>
 </body>
