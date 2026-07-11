@@ -3,108 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>极简RPG</title>
+    <title>深渊之眼-视觉小说</title>
     <style>
-        body { background: #111; color: #ccc; font-family: monospace; padding: 15px; font-size: 14px; max-width: 400px; margin: 0 auto; }
-        button { background: #222; color: #fff; border: 1px solid #444; padding: 6px 12px; cursor: pointer; margin: 3px; }
-        button:disabled { color: #444; border-color: #222; }
-        .row { display: flex; justify-content: space-between; margin: 5px 0; border-bottom: 1px dashed #333; }
-        #log { height: 120px; overflow-y: auto; background: #000; padding: 5px; margin-top: 10px; font-size: 12px; }
-        .hide { display: none; }
+        body { background: #07090e; color: #cdd6f4; font-family: sans-serif; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .novel-box { width: 100%; max-width: 500px; background: #11111b; border: 1px solid #313244; border-radius: 8px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .scene-bg { text-align: center; font-size: 11px; color: #6c7086; letter-spacing: 1px; margin-bottom: 15px; border-bottom: 1px dashed #313244; padding-bottom: 5px; }
+        .text-area { min-height: 120px; font-size: 15px; line-height: 1.6; color: #cdd6f4; white-space: pre-wrap; margin-bottom: 20px; }
+        .btn-zone { display: flex; flex-direction: column; gap: 8px; }
+        button { background: #1e1e2e; color: #cdd6f4; border: 1px solid #45475a; padding: 12px; font-size: 14px; border-radius: 6px; cursor: pointer; text-align: left; transition: all 0.2s; }
+        button:hover { background: #313244; border-color: #89b4fa; color: #89b4fa; }
     </style>
 </head>
 <body>
-    <div id="setup">
-        <h3>属性分配 (剩余: <span id="pts">20</span>)</h3>
-        <div class="row"><span>暴击(颜)</span><div><button onclick="adj('f',-1)">-</button><span id="f">0</span><button onclick="adj('f',1)">+</button></div></div>
-        <div class="row"><span>技能(智)</span><div><button onclick="adj('i',-1)">-</button><span id="i">0</span><button onclick="adj('i',1)">+</button></div></div>
-        <div class="row"><span>生命(体)</span><div><button onclick="adj('h',-1)">-</button><span id="h">0</span><button onclick="adj('h',1)">+</button></div></div>
-        <button id="go" onclick="start()" disabled style="width:100%">进入深渊</button>
-    </div>
 
-    <div id="game" class="hide">
-        <div class="row"><b>Lv.<span id="lv">1</span> (第 <span id="fl">1</span> 层)</b> <span>金币: <span id="gd">0</span></span></div>
-        <div class="row"><span>自身生命:</span> <b id="php">100/100</b></div>
-        <div class="row"><span>当前怪: <b id="mname">-</b></span> <b id="mhp" style="color:red">0/0</b></div>
-        <div class="row">
-            <span>装备(点字替换):</span>
-            <span id="eqw" onclick="eq('w')" style="color:#5294e2;cursor:pointer">徒手</span> | 
-            <span id="eqa" onclick="eq('a')" style="color:#a3be8c;cursor:pointer">布衣</span>
-        </div>
-        <div style="margin-top:10px;">
-            <button onclick="action(0)">普通攻击</button>
-            <button id="sk" onclick="action(1)">重击(CD:0)</button>
-        </div>
-        <div id="log"></div>
+    <div class="novel-box">
+        <div class="scene-bg">⏱️ 场景位置: <span id="bg">未定位</span></div>
+        <div class="text-area" id="text"></div>
+        <div class="btn-zone" id="options"></div>
     </div>
 
     <script>
-        let attr = { f:0, i:0, h:0 }, rem = 20, fl = 1, cd = 0;
-        let p = { lv:1, hp:100, max:100, exp:0, atk:10, eatk:0, ehp:0, gd:0 }, m = {}, loot = null;
-
-        function adj(k, d) {
-            if ((rem <= 0 && d > 0) || (attr[k] + d < 0)) return;
-            attr[k] += d; rem -= d;
-            document.getElementById('pts').textContent = rem;
-            document.getElementById(k).textContent = attr[k];
-            document.getElementById('go').disabled = rem !== 0;
-        }
-
-        function start() {
-            p.max = 100 + attr.h * 15; p.hp = p.max;
-            document.getElementById('setup').classList.add('hide');
-            document.getElementById('game').classList.remove('hide');
-            msg("➔ 你踏入了深渊..."); spawn();
-        }
-
-        function spawn() {
-            m = { name: ["虚空","远古","变异"][Math.min(2, Math.floor(fl/4))] + ["史莱姆","爬虫","守卫"][Math.floor(Math.random()*3)], hp: 20+fl*12, max: 20+fl*12, atk: 3+fl*2 };
-            if(cd > 0) cd--; update();
-        }
-
-        function action(isSkill) {
-            let dmg = p.atk + p.eatk + Math.floor(Math.random()*5);
-            if (isSkill) { dmg = Math.floor(dmg * 1.7) + attr.i * 3; cd = 3; msg(`🔮 技能重击！造成 ${dmg} 点伤`); } 
-            else {
-                let crit = Math.random()*100 < (5 + attr.f*2);
-                if(crit) { dmg = Math.floor(dmg*1.5); msg(`💥 暴击！造成 ${dmg} 点伤`); }
-                else msg(`⚔️ 你造成了 ${dmg} 点伤`);
+        // 极致轻量化的视觉小说剧本引擎树型数据
+        const story = {
+            start: {
+                bg: "【2052年·霓虹暗巷】",
+                text: "暴雨倾盆。你靠在冷凝管旁，屏幕在手腕上发出微弱的荧光。\n一个未加密的信息节点正在向你发送请求：“代号‘零’，拿上核心，或者死在这里。”",
+                choices: [
+                    { t: "🔓 接入节点并下载核心数据", next: "download" },
+                    { t: "🏃 捏碎终端，立刻从雨夜中撤离", next: "escape" }
+                ]
+            },
+            download: {
+                bg: "【数据流过载空间】",
+                text: "极高的数据流瞬间冲入脑机，你视野一片血红！\n你发现自己竟然下载了一个人工智能的残存意识，它在你脑海中低语：“谢谢你，行者。现在执行官已经包围了这条小巷。”",
+                choices: [
+                    { t: "⚡ 激活潜行超频反向骇入现场警卫", next: "hack" },
+                    { t: "🔫 拔出腰间的电磁枪准备正面突围", next: "fight" }
+                ]
+            },
+            escape: {
+                bg: "【废弃下水道】",
+                text: "你选择稳妥，退入恶臭的地下通道。但没走多远，两台红外无人机从死角无声探出，红外死线锁定了你的眉心。",
+                choices: [
+                    { t: "💥 直接引爆管道旁边的瓦斯阀门", next: "bad_end1" },
+                    { t: "🙌 高举双手投降，等待救援时机", next: "bad_end2" }
+                ]
+            },
+            hack: {
+                bg: "【全息控制网顶层】",
+                text: "超频成功！警卫的视觉模组瞬间陷入紊乱。你夺取了无人机的控制权，在AI的指引下，你成功获得了这个世界最核心的真理自由。\n\n🎉 【完结·True End】你成为了这片赛博世界的新生神明。",
+                choices: [{ t: "🔄 重新体验人生", next: "start" }]
+            },
+            fight: {
+                bg: "【火光冲天的暗巷】",
+                text: "枪火撕裂了雨夜。你虽然干掉了三个突击队员，但对方的重装机甲瞬间用微型导弹覆盖了整片街区。\n\n❌ 【完结·Dead End】你成为了废墟里的一缕黑烟。",
+                choices: [{ t: "🔄 不甘心，重新来过", next: "start" }]
+            },
+            bad_end1: {
+                bg: "【塌陷的地下城】",
+                text: "火光吞噬了一切。你和无人机一起在爆炸中变成了渣滓。\n\n❌ 【完结·Dead End】过于暴力的手段葬送了你。",
+                choices: [{ t: "🔄 重开局", next: "start" }]
+            },
+            bad_end2: {
+                bg: "【巨型大厦·审讯室】",
+                text: "他们没有给你审判的机会。在记忆格式化脉冲下，你的灵魂变成了一张苍白的废纸，从此变成了大厂流水线上的无意识生化打工人。\n\n❌ 【完结·Normal End】你失去了自由。",
+                choices: [{ t: "🔄 重新来过", next: "start" }]
             }
-            m.hp -= dmg;
-            if (m.hp <= 0) {
-                p.exp += 20 + fl*5; p.gd += 10 + fl*3; msg(`🏆 斩杀 ${m.name}！金币+${10+fl*3}`);
-                if (Math.random() < 0.4) {
-                    let isW = Math.random() < 0.5, v = Math.floor(fl * 1.5 * (Math.random()>0.8?2.5:1));
-                    loot = { type: isW?'w':'a', val: isW?v:v*6, name: (isW?'武器+':'防具+削')+v };
-                    msg(`🎁 掉落了 [${loot.name}]，<b style="color:yellow">点击上方装备栏字样</b> 可替换装备`);
-                    document.getElementById(isW?'eqw':'eqa').textContent = loot.name + "(待装)";
-                }
-                if (p.exp >= p.lv*40) { p.lv++; p.atk+=3; msg(`✨ 升级！攻击永久+3`); }
-                fl++; p.hp = Math.min(p.max+p.ehp, p.hp + Math.floor((p.max+p.ehp)*0.15));
-                spawn(); return;
-            }
-            let mdmg = m.atk + Math.floor(Math.random()*3); p.hp -= mdmg; msg(`👹 怪物反击，你受到 ${mdmg} 点伤`);
-            if (p.hp <= 0) { msg(`<b style="color:red">💥 游戏结束！你死在第 ${fl} 层</b>`); document.querySelectorAll("button").forEach(b=>b.disabled=true); }
-            update();
+        };
+
+        // 剧情渲染核心函数
+        function loadNode(nodeKey) {
+            const node = story[nodeKey];
+            document.getElementById('bg').textContent = node.bg;
+            document.getElementById('text').textContent = node.text;
+            
+            const optZone = document.getElementById('options');
+            optZone.innerHTML = ""; // 快速清除上一页选择按钮
+            
+            node.choices.forEach(c => {
+                let btn = document.createElement('button');
+                btn.textContent = c.t;
+                btn.onclick = () => loadNode(c.next);
+                optZone.appendChild(btn);
+            });
         }
 
-        function eq(t) {
-            if (!loot || loot.type !== t) return;
-            if (t === 'w') { p.eatk = loot.val; document.getElementById('eqw').textContent = loot.name; }
-            else { p.ehp = loot.val; document.getElementById('eqa').textContent = loot.name; }
-            msg(`裝备成功！属性已飙升`); loot = null; update();
-        }
-
-        function msg(txt) {
-            let l = document.getElementById('log'); l.innerHTML += `<div>${txt}</div>`; l.scrollTop = l.scrollHeight;
-        }
-
-        function update() {
-            document.getElementById('lv').textContent = p.lv; document.getElementById('fl').textContent = fl; document.getElementById('gd').textContent = p.gd;
-            document.getElementById('php').textContent = `${p.hp}/${p.max+p.ehp}`;
-            document.getElementById('mname').textContent = m.name; document.getElementById('mhp').textContent = `${m.hp}/${m.max}`;
-            document.getElementById('sk').disabled = cd > 0; document.getElementById('sk').textContent = `重击(CD:${cd})`;
-        }
+        // 游戏启动
+        loadNode('start');
     </script>
 </body>
 </html>
