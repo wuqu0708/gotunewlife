@@ -2,400 +2,108 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>疯狂地下城：卡牌肉鸽克星</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>极简RPG</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; background: transparent; user-select: none; }
-        body { background: #0c0f12; font-family: 'Courier New', monospace, sans-serif; color: #d1d5db; padding: 15px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .container { width: 100%; max-width: 500px; background: #151b22; border: 2px solid #2d3748; border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
-        h1 { font-size: 22px; color: #f39c12; text-align: center; margin-bottom: 15px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        
-        /* 通用区块 */
-        .panel { border: 1px solid #3a4759; background: #1c232d; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
-        .title { font-weight: bold; color: #ffffff; border-bottom: 1px solid #3a4759; padding-bottom: 5px; margin-bottom: 10px; font-size: 14px; }
-        .desc { color: #9ca3af; font-size: 12px; margin-bottom: 12px; }
-
-        /* 分配属性样式 */
-        .attr-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed #2d3748; }
-        .attr-btn { color: #f39c12; border: none; padding: 0 15px; font-size: 20px; cursor: pointer; font-weight: bold; }
-        .attr-val { font-weight: bold; color: #ffffff; min-width: 20px; text-align: center; }
-        
-        /* 战斗舞台 */
-        .battle-stage { display: flex; justify-content: space-between; margin-bottom: 15px; gap: 10px; }
-        .entity-box { flex: 1; background: #222b35; border: 1px solid #4a5568; border-radius: 6px; padding: 10px; text-align: center; position: relative; }
-        .entity-name { font-weight: bold; color: #fff; font-size: 15px; margin-bottom: 4px; }
-        .hp-bar-wrap { background: #4a1515; height: 16px; border-radius: 4px; overflow: hidden; margin: 5px 0; position: relative; border: 1px solid #222; }
-        .hp-bar { background: #c0392b; height: 100%; width: 100%; transition: width 0.3s; }
-        .hp-text { position: absolute; width: 100%; top: 0; left: 0; font-size: 11px; color: #fff; font-weight: bold; line-height: 14px; }
-        .shield-badge { background: #2980b9; color: white; font-size: 11px; padding: 1px 5px; border-radius: 3px; font-weight: bold; display: inline-block; margin-top: 3px; }
-        .intent { color: #f1c40f; font-size: 12px; font-weight: bold; margin-top: 5px; min-height: 18px; }
-
-        /* 战报滚动 */
-        .log-box { height: 90px; overflow-y: auto; font-size: 12px; color: #a0aec0; border: 1px solid #2d3748; background: #0f1319; padding: 6px; border-radius: 4px; margin-bottom: 15px; line-height: 1.5; }
-        .log-entry { margin-bottom: 2px; }
-
-        /* 手牌区 */
-        .hand-container { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; min-height: 95px; align-items: flex-end; }
-        .card { width: 85px; height: 95px; background: #2c3e50; border: 2px solid #34495e; border-radius: 6px; padding: 6px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: transform 0.15s, border-color 0.15s; }
-        .card:hover { transform: translateY(-5px); border-color: #f1c40f; }
-        .card-name { font-size: 12px; font-weight: bold; color: #fff; text-align: center; border-bottom: 1px solid #455a64; padding-bottom: 2px; }
-        .card-cost { background: #e67e22; color: #fff; font-size: 10px; font-weight: bold; border-radius: 5px; padding: 0 4px; display: inline-block; align-self: flex-start; }
-        .card-desc { font-size: 10px; color: #bdc3c7; text-align: center; margin-top: 4px; line-height: 1.2; flex-grow: 1; display: flex; align-items: center; justify-content: center; }
-
-        /* 底部操作与卡牌奖励 */
-        .btn { display: block; width: 100%; text-align: center; color: #ffffff; font-weight: bold; padding: 12px 0; border: 1px solid #4a5568; background: #232d38; cursor: pointer; font-size: 14px; border-radius: 6px; }
-        .btn:hover:not(:disabled) { border-color: #f39c12; color: #f39c12; background: #2c3a49; }
-        .btn:disabled { color: #4a5568; border-color: #232d38; cursor: not-allowed; }
-        
-        .reward-grid { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
-        .reward-card { width: 120px; height: 110px; background: #1e3a5f; border: 2px solid #3b82f6; }
-
-        .hidden { display: none !important; }
-        .energy-txt { text-align: center; font-size: 13px; font-weight: bold; color: #00ffcc; margin-bottom: 8px; }
+        body { background: #111; color: #ccc; font-family: monospace; padding: 15px; font-size: 14px; max-width: 400px; margin: 0 auto; }
+        button { background: #222; color: #fff; border: 1px solid #444; padding: 6px 12px; cursor: pointer; margin: 3px; }
+        button:disabled { color: #444; border-color: #222; }
+        .row { display: flex; justify-content: space-between; margin: 5px 0; border-bottom: 1px dashed #333; }
+        #log { height: 120px; overflow-y: auto; background: #000; padding: 5px; margin-top: 10px; font-size: 12px; }
+        .hide { display: none; }
     </style>
 </head>
 <body>
+    <div id="setup">
+        <h3>属性分配 (剩余: <span id="pts">20</span>)</h3>
+        <div class="row"><span>暴击(颜)</span><div><button onclick="adj('f',-1)">-</button><span id="f">0</span><button onclick="adj('f',1)">+</button></div></div>
+        <div class="row"><span>技能(智)</span><div><button onclick="adj('i',-1)">-</button><span id="i">0</span><button onclick="adj('i',1)">+</button></div></div>
+        <div class="row"><span>生命(体)</span><div><button onclick="adj('h',-1)">-</button><span id="h">0</span><button onclick="adj('h',1)">+</button></div></div>
+        <button id="go" onclick="start()" disabled style="width:100%">进入深渊</button>
+    </div>
 
-    <div class="container">
-        <h1>疯狂地下城 ⚔️ 肉鸽卡牌</h1>
-
-        <div id="setupPanel" class="panel">
-            <div class="title">◇ 探险者出生印记 (拥有20点可用点数)</div>
-            <div class="desc">力量影响攻击伤害，敏捷增加防御盾，体质折算血量上限，智力决定每回合抽卡数。</div>
-            <div class="sub-desc" style="color: #f1c40f; font-size: 12px; margin-bottom: 10px;">剩余点数: <span id="ptsNum">20</span></div>
-            
-            <div class="attr-row"><span>力量 (STR) - 增加攻击力</span><div><button class="attr-btn" onclick="adj('str',-1)">-</button><span id="strVal" class="attr-val">0</span><button class="attr-btn" onclick="adj('str',1)">+</button></div></div>
-            <div class="attr-row"><span>敏捷 (AGI) - 增加护盾值</span><div><button class="attr-btn" onclick="adj('agi',-1)">-</button><span id="agiVal" class="attr-val">0</span><button class="attr-btn" onclick="adj('agi',1)">+</button></div></div>
-            <div class="attr-row"><span>体质 (VIT) - 增加生命值</span><div><button class="attr-btn" onclick="adj('vit',-1)">-</button><span id="vitVal" class="attr-val">0</span><button class="attr-btn" onclick="adj('vit',1)">+</button></div></div>
-            <div class="attr-row"><span>智力 (INT) - 增加抽牌数</span><div><button class="attr-btn" onclick="adj('int',-1)">-</button><span id="intVal" class="attr-val">0</span><button class="attr-btn" onclick="adj('int',1)">+</button></div></div>
-            
-            <button class="btn" id="startBtn" onclick="startGame()" style="margin-top: 15px;" disabled>步入黑暗地下城</button>
+    <div id="game" class="hide">
+        <div class="row"><b>Lv.<span id="lv">1</span> (第 <span id="fl">1</span> 层)</b> <span>金币: <span id="gd">0</span></span></div>
+        <div class="row"><span>自身生命:</span> <b id="php">100/100</b></div>
+        <div class="row"><span>当前怪: <b id="mname">-</b></span> <b id="mhp" style="color:red">0/0</b></div>
+        <div class="row">
+            <span>装备(点字替换):</span>
+            <span id="eqw" onclick="eq('w')" style="color:#5294e2;cursor:pointer">徒手</span> | 
+            <span id="eqa" onclick="eq('a')" style="color:#a3be8c;cursor:pointer">布衣</span>
         </div>
-
-        <div id="gamePanel" class="hidden">
-            <div class="sub-desc" style="text-align: center; color: #f39c12; font-weight: bold; margin-bottom: 10px; font-size: 15px;">
-                🏰 地下城第 <span id="floorDisp">1</span> 层
-            </div>
-            
-            <div class="battle-stage">
-                <div class="entity-box">
-                    <div class="entity-name" style="color: #5dade2;">你 (勇者)</div>
-                    <div class="hp-bar-wrap"><div class="hp-bar" id="p_hpBar"></div><div class="hp-text" id="p_hpTxt">50/50</div></div>
-                    <div id="p_shield" class="shield-badge hidden">护盾: 0</div>
-                </div>
-                <div class="entity-box">
-                    <div class="entity-name" id="m_name" style="color: #ec7063;">恶魔史莱姆</div>
-                    <div class="hp-bar-wrap"><div class="hp-bar" id="m_hpBar" style="background: #922b21;"></div><div class="hp-text" id="m_hpTxt">30/30</div></div>
-                    <div id="m_shield" class="shield-badge hidden">护盾: 0</div>
-                    <div class="intent" id="m_intent">意图: 准备攻击 6 点</div>
-                </div>
-            </div>
-
-            <div class="log-box" id="logBox"></div>
-
-            <div class="energy-txt">⚡ 当前行动点: <span id="energyDisp">3/3</span></div>
-
-            <div class="hand-container" id="handContainer"></div>
-
-            <button class="btn" id="endTurnBtn" onclick="endTurn()" style="border-color: #e67e22; color: #fff;">结束回合 (怪物行动)</button>
+        <div style="margin-top:10px;">
+            <button onclick="action(0)">普通攻击</button>
+            <button id="sk" onclick="action(1)">重击(CD:0)</button>
         </div>
-
-        <div id="rewardPanel" class="panel hidden">
-            <div class="title" style="color: #2ecc71; text-align: center;">🎉 战斗胜利！请选择一张卡牌注入卡组</div>
-            <div class="desc" style="text-align: center;">构筑更强的卡组才能在更深层活下去！</div>
-            <div class="reward-grid" id="rewardGrid"></div>
-        </div>
-
-        <div id="overPanel" class="panel hidden" style="text-align: center;">
-            <div class="title" style="color: #e74c3c; font-size: 18px;">💥 你在黑暗中倒下了</div>
-            <div class="desc" id="overDesc" style="font-size: 14px; margin: 15px 0;">你在第 1 层被怪物击败。</div>
-            <button class="btn" onclick="location.reload()" style="border-color: #e74c3c; color: #fff;">再度苏醒 (重新开始)</button>
-        </div>
+        <div id="log"></div>
     </div>
 
     <script>
-        // 核心动态库与卡牌池
-        const CARD_POOL = [
-            { id: 'c1', name: '重击', cost: 2, desc: '造成 12 点重型伤害', action: (p, m) => { damageMonster(12 + p.str); } },
-            { id: 'c2', name: '吸血打击', cost: 1, desc: '造成 5 点伤害，吸取 3 点生命', action: (p, m) => { damageMonster(5 + p.str); healPlayer(3); } },
-            { id: 'c3', name: '绝对壁垒', cost: 2, desc: '获得 14 点巨额护盾', action: (p, m) => { addPlayerShield(14 + p.agi); } },
-            { id: 'c4', name: '致命战意', cost: 1, desc: '造成 4 点伤害，并额外抽 1 张牌', action: (p, m) => { damageMonster(4 + p.str); drawCard(1); } },
-            { id: 'c5', name: '破甲震击', cost: 1, desc: '斩碎怪物所有护盾并造成 3 点基础伤害', action: (p, m) => { m.shield = 0; damageMonster(3 + p.str); } },
-            { id: 'c6', name: '圣疗秘术', cost: 2, desc: '恢复 12 点生命值值', action: (p, m) => { healPlayer(12); } }
-        ];
+        let attr = { f:0, i:0, h:0 }, rem = 20, fl = 1, cd = 0;
+        let p = { lv:1, hp:100, max:100, exp:0, atk:10, eatk:0, ehp:0, gd:0 }, m = {}, loot = null;
 
-        let P_ATTR = { str: 0, agi: 0, vit: 0, int: 0 }, rem = 20;
-        let player = { hp: 50, maxHp: 50, shield: 0, energy: 3, maxEnergy: 3, str: 0, agi: 0, drawCount: 3 }, monster = {};
-        let deck = [], hand = [], discardPile = [];
-        let floor = 1;
-        let isPlayerTurn = true;
-
-        const MONSTER_NAMES = ["哥布林掠夺者", "红莲地狱犬", "遗迹魔偶", "深渊双头龙", "巫妖骨王", "暗影刺客"];
-
-        function adj(key, delta) {
-            if ((rem <= 0 && delta > 0) || (P_ATTR[key] + delta < 0)) return;
-            P_ATTR[key] += delta; rem -= delta;
-            document.getElementById('ptsNum').textContent = rem;
-            document.getElementById(key + 'Val').textContent = P_ATTR[key];
-            document.getElementById('startBtn').disabled = rem !== 0;
+        function adj(k, d) {
+            if ((rem <= 0 && d > 0) || (attr[k] + d < 0)) return;
+            attr[k] += d; rem -= d;
+            document.getElementById('pts').textContent = rem;
+            document.getElementById(k).textContent = attr[k];
+            document.getElementById('go').disabled = rem !== 0;
         }
 
-        function startGame() {
-            // 将分配属性代入战斗引擎
-            player.str = P_ATTR.str;
-            player.agi = P_ATTR.agi;
-            player.maxHp = 50 + (P_ATTR.vit * 6);
-            player.hp = player.maxHp;
-            player.drawCount = 3 + Math.floor(P_ATTR.int / 4); // 4点智力多抽一张牌
-
-            // 初始套牌：4斩击、3防御
-            deck = [
-                { name: '斩击', cost: 1, desc: '造成 6 点伤害', action: (p, m) => damageMonster(6 + p.str) },
-                { name: '斩击', cost: 1, desc: '造成 6 点伤害', action: (p, m) => damageMonster(6 + p.str) },
-                { name: '斩击', cost: 1, desc: '造成 6 点伤害', action: (p, m) => damageMonster(6 + p.str) },
-                { name: '斩击', cost: 1, desc: '造成 6 点伤害', action: (p, m) => damageMonster(6 + p.str) },
-                { name: '坚守', cost: 1, desc: '获得 6 点护盾', action: (p, m) => addPlayerShield(6 + p.agi) },
-                { name: '坚守', cost: 1, desc: '获得 6 点护盾', action: (p, m) => addPlayerShield(6 + p.agi) },
-                { name: '坚守', cost: 1, desc: '获得 6 点护盾', action: (p, m) => addPlayerShield(6 + p.agi) }
-            ];
-
-            document.getElementById('setupPanel').classList.add('hidden');
-            document.getElementById('gamePanel').classList.remove('hidden');
-            
-            floor = 1;
-            spawnMonster();
-            startPlayerTurn();
+        function start() {
+            p.max = 100 + attr.h * 15; p.hp = p.max;
+            document.getElementById('setup').classList.add('hide');
+            document.getElementById('game').classList.remove('hide');
+            msg("➔ 你踏入了深渊..."); spawn();
         }
 
-        function spawnMonster() {
-            let mName = MONSTER_NAMES[Math.floor(Math.random() * MONSTER_NAMES.length)];
-            let maxHp = 25 + (floor * 8);
-            monster = {
-                name: mName,
-                hp: maxHp,
-                maxHp: maxHp,
-                shield: 0,
-                nextIntent: {} // attack, defend
-            };
-            rollMonsterIntent();
-            updateUI();
-            logMsg(`➔ 遭遇了 [第 ${floor} 层] 强敌: <b>${monster.name}</b>！`);
+        function spawn() {
+            m = { name: ["虚空","远古","变异"][Math.min(2, Math.floor(fl/4))] + ["史莱姆","爬虫","守卫"][Math.floor(Math.random()*3)], hp: 20+fl*12, max: 20+fl*12, atk: 3+fl*2 };
+            if(cd > 0) cd--; update();
         }
 
-        function rollMonsterIntent() {
-            // 怪物随机意图：攻击或叠盾
-            let rand = Math.random();
-            let baseDmg = 5 + Math.floor(floor * 2.2);
-            let baseShld = 4 + Math.floor(floor * 1.5);
-            if (rand < 0.65) {
-                monster.nextIntent = { type: 'attack', val: baseDmg, desc: `意图: 准备攻击造成 ${baseDmg} 点伤害` };
-            } else {
-                monster.nextIntent = { type: 'defend', val: baseShld, desc: `意图: 准备集聚防守 ${baseShld} 点护盾` };
+        function action(isSkill) {
+            let dmg = p.atk + p.eatk + Math.floor(Math.random()*5);
+            if (isSkill) { dmg = Math.floor(dmg * 1.7) + attr.i * 3; cd = 3; msg(`🔮 技能重击！造成 ${dmg} 点伤`); } 
+            else {
+                let crit = Math.random()*100 < (5 + attr.f*2);
+                if(crit) { dmg = Math.floor(dmg*1.5); msg(`💥 暴击！造成 ${dmg} 点伤`); }
+                else msg(`⚔️ 你造成了 ${dmg} 点伤`);
             }
-        }
-
-        function startPlayerTurn() {
-            isPlayerTurn = true;
-            player.energy = player.maxEnergy;
-            player.shield = 0; // 每回合护盾刷新清空
-            
-            // 抽牌逻辑
-            if (deck.length < player.drawCount) {
-                deck = deck.concat(discardPile);
-                discardPile = [];
-            }
-            // 打乱抽牌
-            deck.sort(() => 0.5 - Math.random());
-            hand = deck.splice(0, player.drawCount);
-
-            updateUI();
-            document.getElementById('endTurnBtn').disabled = false;
-        }
-
-        function useCard(index) {
-            if (!isPlayerTurn) return;
-            let card = hand[index];
-            if (player.energy < card.cost) {
-                logMsg(`⚠️ 晶能点数不足！无法打出 [${card.name}]`);
-                return;
-            }
-
-            player.energy -= card.cost;
-            hand.splice(index, 1);
-            discardPile.push(card);
-
-            logMsg(`⚔️ 你使用了 <b>[${card.name}]</b>`);
-            card.action(player, monster);
-
-            updateUI();
-
-            // 检查怪物死亡
-            if (monster.hp <= 0) {
-                winBattle();
-            }
-        }
-
-        function endTurn() {
-            if (!isPlayerTurn) return;
-            isPlayerTurn = false;
-            document.getElementById('endTurnBtn').disabled = true;
-
-            // 怪物回合行动机制
-            setTimeout(() => {
-                logMsg(`👹 轮到 <b>${monster.name}</b> 的回合...`);
-                let intent = monster.nextIntent;
-                monster.shield = 0; // 清空怪兽上轮护盾
-
-                if (intent.type === 'attack') {
-                    let dmg = intent.val;
-                    if (player.shield >= dmg) {
-                        player.shield -= dmg;
-                        logMsg(`🛡️ 怪物猛袭！但完全被你的护盾完美拦截！`);
-                    } else {
-                        let actualDmg = dmg - player.shield;
-                        player.shield = 0;
-                        player.hp -= actualDmg;
-                        logMsg(`💥 怪物对你造成了 ${actualDmg} 点伤害！`);
-                    }
-                } else if (intent.type === 'defend') {
-                    monster.shield += intent.val;
-                    logMsg(`🛡️ 怪物进入防御防御姿态，获得了 ${intent.val} 点护盾值！`);
+            m.hp -= dmg;
+            if (m.hp <= 0) {
+                p.exp += 20 + fl*5; p.gd += 10 + fl*3; msg(`🏆 斩杀 ${m.name}！金币+${10+fl*3}`);
+                if (Math.random() < 0.4) {
+                    let isW = Math.random() < 0.5, v = Math.floor(fl * 1.5 * (Math.random()>0.8?2.5:1));
+                    loot = { type: isW?'w':'a', val: isW?v:v*6, name: (isW?'武器+':'防具+削')+v };
+                    msg(`🎁 掉落了 [${loot.name}]，<b style="color:yellow">点击上方装备栏字样</b> 可替换装备`);
+                    document.getElementById(isW?'eqw':'eqa').textContent = loot.name + "(待装)";
                 }
-
-                updateUI();
-
-                // 检验玩家是否死亡
-                if (player.hp <= 0) {
-                    gameOver();
-                    return;
-                }
-
-                // 进入下个回合
-                rollMonsterIntent();
-                setTimeout(startPlayerTurn, 800);
-            }, 600);
-        }
-
-        // 核心战斗伤害控制
-        function damageMonster(val) {
-            if (monster.shield >= val) {
-                monster.shield -= val;
-                logMsg(` 怪物护盾抵消了 ${val} 点伤害`);
-            } else {
-                let realDmg = val - monster.shield;
-                monster.shield = 0;
-                monster.hp -= realDmg;
-                logMsg(` 击碎护盾！对怪物造成 ${realDmg} 点肉体创伤`);
+                if (p.exp >= p.lv*40) { p.lv++; p.atk+=3; msg(`✨ 升级！攻击永久+3`); }
+                fl++; p.hp = Math.min(p.max+p.ehp, p.hp + Math.floor((p.max+p.ehp)*0.15));
+                spawn(); return;
             }
+            let mdmg = m.atk + Math.floor(Math.random()*3); p.hp -= mdmg; msg(`👹 怪物反击，你受到 ${mdmg} 点伤`);
+            if (p.hp <= 0) { msg(`<b style="color:red">💥 游戏结束！你死在第 ${fl} 层</b>`); document.querySelectorAll("button").forEach(b=>b.disabled=true); }
+            update();
         }
 
-        function addPlayerShield(val) {
-            player.shield += val;
-            logMsg(`🛡️ 自身架起防线，增加 ${val} 点护盾力`);
+        function eq(t) {
+            if (!loot || loot.type !== t) return;
+            if (t === 'w') { p.eatk = loot.val; document.getElementById('eqw').textContent = loot.name; }
+            else { p.ehp = loot.val; document.getElementById('eqa').textContent = loot.name; }
+            msg(`裝备成功！属性已飙升`); loot = null; update();
         }
 
-        function healPlayer(val) {
-            player.hp = Math.min(player.maxHp, player.hp + val);
-            logMsg(`💚 触发治愈神术，恢复了 ${val} 点生命值`);
+        function msg(txt) {
+            let l = document.getElementById('log'); l.innerHTML += `<div>${txt}</div>`; l.scrollTop = l.scrollHeight;
         }
 
-        function drawCard(num) {
-            for(let i=0; i<num; i++) {
-                if (deck.length === 0) {
-                    deck = [...discardPile];
-                    discardPile = [];
-                }
-                if (deck.length > 0) {
-                    hand.push(deck.pop());
-                }
-            }
-        }
-
-        function winBattle() {
-            logMsg(`🏆 你成功消灭了强敌！`);
-            document.getElementById('gamePanel').classList.add('hidden');
-            document.getElementById('rewardPanel').classList.remove('hidden');
-
-            // 随机抽取三张奖励稀有卡加入网格
-            const grid = document.getElementById('rewardGrid');
-            grid.innerHTML = "";
-            let rewardCards = [...CARD_POOL].sort(() => 0.5 - Math.random()).slice(0, 3);
-            
-            rewardCards.forEach(card => {
-                let div = document.createElement('div');
-                div.className = 'card reward-card';
-                div.innerHTML = `<div class="card-name">${card.name}</div><div class="card-cost">⚡ ${card.cost}</div><div class="card-desc">${card.desc}</div>`;
-                div.onclick = () => {
-                    // 挑选并添加新战力到玩家主卡组
-                    deck.push(card);
-                    deck = deck.concat(hand).concat(discardPile); // 回收全部手牌及弃牌堆
-                    hand = []; discardPile = [];
-                    
-                    floor++;
-                    document.getElementById('rewardPanel').classList.add('hidden');
-                    document.getElementById('gamePanel').classList.remove('hidden');
-                    spawnMonster();
-                    startPlayerTurn();
-                };
-                grid.appendChild(div);
-            });
-        }
-
-        function gameOver() {
-            document.getElementById('gamePanel').classList.add('hidden');
-            document.getElementById('overPanel').classList.remove('hidden');
-            document.getElementById('overDesc').innerHTML = `你在深邃地下城的 [第 <b>${floor}</b> 层] 遭遇不幸。<br>最终属性：力量 ${player.str} | 敏捷 ${player.agi} | 最大生命 ${player.maxHp}`;
-        }
-
-        function updateUI() {
-            // 实时同步更新各项可视化DOM元素
-            document.getElementById('floorDisp').textContent = floor;
-            
-            let p_hpPct = Math.max(0, (player.hp / player.maxHp) * 100);
-            document.getElementById('p_hpBar').style.width = p_hpPct + '%';
-            document.getElementById('p_hpTxt').textContent = `${player.hp}/${player.maxHp}`;
-            
-            if(player.shield > 0){
-                document.getElementById('p_shield').classList.remove('hidden');
-                document.getElementById('p_shield').textContent = `护盾: ${player.shield}`;
-            } else {
-                document.getElementById('p_shield').classList.add('hidden');
-            }
-
-            document.getElementById('m_name').textContent = monster.name;
-            let m_hpPct = Math.max(0, (monster.hp / monster.maxHp) * 100);
-            document.getElementById('m_hpBar').style.width = m_hpPct + '%';
-            document.getElementById('m_hpTxt').textContent = `${monster.hp}/${monster.maxHp}`;
-
-            if(monster.shield > 0){
-                document.getElementById('m_shield').classList.remove('hidden');
-                document.getElementById('m_shield').textContent = `护盾: ${monster.shield}`;
-            } else {
-                document.getElementById('m_shield').classList.add('hidden');
-            }
-
-            document.getElementById('m_intent').textContent = monster.nextIntent ? monster.nextIntent.desc : "";
-            document.getElementById('energyDisp').textContent = `${player.energy}/${player.maxEnergy}`;
-
-            // 重新绘制并刷新手牌区
-            const handContainer = document.getElementById('handContainer');
-            handContainer.innerHTML = "";
-            hand.forEach((card, idx) => {
-                let cDiv = document.createElement('div');
-                cDiv.className = 'card';
-                cDiv.innerHTML = `<div class="card-name">${card.name}</div><div class="card-cost">⚡ ${card.cost}</div><div class="card-desc">${card.desc}</div>`;
-                cDiv.onclick = () => useCard(idx);
-                handContainer.appendChild(cDiv);
-            });
-        }
-
-        function logMsg(msg) {
-            const logBox = document.getElementById('logBox');
-            let div = document.createElement('div');
-            div.className = 'log-entry';
-            div.innerHTML = msg;
-            logBox.appendChild(div);
-            logBox.scrollTop = logBox.scrollHeight;
+        function update() {
+            document.getElementById('lv').textContent = p.lv; document.getElementById('fl').textContent = fl; document.getElementById('gd').textContent = p.gd;
+            document.getElementById('php').textContent = `${p.hp}/${p.max+p.ehp}`;
+            document.getElementById('mname').textContent = m.name; document.getElementById('mhp').textContent = `${m.hp}/${m.max}`;
+            document.getElementById('sk').disabled = cd > 0; document.getElementById('sk').textContent = `重击(CD:${cd})`;
         }
     </script>
 </body>
