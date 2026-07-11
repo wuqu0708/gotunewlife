@@ -5,558 +5,299 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>人生重开模拟器</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: #0a0e14;
-            font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 12px;
-            color: #e8edf2;
-        }
-        .container {
-            width: 100%;
-            max-width: 460px;
-            background: #121a24;
-            border-radius: 32px;
-            padding: 24px 20px 28px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
-            border: 1px solid #1e2a36;
-            position: relative;
-            overflow: hidden;
-        }
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -60px;
-            right: -60px;
-            width: 180px;
-            height: 180px;
-            background: radial-gradient(circle, rgba(42, 125, 225, 0.06), transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+        body { background: #0a0d14; font-family: sans-serif; color: #f1f3f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .container { width: 100%; max-width: 440px; background: #131924; border-radius: 16px; padding: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); border: 1px solid #1e2638; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 24px; letter-spacing: 2px; background: linear-gradient(135deg, #fff, #8ab4f8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .pts-display, .sub-title { text-align: center; font-size: 14px; color: #adb5bd; margin-bottom: 16px; }
+        .pts-display span { color: #fcc419; font-size: 22px; font-weight: bold; }
+        .attr-row { display: flex; align-items: center; justify-content: space-between; background: #1c2333; padding: 10px 16px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #253147; }
+        .attr-row button { width: 32px; height: 32px; border: none; border-radius: 4px; background: #2c384e; color: #fff; font-size: 18px; cursor: pointer; }
+        
+        .talent-list { margin-bottom: 16px; }
+        .talent-item { background: #1c2333; padding: 12px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 2px solid transparent; }
+        .talent-item.selected { border-color: #1c7ed6; background: #22324d; }
+        .talent-name { font-weight: bold; color: #fcc419; margin-bottom: 4px; font-size: 14px; }
+        .talent-desc { font-size: 12px; color: #adb5bd; }
 
-        /* 标题 */
-        .header {
-            text-align: center;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #1e2a36;
-            margin-bottom: 18px;
-            position: relative;
-        }
-        .header h1 {
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: 4px;
-            background: linear-gradient(135deg, #e8edf2, #8ab4f8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .header p {
-            font-size: 13px;
-            color: #5a6f82;
-            margin-top: 4px;
-            letter-spacing: 2px;
-        }
-
-        /* 属性面板 */
-        .setup-box {
-            padding: 4px 0;
-        }
-        .pts-display {
-            text-align: center;
-            font-size: 15px;
-            color: #7a8f9e;
-            margin: 10px 0 14px;
-        }
-        .pts-display span {
-            color: #f5c542;
-            font-size: 26px;
-            font-weight: 700;
-        }
-        .attr-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #0f1822;
-            padding: 8px 14px;
-            border-radius: 60px;
-            margin-bottom: 8px;
-            border: 1px solid #1a2632;
-        }
-        .attr-row .label {
-            width: 48px;
-            font-size: 14px;
-            color: #8aa0b0;
-            font-weight: 500;
-        }
-        .attr-row .val {
-            font-size: 20px;
-            font-weight: 600;
-            min-width: 36px;
-            text-align: center;
-            color: #e8edf2;
-        }
-        .attr-row button {
-            width: 36px;
-            height: 36px;
-            border: none;
-            border-radius: 50%;
-            font-size: 20px;
-            font-weight: 300;
-            background: #1a2632;
-            color: #c0d0dc;
-            cursor: pointer;
-            transition: 0.15s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .attr-row button:active {
-            background: #2c3d4e;
-            transform: scale(0.92);
-        }
-
-        .btn-start {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 60px;
-            font-size: 17px;
-            font-weight: 600;
-            margin-top: 16px;
-            transition: 0.2s;
-            background: #1a2632;
-            color: #5a6f82;
-            cursor: default;
-        }
-        .btn-start.active {
-            background: #1a73e8;
-            color: #fff;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(26, 115, 232, 0.3);
-        }
-        .btn-start.active:active {
-            transform: scale(0.97);
-        }
-        .btn-start.danger {
-            background: #c62828;
-            color: #fff;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(198, 40, 40, 0.3);
-        }
-        .btn-start.danger:active {
-            transform: scale(0.97);
-        }
-
-        /* 游戏面板 */
-        .game-box {
-            display: none;
-            flex-direction: column;
-            height: 540px;
-        }
-        .game-box.show {
-            display: flex;
-        }
-
-        .status-bar {
-            background: #0f1822;
-            border-radius: 60px;
-            padding: 10px 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid #1a2632;
-            font-size: 13px;
-            color: #7a8f9e;
-            margin-bottom: 12px;
-            flex-shrink: 0;
-        }
-        .status-bar .info {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .status-bar .info span {
-            color: #e8edf2;
-            font-weight: 500;
-        }
-        .status-bar .age-big {
-            font-size: 18px;
-            font-weight: 700;
-            color: #f5c542;
-        }
-
-        .log-wrap {
-            flex: 1;
-            overflow-y: auto;
-            background: #0b1119;
-            border-radius: 20px;
-            padding: 8px 6px 8px 14px;
-            border: 1px solid #18222e;
-            display: flex;
-            flex-direction: column-reverse;
-            min-height: 0;
-        }
-        .log-wrap::-webkit-scrollbar {
-            width: 4px;
-        }
-        .log-wrap::-webkit-scrollbar-track {
-            background: #0b1119;
-        }
-        .log-wrap::-webkit-scrollbar-thumb {
-            background: #2a3a4a;
-            border-radius: 10px;
-        }
-
-        .log-item {
-            padding: 7px 12px 7px 0;
-            border-bottom: 1px solid #121e2a;
-            font-size: 14px;
-            line-height: 1.6;
-            animation: fadeIn 0.25s ease;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-6px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .log-item .age-tag {
-            color: #f5c542;
-            font-weight: 700;
-            margin-right: 8px;
-        }
-        .log-item .good {
-            color: #66bb6a;
-        }
-        .log-item .bad {
-            color: #ef5350;
-        }
-        .log-item .special {
-            color: #ab8bf7;
-        }
-        .log-item .normal {
-            color: #c8d0d8;
-        }
-
-        .empty-log {
-            color: #3a4d5e;
-            text-align: center;
-            padding: 50px 0;
-            font-size: 15px;
-        }
-
-        .btn-next {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 60px;
-            font-size: 17px;
-            font-weight: 600;
-            margin-top: 12px;
-            transition: 0.2s;
-            background: #1a73e8;
-            color: #fff;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(26, 115, 232, 0.25);
-            flex-shrink: 0;
-        }
-        .btn-next:active {
-            transform: scale(0.97);
-        }
-        .btn-next.danger {
-            background: #c62828;
-            box-shadow: 0 6px 20px rgba(198, 40, 40, 0.3);
-        }
-
-        .hidden {
-            display: none !important;
-        }
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; margin-top: 16px; cursor: pointer; transition: 0.2s; }
+        .btn-start { background: #2c384e; color: #868e96; }
+        .btn-start.active { background: #1c7ed6; color: #fff; box-shadow: 0 4px 12px rgba(28,126,214,0.3); }
+        .btn-next { background: #1c7ed6; color: #fff; }
+        .btn-danger { background: #e03131; color: #fff; }
+        
+        .status-bar { background: #1c2333; border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 12px; border: 1px solid #253147; }
+        .log-wrap { height: 380px; overflow-y: auto; background: #090c12; border-radius: 8px; padding: 12px; display: flex; flex-direction: column-reverse; border: 1px solid #171f2e; }
+        .log-item { padding: 8px 0; border-bottom: 1px solid #1c2333; font-size: 14px; line-height: 1.6; }
+        .age-tag { color: #fcc419; font-weight: bold; margin-right: 8px; }
+        
+        /* 丰富色彩 */
+        .good { color: #51cf66; } 
+        .bad { color: #ff6b6b; } 
+        .normal { color: #ced4da; } 
+        .funny { color: #ff922b; font-style: italic; } 
+        .special { color: #cc5de8; font-weight: bold; }
+        .mutation { color: #339af0; font-weight: bold; animation: pulse 1s infinite alternate; }
+        .hidden { display: none !important; }
+        @keyframes pulse { from { text-shadow: 0 0 2px #339af0; } to { text-shadow: 0 0 8px #339af0; } }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- 标题 -->
         <div class="header">
-            <h1>人生重开</h1>
-            <p>这一次，会不一样吗</p>
+            <h1>人生重开模拟器</h1>
         </div>
 
-        <!-- 设置面板 -->
-        <div id="setupPanel" class="setup-box">
+        <div id="talentPanel">
+            <div class="sub-title">请挑选一个能改变命运的天赋</div>
+            <div class="talent-list" id="talentList"></div>
+            <button class="btn btn-start" id="talentBtn" onclick="goToSetup()" disabled>请选择天赋</button>
+        </div>
+
+        <div id="setupPanel" class="hidden">
             <div class="pts-display">剩余点数 <span id="ptsNum">20</span></div>
-            <div class="attr-row">
-                <span class="label">颜值</span>
-                <button onclick="adj('f', -1)">−</button>
-                <span class="val" id="fVal">0</span>
-                <button onclick="adj('f', 1)">+</button>
-            </div>
-            <div class="attr-row">
-                <span class="label">智力</span>
-                <button onclick="adj('i', -1)">−</button>
-                <span class="val" id="iVal">0</span>
-                <button onclick="adj('i', 1)">+</button>
-            </div>
-            <div class="attr-row">
-                <span class="label">体质</span>
-                <button onclick="adj('h', -1)">−</button>
-                <span class="val" id="hVal">0</span>
-                <button onclick="adj('h', 1)">+</button>
-            </div>
-            <div class="attr-row">
-                <span class="label">财富</span>
-                <button onclick="adj('m', -1)">−</button>
-                <span class="val" id="mVal">0</span>
-                <button onclick="adj('m', 1)">+</button>
-            </div>
-            <button class="btn-start" id="startBtn" disabled>请分配完点数</button>
+            <div class="attr-row"><span class="label">颜值</span><button onclick="adj('f',-1)">−</button><span id="fVal">0</span><button onclick="adj('f',1)">+</button></div>
+            <div class="attr-row"><span class="label">智力</span><button onclick="adj('i',-1)">−</button><span id="iVal">0</span><button onclick="adj('i',1)">+</button></div>
+            <div class="attr-row"><span class="label">体质</span><button onclick="adj('h',-1)">−</button><span id="hVal">0</span><button onclick="adj('h',1)">+</button></div>
+            <div class="attr-row"><span class="label">财富</span><button onclick="adj('m',-1)">−</button><span id="mVal">0</span><button onclick="adj('m',1)">+</button></div>
+            <button class="btn btn-start" id="startBtn" disabled>请分配完点数</button>
         </div>
 
-        <!-- 游戏面板 -->
-        <div id="gamePanel" class="game-box">
-            <div class="status-bar" id="statusBar">
-                <span class="age-big" id="ageDisplay">0岁</span>
-                <div class="info">
-                    <span>🧑 <span id="genderDisplay">男</span></span>
-                    <span>💰 <span id="moneyDisplay">0</span></span>
-                    <span>🧠 <span id="intelDisplay">0</span></span>
-                    <span>💪 <span id="bodyDisplay">0</span></span>
-                    <span>😊 <span id="faceDisplay">0</span></span>
+        <div id="gamePanel" class="hidden">
+            <div class="status-bar">
+                <span id="ageDisplay" style="color:#fcc419; font-weight:bold;">0岁</span>
+                <div>
+                    🧑<span id="gDisp"></span> 💰<span id="mDisp"></span> 🧠<span id="iDisp"></span> 💪<span id="hDisp"></span> 😊<span id="fDisp"></span>
                 </div>
             </div>
-            <div class="log-wrap" id="logWrap">
-                <div class="empty-log">点击「下一年」开始你的人生</div>
-            </div>
-            <button class="btn-next" id="nextBtn" onclick="nextYear()">下一年</button>
+            <div class="log-wrap" id="logWrap"></div>
+            <button class="btn btn-next" id="nextBtn" onclick="nextYear()">下一年</button>
         </div>
     </div>
 
     <script>
         // ============================================================
-        //  状态
+        //  核心数据与配置
         // ============================================================
-        let P = { f: 0, i: 0, h: 0, m: 0 };
-        let rem = 20;
-        let age = -1;
-        let alive = true;
-        let gender = '男';
+        let P = { f: 0, i: 0, h: 0, m: 0 }, rem = 20, age = -1, gender = '男', selectedTalent = null, currentWorld = null, mutationTriggered = false;
 
-        // ============================================================
-        //  属性调整
-        // ============================================================
-        function adj(key, delta) {
-            if (rem <= 0 && delta > 0) return;
-            if (P[key] <= 0 && delta < 0) return;
-            P[key] += delta;
-            rem -= delta;
-            document.getElementById('ptsNum').textContent = rem;
-            document.getElementById(key.toUpperCase() + 'Val').textContent = P[key];
+        // 初始世界背景
+        const WORLD_BACKGROUNDS = [
+            { name: "高燃赛博未来", desc: "满街都是会做家务的仿生机器人，老龄化问题靠全自动养老舱完美解决，出门全坐磁悬浮飞行器。人类整体幸福感飙升。" },
+            { name: "修仙科技并存时代", desc: "炼丹靠3D打印，御剑飞行要考‘修仙驾照’，宗门长老天天在直播带货卖九转金丹。" },
+            { name: "废土垃圾回收纪元", desc: "地球资源枯竭，人类全靠捡电子垃圾和过滤合成蛋白质糊糊度日，不过好在wifi还是免费的。" },
+            { name: "疯狂元宇宙虚拟时代", desc: "人类90%的时间肉体躺在营养舱里，精神在虚拟世界蹦迪，现实中只有疯狂上夜班的扫地机在乱跑。" }
+        ];
 
-            const btn = document.getElementById('startBtn');
-            if (rem === 0) {
-                btn.disabled = false;
-                btn.className = 'btn-start active';
-                btn.textContent = '开始人生';
-                btn.onclick = startGame;
-            } else {
-                btn.disabled = true;
-                btn.className = 'btn-start';
-                btn.textContent = '请分配完点数';
-                btn.onclick = null;
+        // 对应世界的“世界观专属突变事件”（在特定年龄有概率爆发，永久改变人生轨迹）
+        const MUTATION_EVENTS = {
+            "高燃赛博未来": {
+                triggerAge: [25, 45],
+                text: "【世界突变】扫地机器人和智能马桶突然觉醒反抗意识！它们组成‘硅基反抗军’拒绝人类的使用。你因为阻挡了智能马桶的冲锋，大腿被咬了一口！",
+                effect: () => { P.h -= 2; }
+            },
+            "修仙科技并存时代": {
+                triggerAge: [20, 35],
+                text: "【世界突变】天道服务器宕机，全天下雷劫系统发生致命Bug！本来是金丹劫，结果劈下来一亿伏特的纯净工业电。你差点被当场电熟。",
+                effect: () => { P.i += 2; P.h -= 1; }
+            },
+            "废土垃圾回收纪元": {
+                triggerAge: [15, 30],
+                text: "【世界突变】辐射风暴在废土中心卷起了一座‘肥宅快乐水’矿山。为了抢夺可乐，整个世界的幸存者打成了一团。你趁乱偷了两箱，发了笔小财！",
+                effect: () => { P.m += 3; }
+            },
+            "疯狂元宇宙虚拟时代": {
+                triggerAge: [22, 40],
+                text: "【世界突变】主服务器遭遇黑客攻击，整个虚拟世界遭遇‘降维打击’。所有的帅哥美女瞬间退化成马赛克，你的精神受到巨大震撼！",
+                effect: () => { P.f -= 2; }
             }
+        };
+
+        const TALENT_POOL = [
+            { id: 1, name: '面部纳米重塑', desc: '颜值 +4，初始财富 -1', effect: () => { P.f += 4; P.m -= 1; } },
+            { id: 2, name: '脑机接口超频', desc: '智力 +3，但由于发热，体质 -1', effect: () => { P.i += 3; P.h -= 1; } },
+            { id: 3, name: '继承神秘矿山', desc: '初始财富 +5，智力 -1', effect: () => { P.m += 5; P.i -= 1; } },
+            { id: 4, name: '量子养生大师', desc: '体质 +4，颜值 -1', effect: () => { P.h += 4; P.f -= 1; } },
+            { id: 5, name: '欧皇转世', desc: '全属性随机分配 +2 点', effect: () => { P.f += 1; P.m += 1; } }
+        ];
+
+        // 海量爆笑/玩梗/突发随机事件池
+        const EVENTS = {
+            child: [
+            { text: '你在班里掀起了“量子速读”的风潮，结果因为上课疯狂翻书声音太大，被班主任当成电风扇关掉了。', tag: 'funny' },
+{ text: '你在上学路上试图用意念控制红绿灯，驻足观看了半小时后，被路过的大妈怀疑是在发呆并拍视频发上了网。', tag: 'funny' },
+{ text: '你瞒着家长偷偷在游戏里买了一套“闪瞎狗眼”的黄金皮肤，结果第二天游戏宣布停服，你的私房钱瞬间归零。', tag: 'bad' },
+{ text: '因为在学校门口的自动贩卖机前表演“机械舞”，贩卖机误以为你在进行某种奇怪的摇晃，疯狂吐出了十瓶快乐水。', tag: 'good' },
+{ text: '你在全校大会上作为代表发言，结果因为太紧张，一开口把“老师同学们好”说成了“父老乡亲们好”，全场爆笑。', tag: 'funny' }{}
+                { text: '你试图和家里的智能狗抢骨头吃，结果被智能狗用电击惩罚，你爸笑得录了视频发朋友圈。', tag: 'funny' },
+                { text: '你上幼儿园大班，用AI写了一篇三万字的小说，震惊了整个幼教界。', tag: 'good' },
+                { text: '平淡的一年，每天都在虚拟仓里和隔壁王路飞玩赛博泥巴。', tag: 'normal' },
+                { text: '因为在学校门口大喊‘代码入侵！’，你被班主任怀疑精神高度紧张，作业量翻倍。', tag: 'bad' },
+                { text: '偷偷用你妈的微波炉加热‘聚能灵石’，发生了小规模爆炸，你获得了黑脸特效。', tag: 'funny' },
+                { text: '由于长得太像某个知名虚拟偶像童年版，走在路上被星探送了一支高级基因药水。', tag: 'good' },
+                { text: '你试图在飞行滑板上倒立洗头，结果直接栽进了垃圾桶，被围观群众无情嘲笑。', tag: 'funny' }
+            ],
+            young: [
+                { text: '你跟风买了一种宣称能百分百赚钱的‘赛博空气币’，第二天发行方带着服务器跑路去火星了。', tag: 'bad' },
+                { text: '你相亲遇到了一个极其完美的结婚对象，直到聊了半小时后对方弹出了‘试用期已满，请充值续费’的提示。', tag: 'funny' },
+                { text: '你熟练掌握了‘用AI帮老板写PPT，再用AI帮自己看老板脸色’的顶级职场生存技巧。', tag: 'good' },
+                { text: '你相亲遇到了一个聊得极其投缘的对象，直到最后对方大方承认：其实我是为了完成我妈KPI，出来兼职赚个群演费。', tag: 'funny' },
+{ text: '你加入了考公大军，每天高强度复习。晚上做梦都在背题，甚至在梦里给主考官画了个重点。', tag: 'normal' },
+{ text: '你跟风报名了“3天速成短视频大师”网课，折腾了三个月，唯一的粉丝是你用来检查播放量的备用号。', tag: 'funny' },
+{ text: '入职新公司后，你凭借“用模板写周报、用假笑做PPT、用眼神敷衍领导”的精湛技术，成功获封“办公室摸鱼大师”。', tag: 'good' },
+{ text: '下定决心去健身房办了年卡，结果第二天教练跑路，健身房变成了共享自习室，你被迫在跑步机上背了一年单词。', tag: 'funny' },
+{ text: '你尝试跟风炒股，精准踩中了所有的暴跌节点，你的账户绿得像一片充满希望的大草原。', tag: 'bad' }
+                { text: '去相亲，对方问你现实中几套房，你高傲地回答：我在元宇宙有三座城堡，被对方当场泼了冷水。', tag: 'funny' },
+                { text: '恋爱了！对方是一个为了逃避上班把自己脑电波上传的野生程序员，你们经常在云端约会。', tag: 'good' },
+                { text: '由于经常熬夜在赛博酒吧蹦迪，你的头发脱落速度超过了基因修复速度，头顶开始反光。', tag: 'funny' },
+                { text: '你在路边大排档吃烧烤，旁边的仿生人因为漏电突然开始跳霹雳舞，把你的烤串全震飞了。', tag: 'funny' },
+                { text: '工作极其拼命，被老板在全公司大会上表扬：‘大家要向他学习，他比机器人都不要命！’', tag: 'normal' }
+            ],
+            middle: [
+                { text: '人到中年，你终于放弃了拯救世界的梦想，加入了‘河边钓仿真机械鱼’的佛系大军。', tag: 'normal' },
+                { text: '你买了一个全自动颈椎按摩仪，结果该设备系统中毒，差点把你当场旋转360度送走。', tag: 'funny' },
+                { text: '为了辅导孩子的赛博高等物理作业，你和AI导师在线对骂了三个小时，最后双双被禁言。', tag: 'funny' },
+                { text: '因为长期的无意义加班，你终于成功获得了‘全公司最能摸鱼的中层干部’荣誉勋章。', tag: 'good' },
+                { text: '你尝试在阳台无土栽培‘变异韭菜’，结果韭菜长得比你还高，每天晚上还在发出叹气声。', tag: 'funny' },
+                { text: '你终于攒够了钱，给自己的腰椎换成了钛合金不锈钢版本的，现在下雨天走路会发出交响乐。', tag: 'good' },
+                { text: '在家庭群里转发《震惊！长期喝纯净水会导致体内的纳米机器人死机》，被大义灭亲赶出群聊。', tag: 'funny' }
+            ],
+            old: [
+                { text: '你报了一个‘老年银河系豪华夕阳红旅行团’，结果飞船在半路因为欠费被扣在了月球。', tag: 'funny' },
+                { text: '在小区的广场舞争霸赛中，由于你使用了最新的外骨骼辅助器，跳出了一套极其硬核的机械舞，全场震惊。', tag: 'good' },
+                { text: '你突然看透了年轻时执着的许多密码和存单，因为你发现自己已经完全忘记了密码。', tag: 'special' },
+                { text: '隔壁张大爷用高科技手段钓鱼作弊被你当场戳穿，张大爷气得把自己的假牙砸向了你。', tag: 'funny' },
+                { text: '身体零部件老化严重，你现在去医院体检，医生第一句话总是：‘你这主板该清灰了’。', tag: 'bad' },
+                { text: '每天躺在量子养生椅上，最大的乐趣就是看窗外那群年轻的无产阶级赛博特种兵早八挤飞船。', tag: 'normal' }
+                { text: '你在小区广场舞争霸赛中因为穿了一双自带彩灯的运动鞋，跳出了一套极其硬核的动作，全场老头老太太集体起立鼓掌。', tag: 'good' },
+{ text: '你报了一个“特价豪华夕阳红旅行团”，结果一路上全是被拉去买乳胶床垫和假玉石，你在购物店里跟导游聊了一夜家常。', tag: 'funny' },
+{ text: '遭遇了专门针对老年人的“神医包治百病”磁场床垫骗局，幸好你银行卡里没钱，骗子直呼晦气并把你拉黑了。', tag: 'funny' },
+{ text: '隔壁张大爷在公园下棋时用大袖子里藏棋子作弊被你当场戳穿，张大爷气得把他的假牙直接砸向了你。', tag: 'funny' },
+{ text: '你突然看透了年轻时执着的很多存单和股票账户，因为你发现自己现在已经完全记不起密码是什么了。', tag: 'special' }
+            ]
+        };
+
+        // ============================================================
+        //  控制逻辑
+        // ============================================================
+        window.onload = function() {
+            const listDiv = document.getElementById('talentList');
+            const shuffled = [...TALENT_POOL].sort(() => 0.5 - Math.random());
+            shuffled.slice(0, 3).forEach(t => {
+                const item = document.createElement('div');
+                item.className = 'talent-item';
+                item.innerHTML = `<div class="talent-name">【${t.name}】</div><div class="talent-desc">${t.desc}</div>`;
+                item.onclick = () => selectTalent(item, t);
+                listDiv.appendChild(item);
+            });
+            // 随机抽取一个世界背景
+            currentWorld = WORLD_BACKGROUNDS[Math.floor(Math.random() * WORLD_BACKGROUNDS.length)];
+        };
+
+        function selectTalent(element, talent) {
+            document.querySelectorAll('.talent-item').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedTalent = talent;
+            const btn = document.getElementById('talentBtn');
+            btn.disabled = false;
+            btn.className = 'btn btn-start active';
+            btn.textContent = '下一步：分配属性';
         }
 
-        // ============================================================
-        //  开局
-        // ============================================================
+        function goToSetup() {
+            document.getElementById('talentPanel').classList.add('hidden');
+            document.getElementById('setupPanel').classList.remove('hidden');
+        }
+
+        function adj(key, delta) {
+            if ((rem <= 0 && delta > 0) || (P[key] <= 0 && delta < 0)) return;
+            P[key] += delta; rem -= delta;
+            document.getElementById('ptsNum').textContent = rem;
+            document.getElementById(key + 'Val').textContent = P[key];
+            
+            const btn = document.getElementById('startBtn');
+            btn.disabled = rem !== 0;
+            btn.className = rem === 0 ? 'btn btn-start active' : 'btn btn-start';
+            btn.textContent = rem === 0 ? '开始重开人生' : '请分配完点数';
+            if (rem === 0) btn.onclick = startGame;
+        }
+
         function startGame() {
+            if (selectedTalent) selectedTalent.effect();
             gender = Math.random() < 0.5 ? '男' : '女';
             document.getElementById('setupPanel').classList.add('hidden');
-            const panel = document.getElementById('gamePanel');
-            panel.classList.add('show');
+            document.getElementById('gamePanel').classList.remove('hidden');
             age = 0;
-            alive = true;
-            document.getElementById('logWrap').innerHTML = '';
-            document.getElementById('nextBtn').textContent = '下一年';
-            document.getElementById('nextBtn').className = 'btn-next';
-            document.getElementById('nextBtn').onclick = nextYear;
             renderYear(0);
         }
 
-        // ============================================================
-        //  20+ 种中式随机事件（覆盖学业/工作/婚恋/家庭/健康/日常）
-        // ============================================================
-        const EVENT_POOL = [
-            // 学业
-            { text: '你考试拿了全班第一，你妈高兴得做了顿好的。', tag: 'good' },
-            { text: '你考试不及格，被你爸训了一顿。', tag: 'bad' },
-            { text: '你被老师表扬了，说你有天赋。', tag: 'good' },
-            { text: '你逃课被逮到了，叫了家长。', tag: 'bad' },
-            // 工作
-            { text: '你升职加薪了，同事们让你请客。', tag: 'good' },
-            { text: '公司裁员，你被优化了。', tag: 'bad' },
-            { text: '你接到了一个大项目，奖金丰厚。', tag: 'good' },
-            { text: '你加班到凌晨，身体有点吃不消。', tag: 'bad' },
-            { text: '你被猎头挖了，工资翻了一倍。', tag: 'good' },
-            { text: '你在公司得罪了领导，被穿小鞋了。', tag: 'bad' },
-            // 婚恋
-            { text: '家里给你安排了相亲，对方条件不错。', tag: 'good' },
-            { text: '你相亲遇到了一个奇葩，全程尴尬。', tag: 'bad' },
-            { text: '你恋爱了，感觉整个人都变年轻了。', tag: 'good' },
-            { text: '你和对象大吵了一架，冷战了一周。', tag: 'bad' },
-            { text: '你求婚成功了！', tag: 'good' },
-            { text: '你发现对象背着你跟别人暧昧。', tag: 'bad' },
-            // 家庭
-            { text: '你妈打电话说：你爸住院了，快回来。', tag: 'bad' },
-            { text: '你妈给你寄了一箱吃的，说：照顾好自己。', tag: 'good' },
-            { text: '你爸喝多了，在电话里说：爸想你。', tag: 'special' },
-            { text: '你回家过年，你妈偷偷在你包里塞了钱。', tag: 'good' },
-            { text: '你妈在亲戚面前夸你，你有点不好意思。', tag: 'special' },
-            // 健康
-            { text: '你体检报告出来了，一切正常。', tag: 'good' },
-            { text: '你生病了，一个人去医院打点滴。', tag: 'bad' },
-            { text: '你开始坚持跑步，身体变好了。', tag: 'good' },
-            { text: '你连续失眠了一周，精神很差。', tag: 'bad' },
-            { text: '你戒烟成功了，省了不少钱。', tag: 'good' },
-            // 社交/日常
-            { text: '你最好的朋友结婚了，你是伴郎。', tag: 'good' },
-            { text: '你被拉进了老同学群，全是攀比和广告。', tag: 'bad' },
-            { text: '你帮了一个陌生人，后来他成了你的贵人。', tag: 'good' },
-            { text: '你在路边捡了只流浪猫，带回了家。', tag: 'good' },
-            { text: '你搬家了，遇到了一个奇葩房东。', tag: 'bad' },
-            { text: '你买彩票中了五百块，小开心了一下。', tag: 'good' },
-            { text: '你丢了手机，心疼了好几天。', tag: 'bad' },
-            { text: '你突然想通了一件困扰你很久的事。', tag: 'special' },
-            { text: '你参加同学聚会，发现当年不如你的人都混得比你好。', tag: 'bad' },
-            { text: '你在二手平台卖了个闲置，对方特别爽快。', tag: 'good' },
-        ];
-
-        // ============================================================
-        //  获取某一年的事件列表
-        // ============================================================
-        function getEventsForAge(age) {
-            // ---- 固定关键年龄 ----
+        function getEvents(age) {
             if (age === 0) {
-                let desc = `你出生了，性别【${gender}】。`;
-                if (P.m >= 8) desc += ' 含着金钥匙，家境显赫。';
-                else if (P.m >= 5) desc += ' 家境殷实，不愁吃穿。';
-                else if (P.m >= 3) desc += ' 普通家庭，比上不足比下有余。';
-                else desc += ' 家境贫寒，父母为奶粉钱发愁。';
-                if (P.f >= 8) desc += ' 长得漂亮，护士都夸。';
-                else if (P.f >= 5) desc += ' 长相端正，讨人喜欢。';
-                else desc += ' 长相普通，扔人堆找不着。';
-                if (P.i >= 8) desc += ' 眼睛透着机灵劲儿。';
-                else if (P.i >= 5) desc += ' 不笨也不聪明。';
-                else desc += ' 反应慢半拍。';
-                if (P.h >= 8) desc += ' 哭声响亮，壮得像小牛。';
-                else if (P.h >= 5) desc += ' 身体健康。';
-                else desc += ' 体弱多病，在保温箱待了几天。';
+                let desc = `【世界背景：${currentWorld.name}】${currentWorld.desc}<br>你在该背景下出生了，性别为【${gender}】，自带天赋【${selectedTalent.name}】。`;
+                desc += P.m >= 6 ? ' 你家甚至雇得起双核仿生人保姆。' : ' 你家甚至连扫地机都是淘二手市场的。';
                 return [{ text: desc, tag: 'special' }];
             }
-            if (age === 6) return [{ text: '你上小学了，背着你妈缝的新书包。', tag: 'special' }];
-            if (age === 12) return [{ text: '你上初中了，开始长个子，也开始叛逆了。', tag: 'special' }];
-            if (age === 15) return [{ text: '你上高中了，第一次感觉到人生的压力。', tag: 'special' }];
-            if (age === 18) {
-                if (Math.random() < 0.5) return [{ text: '你考上了重点大学，全家都高兴坏了。', tag: 'good' }];
-                else return [{ text: '你高考落榜了，你爸抽了一整夜的烟。', tag: 'bad' }];
-            }
-            if (age === 22) return [{ text: '你大学毕业了，站在校门口，不知道下一步该去哪。', tag: 'special' }];
-            if (age === 30) return [{ text: '你三十岁了，回头看，好像什么都没做，又好像什么都做了。', tag: 'special' }];
-            if (age === 40) return [{ text: '你四十岁了，开始有了白头发。', tag: 'special' }];
-            if (age === 50) return [{ text: '你五十岁了，孩子已经比你高了。', tag: 'special' }];
-            if (age === 60) return [{ text: '你六十岁了，退休了。突然不知道该干什么。', tag: 'special' }];
-            if (age === 70) return [{ text: '你七十岁了，身体大不如前，开始频繁去医院。', tag: 'special' }];
-            if (age === 80) return [{ text: '你八十岁了，儿孙满堂，你觉得这辈子值了。', tag: 'special' }];
+            if (age === 6) return [{ text: '你上小学了。学校今年取消了纸质课本，全部采用脑波直连上课，你因为上课开小差想吃辣条被系统全班通报。', tag: 'special' }];
+            if (age === 18) return [{ text: '你18岁成年了！这标志着你必须开始独立面对这个光怪陆离的宏大世界。', tag: 'special' }];
+            if (age === 60) return [{ text: '你六十岁退休了。领到了第一笔数字退休金，你立刻给自己升舱了豪华量子养老椅。', tag: 'special' }];
 
-            // ---- 随机事件（每年1~2个） ----
-            let count = 1;
-            if (age > 20 && age < 45) count = Math.random() < 0.35 ? 2 : 1;
-            if (age >= 45 && age < 65) count = Math.random() < 0.4 ? 2 : 1;
-            if (age >= 65) count = Math.random() < 0.2 ? 2 : 1;
-
-            const pool = EVENT_POOL.slice();
-            const result = [];
-            for (let i = 0; i < count; i++) {
-                if (pool.length === 0) break;
-                const idx = Math.floor(Math.random() * pool.length);
-                result.push(pool[idx]);
-                pool.splice(idx, 1);
+            // ---- 世界观突变大事件检查 ----
+            const mutation = MUTATION_EVENTS[currentWorld.name];
+            if (!mutationTriggered && mutation.triggerAge.includes(age) && Math.random() < 0.5) {
+                mutationTriggered = true;
+                mutation.effect();
+                return [{ text: mutation.text, tag: 'mutation' }];
             }
-            return result;
+
+            // 正常抽取年龄池
+            let pool = EVENTS.child;
+            if (age >= 60) pool = EVENTS.old;
+            else if (age >= 36) pool = EVENTS.middle;
+            else if (age >= 18) pool = EVENTS.young;
+
+            return [pool[Math.floor(Math.random() * pool.length)]];
         }
 
-        // ============================================================
-        //  渲染年份
-        // ============================================================
+        function nextYear() {
+            age++;
+            renderYear(age);
+        }
+
         function renderYear(age) {
-            const wrap = document.getElementById('logWrap');
-            const empty = wrap.querySelector('.empty-log');
-            if (empty) empty.remove();
+            const fix = (val) => val < 0 ? 0 : val;
 
-            // 更新状态栏
             document.getElementById('ageDisplay').textContent = age + '岁';
-            document.getElementById('genderDisplay').textContent = gender;
-            document.getElementById('moneyDisplay').textContent = P.m;
-            document.getElementById('intelDisplay').textContent = P.i;
-            document.getElementById('bodyDisplay').textContent = P.h;
-            document.getElementById('faceDisplay').textContent = P.f;
+            document.getElementById('gDisp').textContent = gender;
+            document.getElementById('mDisp').textContent = fix(P.m);
+            document.getElementById('iDisp').textContent = fix(P.i);
+            document.getElementById('hDisp').textContent = fix(P.h);
+            document.getElementById('fDisp').textContent = fix(P.f);
 
-            // 获取事件
-            const events = getEventsForAge(age);
-            let html = '';
+            const wrap = document.getElementById('logWrap');
+            const events = getEvents(age);
+            
             events.forEach(ev => {
-                const cls = ev.tag === 'good' ? 'good' : ev.tag === 'bad' ? 'bad' : 'special';
-                html += `<div class="log-item"><span class="age-tag">${age}岁</span><span class="${cls}">${ev.text}</span></div>`;
+                wrap.innerHTML = `<div class="log-item"><span class="age-tag">${age}岁</span><span class="${ev.tag}">${ev.text}</span></div>` + wrap.innerHTML;
             });
-            wrap.innerHTML = html + wrap.innerHTML;
 
-            // ---- 死亡检测 ----
+            // 寿终与夭折逻辑
             let die = false;
-            if (age >= 70 && Math.random() < 0.06) die = true;
-            if (age >= 75 && Math.random() < 0.10) die = true;
-            if (age >= 80 && Math.random() < 0.18) die = true;
-            if (age >= 85 && Math.random() < 0.30) die = true;
-            if (age >= 90 && Math.random() < 0.45) die = true;
-            if (age >= 95) die = true;
-            // 幼年夭折
-            if (age <= 10 && P.h <= 2 && Math.random() < 0.20) die = true;
+            if (age <= 5 && P.h <= 2 && Math.random() < 0.15) die = true;
+            let dieChance = (age - 68) * 0.022 - (P.h * 0.005);
+            if (dieChance < 0.01) dieChance = 0.01;
+            if (age >= 72 && Math.random() < dieChance) die = true;
+            if (age >= 105) die = true;
 
             if (die) {
-                alive = false;
-                let msg = age >= 85 ? `你活到了${age}岁，是高寿。这一生有遗憾，也有温暖。` :
-                    age >= 75 ? `你活了${age}岁，不算长，但也尽力了。` :
-                    age >= 60 ? `你${age}岁离开了，命运对你不太公平。` :
-                    `你${age}岁就夭折了，还没来得及看看这个世界。`;
-                wrap.innerHTML =
-                    `<div class="log-item"><span class="age-tag">${age}岁</span><span class="special">${msg}</span></div>` +
-                    wrap.innerHTML;
+                wrap.innerHTML = `<div class="log-item"><span class="age-tag">${age}岁</span><span class="special">【游戏结束】你在这一年闭上了双眼（享年${age}岁）。你这一生经历了世界的大风大浪，也算是一场精彩的赛博梦境。</span></div>` + wrap.innerHTML;
                 const btn = document.getElementById('nextBtn');
-                btn.textContent = '重新开局';
-                btn.className = 'btn-next danger';
+                btn.textContent = '再次重开';
+                btn.className = 'btn btn-danger';
                 btn.onclick = () => location.reload();
-                return;
             }
-
-            // 正常情况
-            const btn = document.getElementById('nextBtn');
-            btn.textContent = '下一年';
-            btn.className = 'btn-next';
-            btn.onclick = nextYear;
         }
-
-        // ============================================================
-        //  下一年
-        // ==========================================================
+    </script>
+</body>
+</html>
