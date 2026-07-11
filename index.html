@@ -5,353 +5,252 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>人生重开</title>
     <style>
-        body { margin: 0; padding: 15px; background: #121212; color: #e0e0e0; font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; box-sizing: border-box; }
-        button { background: #2a2a2a; color: #fff; border: 1px solid #444; padding: 12px; border-radius: 8px; font-size: 16px; margin: 5px 0; cursor: pointer; }
-        button:hover { background: #3a3a3a; }
-        .row { display: flex; justify-content: space-between; align-items: center; margin: 8px 0; }
-        #log { flex: 1; overflow-y: auto; background: #1a1a1a; padding: 12px; border-radius: 8px; margin: 10px 0; font-size: 14px; line-height: 1.8; border: 1px solid #2a2a2a; display: flex; flex-direction: column-reverse; }
-        #log p { margin: 4px 0; padding: 4px 0; border-bottom: 1px solid #1a1a1a; }
-        #p1 { display: flex; flex-direction: column; height: 100%; overflow-y: auto; }
-        #p2 { display: none; flex-direction: column; height: 100%; }
-        #status { text-align:center; font-size: 13px; padding: 8px; background:#1a1a1a; border-radius:6px; border:1px solid #2a2a2a; }
-        hr { border: 0; border-top: 1px solid #2a2a2a; margin: 12px 0; }
-        .highlight { color: #ff6b6b; }
-        .highlight-gold { color: #ffd700; }
-
-        .card { background: #1a1a2e; border: 2px solid #333; border-radius: 16px; padding: 24px 16px; margin: 10px 0; text-align: center; transition: 0.3s; }
-        .card.revealed { border-color: #4fc3f7; }
-        .card .name { font-size: 22px; font-weight: bold; margin: 6px 0; }
-        .card .desc { font-size: 13px; color: #aaa; margin: 6px 0; }
-        .card .tag { font-size: 12px; color: #ffd700; margin-top: 4px; }
-
-        .btn-draw { background: #1a237e; border-color: #3949ab; font-size: 18px; padding: 14px; font-weight: bold; }
-        .btn-draw:hover { background: #283593; }
-        .btn-enter { background: #0d47a1; border-color: #1976d2; display: none; }
-        .btn-enter:hover { background: #1565c0; }
-        .attr-label { display: inline-block; width: 40px; }
-        .tag-family { color: #4fc3f7; }
-        .tag-job { color: #ffd700; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #0b0e14; color: #c8d0d8; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 12px; }
+        .app { max-width: 480px; width: 100%; background: #131a24; border-radius: 28px; padding: 20px 18px 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.7); border: 1px solid #2a3340; }
+        .title { font-size: 22px; font-weight: 600; letter-spacing: 1px; text-align: center; color: #eef2f6; margin-bottom: 4px; }
+        .sub { text-align: center; font-size: 13px; color: #6b7a8a; margin-bottom: 18px; border-bottom: 1px solid #1f2a34; padding-bottom: 14px; }
+        .row { display: flex; align-items: center; justify-content: space-between; margin: 8px 0; background: #0f1720; padding: 6px 12px; border-radius: 40px; border: 1px solid #1f2a34; }
+        .row button { background: #1f2a34; color: #dbe1e8; border: none; width: 36px; height: 36px; border-radius: 40px; font-size: 20px; font-weight: 300; cursor: pointer; transition: 0.15s; }
+        .row button:active { background: #2e3c4b; }
+        .row span { min-width: 32px; text-align: center; font-size: 20px; font-weight: 500; color: #eef2f6; }
+        .attr-label { width: 48px; font-size: 14px; color: #8fa0b2; }
+        .pts { text-align: center; font-size: 15px; color: #8fa0b2; margin: 14px 0 8px; }
+        .pts span { color: #f5c542; font-weight: 700; font-size: 22px; }
+        .btn-main { width: 100%; padding: 16px; border: none; border-radius: 60px; font-size: 18px; font-weight: 600; background: #1f2a34; color: #6b7a8a; margin-top: 12px; transition: 0.15s; cursor: default; }
+        .btn-main.active { background: #2a7de1; color: #fff; cursor: pointer; box-shadow: 0 6px 14px rgba(42,125,225,0.25); }
+        .btn-main.active:active { transform: scale(0.97); }
+        .btn-main.danger { background: #b13e3e; color: #fff; cursor: pointer; box-shadow: 0 6px 14px rgba(177,62,62,0.25); }
+        .btn-main.danger:active { transform: scale(0.97); }
+        .status-bar { background: #0f1720; border-radius: 60px; padding: 10px 16px; display: flex; flex-wrap: wrap; justify-content: space-between; font-size: 13px; border: 1px solid #1f2a34; margin-bottom: 12px; color: #9aabb8; }
+        .status-bar span { font-weight: 500; color: #dbe1e8; }
+        .log-wrap { background: #0b1119; border-radius: 20px; padding: 8px 4px 4px 12px; height: 380px; overflow-y: auto; border: 1px solid #1a232e; display: flex; flex-direction: column-reverse; scroll-behavior: smooth; }
+        .log-wrap::-webkit-scrollbar { width: 4px; }
+        .log-wrap::-webkit-scrollbar-track { background: #0b1119; }
+        .log-wrap::-webkit-scrollbar-thumb { background: #2a3a4a; border-radius: 10px; }
+        .log-item { padding: 8px 12px 8px 0; border-bottom: 1px solid #141e28; font-size: 14px; line-height: 1.5; }
+        .log-item .age-tag { color: #f5c542; font-weight: 600; margin-right: 8px; }
+        .log-item .event-text { color: #dbe1e8; }
+        .log-item .event-good { color: #6fcf97; }
+        .log-item .event-bad { color: #f28b82; }
+        .log-item .event-special { color: #bb86fc; }
+        .empty-log { color: #3d4d5e; text-align: center; padding: 40px 0; font-size: 15px; }
+        .hidden { display: none; }
+        .flex-col { display: flex; flex-direction: column; height: 100%; }
     </style>
 </head>
 <body>
-
-<div id="p1">
-    <h2 style="text-align:center; margin-bottom: 4px;">抽取你的开局</h2>
-    <p style="text-align:center; color:#888; font-size:13px; margin-top:0;">家庭出身 或 命运走向</p>
-
-    <div class="card" id="cardDisplay">
-        <div style="font-size:48px; opacity:0.2; margin:10px 0;">?</div>
-        <div style="color:#666; font-size:14px;">点击下方按钮抽取</div>
+<div class="app" id="app">
+    <!-- 选属性界面 -->
+    <div id="setupPanel">
+        <div class="title">◈ 人生重开</div>
+        <div class="sub">分配你的初始属性</div>
+        <div class="pts">剩余点数 <span id="ptsNum">20</span></div>
+        <div class="row"><span class="attr-label">颜值</span><button onclick="adj('f',-1)">−</button><span id="fVal">0</span><button onclick="adj('f',1)">+</button></div>
+        <div class="row"><span class="attr-label">智力</span><button onclick="adj('i',-1)">−</button><span id="iVal">0</span><button onclick="adj('i',1)">+</button></div>
+        <div class="row"><span class="attr-label">体质</span><button onclick="adj('h',-1)">−</button><span id="hVal">0</span><button onclick="adj('h',1)">+</button></div>
+        <div class="row"><span class="attr-label">财富</span><button onclick="adj('m',-1)">−</button><span id="mVal">0</span><button onclick="adj('m',1)">+</button></div>
+        <button class="btn-main" id="startBtn" disabled>请分配完点数</button>
     </div>
 
-    <button class="btn-draw" id="drawBtn" onclick="drawCard()">抽取开局</button>
-    <button class="btn-enter" id="enterBtn" onclick="enterGame()">进入人生</button>
+    <!-- 游戏界面 -->
+    <div id="gamePanel" class="hidden flex-col">
+        <div class="status-bar" id="statusBar">🎂 0岁 · 待出生</div>
+        <div class="log-wrap" id="logWrap"><div class="empty-log">点击「下一年」开始人生</div></div>
+        <button class="btn-main active" id="nextBtn" onclick="nextYear()">⬇ 下一年</button>
+    </div>
 </div>
-
-<div id="p2">
-    <div id="status"></div>
-    <div id="log"></div>
-    <button id="btn" onclick="next()">下一年</button>
-</div>
-
 <script>
-// ========== 所有开局（5个家庭 + 5个职业/命运） ==========
-const ALL_STARTS = [
-    // ----- 家庭类 -----
-    {
-        type: 'family',
-        name: '普通人家',
-        desc: '父母都是工人，生活紧巴但过得去。你从小就知道钱来得不容易。',
-        birth: '你出生在城中村的出租屋里，外面是车流声，屋里是父母的叹息。',
-        events: {
-            6: '上小学了，你背的是表姐用过的旧书包。',
-            18: '高考出分了，你考了个普通大学。你爸说：能读就读，砸锅卖铁也供你。',
-            22: '大学毕业了，你找了份工作。你第一次给家里打钱，你妈在电话里哭了。'
-        },
-        ending: '你在大城市打拼了半辈子，终于在老家买了套房。你爸妈搬了进去，你说：这回不用再搬家了。'
-    },
-    {
-        type: 'family',
-        name: '书香门第',
-        desc: '家里书比米多，规矩比饭多。你从小被教育：做人要有骨气。',
-        birth: '你出生在筒子楼里，隔壁是棋牌室，你家却贴满了字画。你爷爷说：咱家穷，但不掉价。',
-        events: {
-            6: '上小学了，你爷爷每天教你背古诗。你背不出来不能吃饭。',
-            18: '高考出分了，你考上了重点大学。你爷爷点了点头：还行。',
-            22: '你成了家里第一个研究生。你爷爷去世前说：咱家终于出了个读书人。'
-        },
-        ending: '你后来当了老师，在讲台上站了一辈子。你教过的学生很多，你记得每一个。'
-    },
-    {
-        type: 'family',
-        name: '单亲之家',
-        desc: '你只有妈妈，她打两份工把你养大。你知道自己不能倒下。',
-        birth: '你出生了，产房外只有你妈一个人。她抱着你说：咱娘俩以后就是彼此的依靠了。',
-        events: {
-            6: '上小学了，你妈每天六点起床给你做早饭，然后赶去上班。',
-            18: '高考出分了，你考得不错。你妈笑了，那是你第一次见她笑得那么开心。',
-            22: '你工作了，第一件事就是让你妈别再打工了。你说：换我养你。'
-        },
-        ending: '你妈老了，你每天下班回家陪她吃饭。她说：这辈子最大的福气就是生了你。你说：我也是。'
-    },
-    {
-        type: 'family',
-        name: '老来得子',
-        desc: '你是父母四十多岁才有的孩子，他们把所有期望都压在了你身上。',
-        birth: '你出生时，你爸已经四十五了。他抱着你手都在抖：老X家终于有后了。',
-        events: {
-            6: '上小学了，你爸每天接送，风雨无阻。同学都以为他是你爷爷。',
-            18: '高考出分了，你没考好。你爸什么都没说，只是叹了口气。那声叹息比骂你还难受。',
-            22: '你工作了，你爸身体越来越差。你说：爸，我养你。他摆了摆手：不用，你过好自己就行。'
-        },
-        ending: '你爸走的那天，你坐在医院走廊里哭了很久。你后悔没多陪陪他。'
-    },
-    {
-        type: 'family',
-        name: '小城富户',
-        desc: '你家在本地算有钱的，但你从小知道，那些钱跟你没关系。',
-        birth: '你出生在县城的独栋小楼里，你爸是做生意的。你妈说：以后这些都是你的。',
-        events: {
-            6: '上小学了，你是班里第一个有手机的人。同学们都羡慕你，你不知道这有什么好羡慕的。',
-            18: '高考出分了，你考了个普通大学。你爸说：没事，回来接班就行。',
-            22: '你回老家了，跟着你爸做生意。你发现这行水很深，你什么都不懂。'
-        },
-        ending: '你后来接手了家里的生意，做得不大不小。你爸退休后每天钓鱼，你忙得没时间陪他。'
-    },
-
-    // ----- 职业/命运类 -----
-    {
-        type: 'job',
-        name: '黄袍加身',
-        desc: '你没什么学历，但你有电瓶车。你接过的单子，比你吃过的饭还多。',
-        birth: '你出生了，你爸说：读书不是唯一的出路。你没听懂，后来你懂了。',
-        events: {
-            6: '上小学了，你成绩一般。老师说你聪明但不用功。',
-            18: '高考落榜了。你妈哭了一场，你说：没事，我去打工。',
-            22: '你成了一名外卖员，每天骑着电瓶车穿街过巷。你觉得也挺好的。',
-            30: '你跑外卖跑了八年，攒了些钱。你开始想：要不要做点别的？'
-        },
-        ending: '你后来开了一家小饭馆，专门做外卖。你雇了几个骑手，偶尔自己也跑两单。你说：还是骑车的时候最自在。'
-    },
-    {
-        type: 'job',
-        name: '浪子回头',
-        desc: '你年轻的时候混过，后来有人拉了你一把。你欠那个人一条命。',
-        birth: '你出生了，你爸是个酒鬼，你妈跑了。你从小没人管。',
-        events: {
-            12: '你开始混社会，打架斗殴是家常便饭。你觉得自己这辈子就这样了。',
-            18: '你因为打架进了看守所，出来的时候你爸死了。你蹲在路边哭了很久。',
-            22: '你找了份正经工作，保安。每天站岗十二个小时，但你觉得踏实。',
-            30: '你成了保安队长，手底下管着十几个人。你偶尔会想起十几岁的自己，像做了一场梦。'
-        },
-        ending: '你后来结了婚，有了孩子。你对你儿子说：别学你爸年轻时候的样子。你儿子问：爸你年轻时候什么样？你没说话。'
-    },
-    {
-        type: 'job',
-        name: '天选打工人',
-        desc: '你换过的工作比你换过的对象还多。不是你不稳定，是你总在找更好的。',
-        birth: '你出生了，你妈说：这孩子将来肯定坐不住。她没说错。',
-        events: {
-            6: '上小学了，你每学期换一个兴趣班，每个都没坚持超过三个月。',
-            18: '高考出分了，你考了个大专。你觉得无所谓，反正学历也没啥用。',
-            22: '你毕业后换了六份工作，每份平均干四个月。你爸妈急得不行。',
-            30: '你终于定下来了，在一家小公司干了三年。你发现自己其实也能坚持。'
-        },
-        ending: '你后来自己创业了，开了一家小公司。你招人的时候，最看重的是：这个人能不能坐得住。'
-    },
-    {
-        type: 'job',
-        name: '文曲星下凡',
-        desc: '你从小就聪明，学什么都快。别人觉得难的事，你觉得不过如此。',
-        birth: '你出生了，接生护士说：这孩子眼睛里透着机灵。你妈信了。',
-        events: {
-            6: '上小学了，你跳过一级。你比同班同学都小一岁，但成绩永远是第一。',
-            18: '高考出分了，你是全市状元。你爸摆了二十桌酒席。',
-            22: '你本科毕业，保送了顶尖大学的直博。别人都说你前途无量。',
-            30: '你博士毕业，进了一家大厂搞研发。你发现身边都是聪明人，你不再是那个最特别的了。'
-        },
-        ending: '你后来成了行业内小有名气的专家。你回老家过年，小学同学说：你果然不一样。你笑了笑，心里想：其实也都差不多。'
-    },
-    {
-        type: 'job',
-        name: '逆天改命',
-        desc: '你出身不好，但不认命。你相信只要拼，总能翻盘。',
-        birth: '你出生在大山里的土坯房，接生婆用剪子剪断脐带。你哭得震天响。',
-        events: {
-            6: '你每天走两个小时山路去上学，鞋底磨破了也舍不得换。',
-            18: '你考上了大学，是全村第一个大学生。你走的那天，全村人都来送你。',
-            22: '你留在了大城市工作，每个月往家里寄钱。你爸说：别寄了，留着自己花。',
-            30: '你在大城市买了房，把爸妈接了过来。你妈说：这楼房真高，看不见山了。'
-        },
-        ending: '你后来有了孩子，你给他讲你小时候走山路的故事。他问：爸爸，山是什么样子的？你突然发现，你已经很多年没见过山了。'
-    }
-];
-
-// ========== 游戏状态 ==========
-let currentStart = null;
-let p = { f:0, i:0, h:0, money:0 };
+// ----- 属性 -----
+let P = { f:0, i:0, h:0, m:0 };
 let rem = 20;
 let age = -1;
 let alive = true;
-let gender = "";
+let gender = '';
 
-function drawCard() {
-    const idx = Math.floor(Math.random() * ALL_STARTS.length);
-    currentStart = ALL_STARTS[idx];
-
-    const card = document.getElementById('cardDisplay');
-    const typeLabel = currentStart.type === 'family' ? '🏠 家庭出身' : '🔮 命运走向';
-    const typeClass = currentStart.type === 'family' ? 'tag-family' : 'tag-job';
-    card.className = 'card revealed';
-    card.innerHTML = `
-        <div class="tag ${typeClass}">${typeLabel}</div>
-        <div class="name">${currentStart.name}</div>
-        <div class="desc">${currentStart.desc}</div>
-    `;
-
-    document.getElementById('enterBtn').style.display = 'block';
+function adj(key, delta) {
+    if (!alive) return;
+    if (delta > 0 && rem <= 0) return;
+    if (delta < 0 && P[key] <= 0) return;
+    P[key] += delta;
+    rem -= delta;
+    document.getElementById('ptsNum').innerText = rem;
+    document.getElementById(key.toUpperCase()+'Val').innerText = P[key];
+    const btn = document.getElementById('startBtn');
+    if (rem === 0) {
+        btn.disabled = false;
+        btn.className = 'btn-main active';
+        btn.innerText = '🎯 开启人生';
+        btn.onclick = startGame;
+    } else {
+        btn.disabled = true;
+        btn.className = 'btn-main';
+        btn.innerText = '请分配完点数';
+        btn.onclick = null;
+    }
 }
 
-function enterGame() {
-    if (!currentStart) return;
-
-    p = { f:0, i:0, h:0, money:0 };
-    rem = 20;
-    age = -1;
-    alive = true;
+function startGame() {
     gender = Math.random() < 0.5 ? '男' : '女';
-
-    document.getElementById('p1').innerHTML = `
-        <h3 style="text-align:center;">开局：${currentStart.name}</h3>
-        <div style="text-align:center; font-size:13px; color:#888; margin-bottom:6px;">${currentStart.desc}</div>
-        <hr>
-        <h3 style="text-align:center;">属性分配 (剩余: <span id="pts">20</span>)</h3>
-        <div class="row"><span class="attr-label">颜值</span><button onclick="add('f',-1)">-</button><span id="f">0</span><button onclick="add('f',1)">+</button></div>
-        <div class="row"><span class="attr-label">智力</span><button onclick="add('i',-1)">-</button><span id="i">0</span><button onclick="add('i',1)">+</button></div>
-        <div class="row"><span class="attr-label">体质</span><button onclick="add('h',-1)">-</button><span id="h">0</span><button onclick="add('h',1)">+</button></div>
-        <div class="row"><span class="attr-label">财富</span><button onclick="add('money',-1)">-</button><span id="money">0</span><button onclick="add('money',1)">+</button></div>
-        <button id="go" onclick="startGame()" style="background:#444;" disabled>请分完点数</button>
-    `;
-
-    window.add = function(t, v) {
-        if ((v > 0 && rem <= 0) || (v < 0 && p[t] <= 0)) return;
-        p[t] += v; rem -= v;
-        document.getElementById('pts').innerText = rem;
-        document.getElementById(t).innerText = p[t];
-        const btn = document.getElementById('go');
-        btn.disabled = rem !== 0;
-        btn.style.background = rem === 0 ? "#0d47a1" : "#444";
-        btn.innerText = rem === 0 ? "开始人生" : "请分完点数";
-    };
-
-    window.startGame = function() {
-        document.getElementById('p1').style.display = 'none';
-        document.getElementById('p2').style.display = 'flex';
-        document.getElementById('log').innerHTML = '';
-        document.getElementById('btn').style.background = '#2a2a2a';
-        document.getElementById('btn').innerText = '下一年';
-        document.getElementById('btn').onclick = next;
-        next();
-    };
+    document.getElementById('setupPanel').classList.add('hidden');
+    document.getElementById('gamePanel').classList.remove('hidden');
+    age = 0;
+    alive = true;
+    document.getElementById('logWrap').innerHTML = '';
+    document.getElementById('nextBtn').innerText = '⬇ 下一年';
+    document.getElementById('nextBtn').className = 'btn-main active';
+    document.getElementById('nextBtn').onclick = nextYear;
+    renderYear(0);
 }
 
-function next() {
-    const log = document.getElementById('log');
-    const btn = document.getElementById('btn');
+// ----- 20种中式随机事件 -----
+const EVENTS = [
+    // 家庭/亲情
+    { text: '你妈打电话来说：你爸住院了，快回来看看。', tag: 'bad', weight: 8 },
+    { text: '你妈寄来一箱腊肉，说：外面吃不到家里的味道。', tag: 'good', weight: 6 },
+    { text: '你爸喝多了，在电话里说：儿子，爸想你。', tag: 'special', weight: 5 },
+    { text: '过年回家，你妈偷偷在你包里塞了两千块钱。', tag: 'good', weight: 7 },
+    { text: '你妈在家族群里发了你的照片，配文：我儿子，帅吧。', tag: 'special', weight: 5 },
+    // 工作/事业
+    { text: '你升职了，工资涨了百分之二十。', tag: 'good', weight: 6 },
+    { text: '公司裁员，你被优化了。', tag: 'bad', weight: 7 },
+    { text: '你连续加班一周，身体发出警告。', tag: 'bad', weight: 8 },
+    { text: '你接了个私单，赚了笔外快。', tag: 'good', weight: 5 },
+    { text: '你被猎头挖了，年薪翻倍。', tag: 'good', weight: 4 },
+    // 社交/人际
+    { text: '同学聚会上，你发现当年不如你的人都混得比你好。', tag: 'bad', weight: 6 },
+    { text: '你最好的朋友结婚了，你是伴郎。', tag: 'good', weight: 5 },
+    { text: '你在酒局上喝多了，说了不该说的话，得罪了人。', tag: 'bad', weight: 5 },
+    { text: '你帮了一个陌生人，后来他成了你的贵人。', tag: 'good', weight: 4 },
+    { text: '你被拉进了一个老同学群，里面全是攀比和广告。', tag: 'bad', weight: 5 },
+    // 感情/婚姻
+    { text: '你被家里安排了三次相亲，一个比一个离谱。', tag: 'bad', weight: 7 },
+    { text: '你遇到了一个让你心动的人。', tag: 'good', weight: 5 },
+    { text: '你对象说：我们结婚吧。', tag: 'special', weight: 4 },
+    { text: '你和对象大吵了一架，冷战了半个月。', tag: 'bad', weight: 6 },
+    { text: '你发现你对象背着你跟别人暧昧。', tag: 'bad', weight: 5 },
+    // 生活/日常
+    { text: '你在路边捡了只流浪猫，带回了家。', tag: 'good', weight: 5 },
+    { text: '你搬家了，新房东是个奇葩。', tag: 'bad', weight: 5 },
+    { text: '你在二手平台卖了个闲置，对方是个爽快人。', tag: 'good', weight: 4 },
+    { text: '你连续失眠了三天。', tag: 'bad', weight: 5 },
+    { text: '你突然想通了某件困扰你很久的事。', tag: 'special', weight: 4 },
+];
 
-    if (!alive) {
-        btn.innerText = '重新开局';
-        btn.onclick = function() { location.reload(); };
-        return;
+function pickEvents(age) {
+    let results = [];
+    let count = 1;
+    if (age > 20 && age < 40) count = Math.random() < 0.3 ? 2 : 1;
+    if (age >= 40 && age < 60) count = Math.random() < 0.4 ? 2 : 1;
+    if (age >= 60) count = Math.random() < 0.2 ? 2 : 1;
+
+    // 重要年龄固定事件
+    if (age === 6) return [{ text: '你上小学了，背着你妈缝的书包。', tag: 'special' }];
+    if (age === 12) return [{ text: '你上初中了，开始长个儿，也开始了叛逆期。', tag: 'special' }];
+    if (age === 15) return [{ text: '你上高中了，第一次觉得人生有压力。', tag: 'special' }];
+    if (age === 18) {
+        if (Math.random() < 0.5) return [{ text: '你高考考上了重点大学，全家都高兴坏了。', tag: 'good' }];
+        else return [{ text: '你高考落榜了，你爸抽了一整夜的烟。', tag: 'bad' }];
+    }
+    if (age === 22) return [{ text: '你大学毕业了，站在校门口，不知道下一步该去哪。', tag: 'special' }];
+    if (age === 30) return [{ text: '你三十岁了，回头看，好像什么都没做，又好像什么都做了。', tag: 'special' }];
+    if (age === 40) return [{ text: '你四十岁了，开始有了白头发。', tag: 'special' }];
+    if (age === 50) return [{ text: '你五十岁了，孩子已经比你高了。', tag: 'special' }];
+    if (age === 60) return [{ text: '你六十岁了，退休了。突然不知道该干什么。', tag: 'special' }];
+
+    // 随机抽取
+    const pool = EVENTS.slice();
+    for (let i = 0; i < count; i++) {
+        if (pool.length === 0) break;
+        const idx = Math.floor(Math.random() * pool.length);
+        results.push(pool[idx]);
+        pool.splice(idx, 1);
+    }
+    return results;
+}
+
+// ----- 渲染年份 -----
+function renderYear(age) {
+    const wrap = document.getElementById('logWrap');
+    if (!alive) return;
+
+    // 移除空状态
+    const empty = wrap.querySelector('.empty-log');
+    if (empty) empty.remove();
+
+    // 状态栏
+    const status = document.getElementById('statusBar');
+    status.innerHTML = `🧑 ${gender} · ${age}岁 · 财:${P.m} 智:${P.i} 体:${P.h} 颜:${P.f}`;
+
+    // 事件生成
+    let events = pickEvents(age);
+    let html = '';
+
+    // 0岁特殊处理
+    if (age === 0) {
+        let desc = `你出生了，性别【${gender}】。`;
+        if (P.m >= 8) desc += ' 含着金钥匙出生，家境显赫。';
+        else if (P.m >= 5) desc += ' 家境殷实，不愁吃穿。';
+        else if (P.m >= 3) desc += ' 普通家庭，比上不足比下有余。';
+        else desc += ' 家境贫寒，父母正在为奶粉钱发愁。';
+
+        if (P.f >= 8) desc += ' 你生得漂亮，护士都说没见过这么好看的孩子。';
+        else if (P.f >= 5) desc += ' 长得端正，讨人喜欢。';
+        else desc += ' 长相普通，扔进人堆就找不着。';
+
+        if (P.i >= 8) desc += ' 你眼睛里透着一股机灵劲儿。';
+        else if (P.i >= 5) desc += ' 正常水准，不笨也不聪明。';
+        else desc += ' 反应慢半拍，但还算健康。';
+
+        if (P.h >= 8) desc += ' 哭声响亮，壮得像头小牛。';
+        else if (P.h >= 5) desc += ' 身体健康，指标正常。';
+        else desc += ' 体弱多病，在保温箱里待了好几天。';
+        events = [{ text: desc, tag: 'special' }];
     }
 
-    age++;
+    // 构建HTML
+    events.forEach(ev => {
+        let cls = 'event-text';
+        if (ev.tag === 'good') cls = 'event-good';
+        else if (ev.tag === 'bad') cls = 'event-bad';
+        else if (ev.tag === 'special') cls = 'event-special';
+        html += `<div class="log-item"><span class="age-tag">${age}岁</span><span class="${cls}">${ev.text}</span></div>`;
+    });
 
-    // 自然死亡
-    if (age > 70) {
-        const roll = Math.random();
-        if (age > 90 || (age > 75 && roll < 0.12) || (age > 80 && roll < 0.25) || (age > 85 && roll < 0.45)) {
-            alive = false;
-            let msg = '你安详地离开了。';
-            if (age > 90) msg = '你活了' + age + '岁，是真正的高寿。儿孙满堂，没什么遗憾。';
-            else if (age > 80) msg = '你活了' + age + '岁。走得很平静，该见的都见了。';
-            else msg = '你活了' + age + '岁。虽然不算太长，但也够本了。';
-            log.innerHTML = '<p style="color:#ffd700;"><b>【' + age + '岁】</b><br>' + msg + '</p>' + log.innerHTML;
-            log.innerHTML += '<p style="color:#888; margin-top:12px;">' + currentStart.ending + '</p>';
-            btn.innerText = '重新开局';
-            btn.style.background = '#b71c1c';
-            btn.onclick = function() { location.reload(); };
-            return;
-        }
-    }
+    wrap.innerHTML = html + wrap.innerHTML;
+
+    // 死亡检测
+    if (age >= 70 && Math.random() < 0.08) { alive = false; }
+    if (age >= 75 && Math.random() < 0.12) { alive = false; }
+    if (age >= 80 && Math.random() < 0.18) { alive = false; }
+    if (age >= 85 && Math.random() < 0.30) { alive = false; }
+    if (age >= 90 && Math.random() < 0.50) { alive = false; }
+    if (age >= 95) { alive = false; }
 
     // 幼年夭折
-    if (age >= 1 && age <= 10 && p.h <= 2 && Math.random() < 0.2) {
-        alive = false;
-        log.innerHTML = '<p style="color:red;">【' + age + '岁】你体质太差，没能撑过去。</p>' + log.innerHTML;
-        btn.innerText = '重新开局';
-        btn.style.background = '#b71c1c';
-        btn.onclick = function() { location.reload(); };
+    if (age <= 10 && P.h <= 2 && Math.random() < 0.25) { alive = false; }
+
+    if (!alive) {
+        const deathMsg = age >= 80 ? `你活到了${age}岁，算是高寿了。这一生，有遗憾，也有温暖。` :
+                         age >= 70 ? `你活了${age}岁，不算长，但你也尽力了。` :
+                         `你${age}岁就离开了，命运对你不太公平。`;
+        wrap.innerHTML = `<div class="log-item"><span class="age-tag">${age}岁</span><span class="event-special">${deathMsg}</span></div>` + wrap.innerHTML;
+        document.getElementById('nextBtn').innerText = '🔄 重新开局';
+        document.getElementById('nextBtn').className = 'btn-main danger';
+        document.getElementById('nextBtn').onclick = () => location.reload();
         return;
     }
 
-    // 生成事件
-    let txt = '';
+    // 更新下一年的按钮
+    document.getElementById('nextBtn').innerText = '⬇ 下一年';
+    document.getElementById('nextBtn').className = 'btn-main active';
+    document.getElementById('nextBtn').onclick = nextYear;
+}
 
-    if (age === 0) {
-        let mText = p.money >= 8 ? '大富大贵，含着金钥匙出生。' : (p.money >= 5 ? '家境殷实，不愁吃穿。' : (p.money >= 3 ? '普通家庭，比上不足比下有余。' : '家境贫寒，父母正在为奶粉钱发愁。'));
-        let fText = p.f >= 8 ? '漂亮得不像普通人家的孩子。' : (p.f >= 4 ? '长相端正，讨人喜欢。' : '长相普通，扔进人堆就找不着。');
-        let iText = p.i >= 8 ? '眼睛里透着一股机灵劲儿。' : (p.i >= 4 ? '正常水准，不笨也不聪明。' : '反应慢半拍，但还算健康。');
-        let hText = p.h >= 8 ? '哭声响亮，护士都说壮实。' : (p.h >= 4 ? '身体健康，指标正常。' : '体弱多病，保温箱里待了好几天。');
-        txt = currentStart.birth + '<br>【家境】' + mText + '<br>【相貌】' + fText + '<br>【天资】' + iText + '<br>【体质】' + hText + '<br>【性别】' + gender;
-    }
-    else if (age >= 1 && age <= 5) {
-        const list = ['一岁了，你会爬了，满屋子乱窜。','两岁了，你开口叫了第一声"妈"。','三岁了，你被送去了幼儿园，哭了一整天。','四岁了，你在幼儿园交到了第一个朋友。','五岁了，你学会了写自己的名字。'];
-        txt = list[age-1] || '你慢慢长大了。';
-    }
-    else if (currentStart.events && currentStart.events[age]) {
-        txt = currentStart.events[age];
-    }
-    else if (age === 6) {
-        txt = '六岁了，你上小学了。你背着新书包，觉得一切都很新鲜。';
-    }
-    else if (age === 12) {
-        txt = '十二岁了，你上初中了。你开始有了自己的想法，不再什么都听爸妈的了。';
-    }
-    else if (age === 15) {
-        txt = '十五岁了，你上高中了。你第一次认真思考：我以后想做什么？';
-    }
-    else if (age === 18) {
-        const r = Math.random();
-        if (r < 0.3) txt = '十八岁，高考出分了。你落榜了。你不知道该怎么面对父母。';
-        else if (r < 0.7) txt = '十八岁，高考出分了。你考了个普通大学。不算好，也不算差。';
-        else txt = '十八岁，高考出分了。你考上了重点大学！你爸妈高兴坏了。';
-    }
-    else if (age === 22) {
-        txt = '二十二岁，你毕业了。你站在校门口，回头看了一眼，然后头也不回地走了。';
-    }
-    else if (age === 25) {
-        txt = '二十五岁，你开始被催婚。你妈说：你看那谁谁，孩子都会打酱油了。';
-    }
-    else if (age === 30) {
-        txt = '三十岁了。你发现自己不再年轻了，但还有很多事没做。';
-    }
-    else if (age % 5 === 0 && age > 30) {
-        txt = age + '岁了。日子过得越来越快，你开始数着天过。';
-    }
-    else if (age > 30) {
-        txt = '你 ' + age + ' 岁了。平平淡淡，又一年。';
-    }
-    else {
-        txt = '你 ' + age + ' 岁了。';
-    }
-
-    document.getElementById('status').innerHTML = 
-        '开局: ' + currentStart.name + ' | ' + gender + 
-        ' | 财:' + p.money + ' 智:' + p.i + ' 体:' + p.h + ' 颜:' + p.f;
-
-    log.innerHTML = '<p><b>【' + age + '岁】</b><br>' + txt + '</p>' + log.innerHTML;
-    btn.innerText = '下一年';
+function nextYear() {
+    if (!alive) return;
+    age++;
+    renderYear(age);
 }
 </script>
 </body>
