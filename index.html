@@ -5,21 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>人生重开模拟器</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+        /* 1. 移除了导致手机端点击失效的全局 user-select: none */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body { background: #0a0d14; font-family: sans-serif; color: #f1f3f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         .container { width: 100%; max-width: 440px; background: #131924; border-radius: 16px; padding: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); border: 1px solid #1e2638; }
         .header { text-align: center; margin-bottom: 20px; }
         .header h1 { font-size: 24px; letter-spacing: 2px; background: linear-gradient(135deg, #fff, #8ab4f8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .pts-display, .sub-title { text-align: center; font-size: 14px; color: #adb5bd; margin-bottom: 16px; }
         .pts-display span { color: #fcc419; font-size: 22px; font-weight: bold; }
+        
+        .talent-list { margin-bottom: 16px; }
+        /* 增强手机端的触摸响应 */
+        .talent-item { background: #1c2333; padding: 12px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 2px solid transparent; -webkit-tap-highlight-color: transparent; }
+        .talent-item.selected { border-color: #1c7ed6; background: #22324d; }
+        .talent-name { font-weight: bold; color: #fcc419; margin-bottom: 4px; font-size: 14px; }
+        .talent-desc { font-size: 12px; color: #adb5bd; }
+
         .attr-row { display: flex; align-items: center; justify-content: space-between; background: #1c2333; padding: 10px 16px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #253147; }
-        .attr-row button { width: 40px; height: 40px; border: none; border-radius: 6px; background: #2c384e; color: #fff; font-size: 20px; cursor: pointer; }
+        .attr-row button { width: 40px; height: 40px; border: none; border-radius: 6px; background: #2c384e; color: #fff; font-size: 20px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .attr-row button:active { background: #3b4b66; }
         .attr-row .label { color: #adb5bd; font-size: 14px; }
+        
         .btn { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; margin-top: 16px; cursor: pointer; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
         .btn-start { background: #2c384e; color: #868e96; }
         .btn-start.active { background: #1c7ed6; color: #fff; box-shadow: 0 4px 12px rgba(28,126,214,0.3); }
+        .btn-start.active:active { background: #1a6cb3; }
         .btn-next { background: #1c7ed6; color: #fff; }
+        .btn-next:active { background: #1a6cb3; }
         .btn-danger { background: #e03131; color: #fff; }
+        
         .status-bar { background: #1c2333; border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 12px; border: 1px solid #253147; flex-wrap: wrap; gap: 4px; }
         .log-wrap { height: 380px; overflow-y: auto; background: #090c12; border-radius: 8px; padding: 12px; display: flex; flex-direction: column-reverse; border: 1px solid #171f2e; }
         .log-item { padding: 8px 0; border-bottom: 1px solid #1c2333; font-size: 14px; line-height: 1.6; }
@@ -74,7 +89,6 @@
         // ============================================================
         let P = { f: 0, i: 0, h: 0, m: 0 }, rem = 20, age = -1, gender = '随机', selectedTalent = null, currentWorld = null, mutationTriggered = false;
 
-        // 初始世界背景
         const WORLD_BACKGROUNDS = [
             { name: "高燃赛博未来", desc: "满街都是会做家务的仿生机器人，老龄化问题靠全自动养老舱完美解决，出门全坐磁悬浮飞行器。人类整体幸福感飙升。" },
             { name: "修仙科技并存时代", desc: "炼丹靠3D打印，御剑飞行要考‘修仙驾照’，宗门长老天天在直播带货卖九转金丹。" },
@@ -83,7 +97,6 @@
             { name: "疯狂元宇宙虚拟时代", desc: "人类90%的时间肉体躺在营养舱里，精神在虚拟世界蹦迪，现实中只有疯狂上夜班的扫地机在乱跑。" }
         ];
 
-        // 对应世界的“世界观专属突变事件”
         const MUTATION_EVENTS = {
             "高燃赛博未来": {
                 triggerAge: [25, 45],
@@ -158,13 +171,13 @@
                 { text: '你熟练掌握了‘用AI帮老板写PPT，再用AI帮自己看老板脸色’的顶级职场生存技巧。', tag: 'good' },
                 { text: '你相亲遇到了一个聊得极其投缘的对象，直到最后对方大方承认：其实我是为了完成我妈KPI，出来兼职赚个群演费。', tag: 'funny' },
                 { text: '你加入了考公大军，每天高强度复习。晚上做梦都在背题，甚至在梦里给主考官画了个重点。', tag: 'normal' },
-                { text: '你跟风报名了“3天速成短视频大师”网课，折腾了三个月，唯一的粉丝是你用来检查播放量的备用号。', tag: 'funny' },
+                { text: '你跟风报名了“3天速成短视频大师”网课，折腾了三个月，唯一的粉丝是用用来检查播放量的备用号。', tag: 'funny' },
                 { text: '入职新公司后，你凭借“用模板写周报、用假笑做PPT、用眼神敷衍领导”的精湛技术，成功获封“办公室摸鱼大师”。', tag: 'good' },
                 { text: '下定决心去健身房办了年卡，结果第二天教练跑路，健身房变成了共享自习室，你被迫在跑步机上背了一年单词。', tag: 'funny' },
                 { text: '你尝试跟风炒股，精准踩中了所有的暴跌节点，你的账户绿得像一片充满希望的大草原。', tag: 'bad' },
                 { text: '去相亲，对方问你现实中几套房，你高傲地回答：我在元宇宙有三座城堡，被对方当场泼了冷水。', tag: 'funny' },
                 { text: '恋爱了！对方是一个为了逃避上班把自己脑电波上传的野生程序员，你们经常在云端约会。', tag: 'good' },
-                { text: 'Due to经常熬夜在赛博酒吧蹦迪，你的头发脱落速度超过了基因修复速度，头顶开始反光。', tag: 'funny' },
+                { text: '由于经常熬夜在赛博酒吧蹦迪，你的头发脱落速度超过了基因修复速度，头顶开始反光。', tag: 'funny' },
                 { text: '你在路边大排档吃烧烤，旁边的仿生人因为漏电突然开始跳霹雳舞，把你的烤串全震飞了。', tag: 'funny' },
                 { text: '工作极其拼命，被老板在全公司大会上表扬：‘大家要向他学习，他比机器人都不要命！’', tag: 'normal' }
             ],
@@ -178,7 +191,7 @@
                 { text: '人到中年，你依然没有放弃摇滚梦，挺着啤酒肚在茶馆里和老哥们高唱“曾经的年轻修士”，感动了全场的中年打工人。', tag: 'good' },
                 { text: '你试图教你那正在考取功名的儿子弹摇滚古筝，结果由于节奏太狂野，你儿子直接在夫子面前把诗经给唱成了黑金属。', tag: 'funny' },
                 { text: '由于年轻时疯狂甩头导致颈椎磨损严重，你的体检报告上多了一项极其摇滚的“摇滚后遗症：重度颈椎退化”。', tag: 'bad' },
-                { text: '你在打打坐冥想时，脑子里全是昨天排练的劲爆鼓点，结果功法逆流，差点把体内的灵气当成音浪给喷了出来。', tag: 'funny' },
+                { text: '你在打坐冥想时，脑子里全是昨天排练的劲爆鼓点，结果功法逆流，差点把体内的灵气当成音浪给喷了出来。', tag: 'funny' },
                 { text: '在家庭群里转发《震惊！长期喝纯净水会导致体内的纳米机器人死机》，被大义灭亲赶出群聊。', tag: 'funny' }
             ],
             old: [
@@ -269,7 +282,6 @@
             if (age === 18) return [{ text: '你18岁成年了！这标志着你必须开始独立面对这个光怪陆离的宏大世界。', tag: 'special' }];
             if (age === 60) return [{ text: '你六十岁退休了。领到了第一笔数字退休金，你立刻给自己升舱了豪华量子养老椅。', tag: 'special' }];
 
-            // 世界观突变大事件
             const mutation = MUTATION_EVENTS[currentWorld.name];
             if (mutation && !mutationTriggered && mutation.triggerAge.includes(age) && Math.random() < 0.5) {
                 mutationTriggered = true;
@@ -313,7 +325,7 @@
             if (dieChance < 0.01) dieChance = 0.01;
             if (age >= 72 && Math.random() < dieChance) die = true;
             
-            const MAX_AGE = 120; // 强制绝对年龄上限
+            const MAX_AGE = 120;
             if (age >= MAX_AGE) die = true;
 
             if (die) {
