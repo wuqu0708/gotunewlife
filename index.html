@@ -3,37 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>人生重开模拟器 - 史诗大屏版</title>
+    <title>人生重开模拟器 - 机制觉醒版</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #0a0d14; font-family: sans-serif; color: #f1f3f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 30px 20px; }
         
-        /* 【核心修改：界面容器彻底放大】最大宽度从440px扩容至800px */
         .container { width: 100%; max-width: 800px; background: #131924; border-radius: 20px; padding: 36px; box-shadow: 0 12px 50px rgba(0,0,0,0.7); border: 1px solid #1e2638; }
-        
         .header { text-align: center; margin-bottom: 24px; }
-        /* 放大标题字号 */
         .header h1 { font-size: 36px; letter-spacing: 4px; background: linear-gradient(135deg, #fff, #8ab4f8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
         
-        /* 放大子标题和剩余点数显示 */
         .pts-display, .sub-title { text-align: center; font-size: 18px; color: #adb5bd; margin-bottom: 24px; }
         .pts-display span { color: #fcc419; font-size: 32px; font-weight: bold; }
         
-        .talent-list { margin-bottom: 24px; }
-        /* 放大天赋卡片尺寸与字号 */
-        .talent-item { background: #1c2333; padding: 16px 20px; border-radius: 12px; margin-bottom: 12px; cursor: pointer; border: 2px solid transparent; -webkit-tap-highlight-color: transparent; }
-        .talent-item.selected { border-color: #1c7ed6; background: #22324d; }
-        .talent-name { font-weight: bold; color: #fcc419; margin-bottom: 6px; font-size: 18px; }
-        .talent-desc { font-size: 15px; color: #adb5bd; line-height: 1.4; }
+        .list-container { margin-bottom: 24px; }
+        .card-item { background: #1c2333; padding: 16px 20px; border-radius: 12px; margin-bottom: 12px; cursor: pointer; border: 2px solid transparent; -webkit-tap-highlight-color: transparent; }
+        .card-item.selected { border-color: #1c7ed6; background: #22324d; }
+        .card-name { font-weight: bold; color: #fcc419; margin-bottom: 6px; font-size: 18px; }
+        .card-desc { font-size: 14px; color: #adb5bd; line-height: 1.4; }
+        .card-bonus { font-size: 13px; color: #51cf66; font-weight: bold; margin-top: 4px; }
 
-        /* 放大属性调整行的尺寸和间距 */
         .attr-row { display: flex; align-items: center; justify-content: space-between; background: #1c2333; padding: 14px 24px; border-radius: 12px; margin-bottom: 12px; border: 1px solid #253147; }
         .attr-row button { width: 50px; height: 50px; border: none; border-radius: 8px; background: #2c384e; color: #fff; font-size: 26px; font-weight: bold; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .attr-row button:active { background: #3b4b66; }
         .attr-row .label { color: #adb5bd; font-size: 18px; font-weight: bold; }
         .attr-row span[id$="Val"] { font-size: 22px; font-weight: bold; color: #fff; min-width: 30px; text-align: center; }
         
-        /* 放大交互按钮的高度和字号 */
         .btn { width: 100%; padding: 18px; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; margin-top: 24px; cursor: pointer; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
         .btn-start { background: #2c384e; color: #868e96; }
         .btn-start.active { background: #1c7ed6; color: #fff; box-shadow: 0 4px 16px rgba(28,126,214,0.4); }
@@ -42,11 +36,8 @@
         .btn-next:active { background: #1a6cb3; }
         .btn-danger { background: #e03131; color: #fff; }
         
-        /* 状态栏放大，在宽屏上显示更舒展 */
         .status-bar { background: #1c2333; border-radius: 12px; padding: 16px 20px; display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 18px; border: 1px solid #253147; flex-wrap: wrap; gap: 8px; align-items: center; }
-        .status-bar span, .status-bar div { font-size: 16px; }
         
-        /* 【核心修改：日志面板深度加高、字号放大】 */
         .log-wrap { height: 480px; overflow-y: auto; background: #090c12; border-radius: 12px; padding: 16px 20px; display: flex; flex-direction: column-reverse; border: 1px solid #171f2e; }
         .log-item { padding: 12px 0; border-bottom: 1px solid #1c2333; font-size: 16px; line-height: 1.7; }
         .age-tag { color: #fcc419; font-weight: bold; margin-right: 12px; font-size: 16px; min-width: 45px; display: inline-block; }
@@ -56,9 +47,7 @@
         .normal { color: #ced4da; } 
         .funny { color: #ff922b; font-style: italic; } 
         .special { color: #cc5de8; font-weight: bold; }
-        .mutation { color: #339af0; font-weight: bold; animation: pulse 1s infinite alternate; }
         .hidden { display: none !important; }
-        @keyframes pulse { from { text-shadow: 0 0 2px #339af0; } to { text-shadow: 0 0 8px #339af0; } }
     </style>
 </head>
 <body>
@@ -68,14 +57,20 @@
             <h1>人生重开模拟器</h1>
         </div>
 
-        <div id="talentPanel">
-            <div class="sub-title">请挑选一个能改变命运的天赋</div>
-            <div class="talent-list" id="talentList"></div>
+        <div id="worldPanel">
+            <div class="sub-title">第一步：请选择你降生的世界背景（自带初始属性加成）</div>
+            <div class="list-container" id="worldList"></div>
+            <button class="btn btn-start" id="worldBtn" onclick="goToTalent()" disabled>请选择世界背景</button>
+        </div>
+
+        <div id="talentPanel" class="hidden">
+            <div class="sub-title">第二步：请挑选一个能改变命运的天赋</div>
+            <div class="list-container" id="talentList"></div>
             <button class="btn btn-start" id="talentBtn" onclick="goToSetup()" disabled>请选择天赋</button>
         </div>
 
         <div id="setupPanel" class="hidden">
-            <div class="pts-display">剩余点数 <span id="ptsNum">20</span></div>
+            <div class="pts-display">剩余自由点数 <span id="ptsNum">20</span></div>
             <div class="attr-row"><span class="label">颜值</span><button onclick="adj('f',-1)">−</button><span id="fVal">0</span><button onclick="adj('f',1)">+</button></div>
             <div class="attr-row"><span class="label">智力</span><button onclick="adj('i',-1)">−</button><span id="iVal">0</span><button onclick="adj('i',1)">+</button></div>
             <div class="attr-row"><span class="label">体质</span><button onclick="adj('h',-1)">−</button><span id="hVal">0</span><button onclick="adj('h',1)">+</button></div>
@@ -98,76 +93,37 @@
     <script>
         let P = { f: 0, i: 0, h: 0, m: 0 }, rem = 20, age = -1, gender = '随机', selectedTalent = null, currentWorld = null, mutationTriggered = false;
 
+        // 10 种带有明确属性加成的世界背景
         const WORLD_BACKGROUNDS = [
-            { name: "高燃赛博未来", desc: "满街都是会做家务的仿生人，老龄化问题靠全自动养老舱解决，出门坐磁悬浮飞行器。" },
-            { name: "修仙科技并存时代", desc: "炼丹靠3D打印，御剑飞行要考‘修仙驾照’，宗门长老天天在线带货卖九转金丹。" },
-            { name: "废土垃圾回收纪元", desc: "地球资源枯竭，人类全靠捡电子垃圾和过滤合成蛋白质糊糊度日，不过好在wifi免费。" },
-            { name: "市井炊烟大时代", desc: "这是一个安稳的时代。天下太平，百姓安居乐业。最大的烦恼就是明早吃肉包子还是菜包子。" },
-            { name: "疯狂元宇宙虚拟时代", desc: "人类90%的时间肉体躺在营养舱里，精神在虚拟世界蹦迪，现实中只有疯狂上夜班的扫地机。" },
-            { name: "蒸汽朋克飞艇帝国", desc: "齿轮与巨型飞艇遮天蔽日，烧高纯度燃煤的机械外骨骼在街头随处可见，贵族们热衷于喝下午茶。" },
-            { name: "魔法与巨龙低保世界", desc: "魔法学院毕业包分配，由于巨龙一族遭到过度捕捞陷入绝迹，现在的魔法使们只能骑着电动扫帚扫大街。" },
-            { name: "克苏鲁触手海鲜档", desc: "天空中长着若隐若现的眼球，由于不可名状的神祇苏醒，大家理智降低，海鲜大排档的章鱼触手开始自己跳舞。" },
-            { name: "规则怪谈恐怖高校", desc: "世界上充满了各种不可思议的规则。‘不要在凌晨吃辣条’‘不要直视穿红衣服的扫地机器人’。" },
-            { name: "远古石器疯狂原始人", desc: "野兽横行，人类还处于钻木取火的起步阶段，每天的核心任务就是提着木棒去追猛犸象。" }
+            { id:1, name: "高燃赛博未来", desc: "满街都是全自动养老舱与磁悬浮飞行器。", bonusDesc: "初始财富 +2，颜值 +1", effect: () => { P.m += 2; P.f += 1; } },
+            { id:2, name: "修仙科技并存时代", desc: "炼丹靠3D打印，宗门长老天天在线直播卖九转金丹。", bonusDesc: "初始智力 +3", effect: () => { P.i += 3; } },
+            { id:3, name: "废土垃圾回收纪元", desc: "地球资源枯竭，人类全靠捡电子垃圾度日。", bonusDesc: "初始体质 +2，财富 -1", effect: () => { P.h += 2; P.m -= 1; } },
+            { id:4, name: "市井炊烟大时代", desc: "天下一统，百姓安居乐业，每天最大烦恼是明早吃啥。", bonusDesc: "初始体质 +1，财富 +1", effect: () => { P.h += 1; P.m += 1; } },
+            { id:5, name: "疯狂元宇宙虚拟时代", desc: "人类90%时间躺在营养舱里，精神在虚拟网络蹦迪。", bonusDesc: "初始智力 +2，体质 -1", effect: () => { P.i += 2; P.h -= 1; } },
+            { id:6, name: "蒸汽朋克飞艇帝国", desc: "齿轮与飞艇遮天蔽日，随处可见烧煤的机械外骨骼。", bonusDesc: "初始财富 +2，体质 +1", effect: () => { P.m += 2; P.h += 1; } },
+            { id:7, name: "魔法与巨龙低保世界", desc: "魔法学院毕业包分配，魔法使们骑着电动扫帚扫大街。", bonusDesc: "初始智力 +2，颜值 +1", effect: () => { P.i += 2; P.f += 1; } },
+            { id:8, name: "克苏鲁触手海鲜档", desc: "天空中长着古神眼球，海鲜档的章鱼触手开始自己跳舞。", bonusDesc: "初始智力 -2，财富 +4", effect: () => { P.i -= 2; P.m += 4; } },
+            { id:9, name: "规则怪谈恐怖高校", desc: "不要在凌晨吃辣条，不要直视穿红衣服的扫地机器人。", bonusDesc: "初始智力 +2", effect: () => { P.i += 2; } },
+            { id:10, name: "远古石器疯狂原始人", desc: "野兽横行，人类每天提着木棒去追猛犸象。", bonusDesc: "初始体质 +4，智力 -2", effect: () => { P.h += 4; P.i -= 2; } }
         ];
 
         const MUTATION_EVENTS = {
-            "高燃赛博未来": {
-                triggerAge: [20, 35],
-                text: "【世界突变】扫地机器人觉醒反抗意识！你由于阻挡了智能马桶的冲锋，大腿被咬了一口！（体质-2）",
-                effect: () => { P.h -= 2; }
-            },
-            "修仙科技并存时代": {
-                triggerAge: [22, 38],
-                text: "【世界突变】天道服务器宕机，雷劫系统发生致命Bug！劈下来一亿伏特纯净工业电。你差点被电熟，但灵魂顿悟了。（智力+3，体质-2）",
-                effect: () => { P.i += 3; P.h -= 2; }
-            },
-            "市井炊烟大时代": {
-                triggerAge: [24, 40],
-                text: "【世界突变】镇上掀起‘全民套圈大热潮’！你用高超的眼力用三个铜板套中了一尊金佛，一夜暴富！（财富+5）",
-                effect: () => { P.m += 5; }
-            },
-            "废土垃圾回收纪元": {
-                triggerAge: [15, 30],
-                text: "【世界突变】废土中心卷起了一座‘肥宅快乐水’矿山。你趁乱偷了两箱，发了笔小财！（财富+3）",
-                effect: () => { P.m += 3; }
-            },
-            "疯狂元宇宙虚拟时代": {
-                triggerAge: [25, 45],
-                text: "【世界突变】主服务器遭遇黑客攻击，整个虚拟世界遭遇‘降维打击’。所有的帅哥美女瞬间退化成马赛克，你的精神受到震撼！（颜值-2）",
-                effect: () => { P.f -= 2; }
-            },
-            "蒸汽朋克飞艇帝国": {
-                triggerAge: [21, 36],
-                text: "【世界突变】帝国的燃煤锅炉发生连锁大爆炸，遮天蔽日的煤烟吸入肺部，整个帝国的人都开始剧烈咳嗽。（体质-2）",
-                effect: () => { P.h -= 2; }
-            },
-            "魔法与巨龙低保世界": {
-                triggerAge: [18, 32],
-                text: "【世界突变】魔法元素周期表更新，发现了全新的狂暴元素，你因为在实验室偷偷围观，智商直接被辐射提高了！（智力+3）",
-                effect: () => { P.i += 3; }
-            },
-            "克苏鲁触手海鲜档": {
-                triggerAge: [23, 42],
-                text: "【世界突变】天上的眼球突然眨了一下，你理智疯狂蒸发，但意外和不可名状的存在达成了契约，突然获得了大量祭祀金币！（财富+4，智力-1）",
-                effect: () => { P.m += 4; P.i -= 1; }
-            },
-            "规则怪谈恐怖高校": {
-                triggerAge: [19, 34],
-                text: "【世界突变】你成功破解了一条绝密规则：‘假装自己是NPC可以逃避期末考试’。你不仅没挂科，还白嫖了一笔奖学金！（智力+2，财富+2）",
-                effect: () => { P.i += 2; P.m += 2; }
-            },
-            "远古石器疯狂原始人": {
-                triggerAge: [16, 28],
-                text: "【世界突变】部落遭遇了百年一遇的恐龙大迁徙，你拼死抗击捡到了龙蛋，吃下后整个人力大无穷！（体质+4）",
-                effect: () => { P.h += 4; }
-            }
+            "高燃赛博未来": { triggerAge: [20, 35], text: "【世界突变】扫地机器人觉醒！你阻挡了智能马桶的冲锋，大腿被咬了一口！（体质-2）", effect: () => { P.h -= 2; } },
+            "修仙科技并存时代": { triggerAge: [22, 38], text: "【世界突变】天道服务器宕机，系统降下工业电暴击，你差点被电熟但灵魂顿悟了。（智力+3，体质-2）", effect: () => { P.i += 3; P.h -= 2; } },
+            "市井炊烟大时代": { triggerAge: [24, 40], text: "【世界突变】镇上掀起‘套圈热潮’！你用三个铜板套中了一尊金佛，一夜暴富！（财富+5）", effect: () => { P.m += 5; } },
+            "废土垃圾回收纪元": { triggerAge: [15, 30], text: "【世界突变】废土中心发现可乐矿山，你趁乱偷了两箱，发了笔小财！（财富+3）", effect: () => { P.m += 3; } },
+            "疯狂元宇宙虚拟时代": { triggerAge: [25, 45], text: "【世界突变】主服遭黑客攻击，大批帅哥美女因退化成马赛克而崩溃。（颜值-2）", effect: () => { P.f -= 2; } },
+            "蒸汽朋克飞艇帝国": { triggerAge: [21, 36], text: "【世界突变】帝国锅炉大爆炸，大量浓烟入肺，你开始剧烈咳嗽。（体质-2）", effect: () => { P.h -= 2; } },
+            "魔法与巨龙低保世界": { triggerAge: [18, 32], text: "【世界突变】发现狂暴魔力元素，你在实验室围观，脑域大受震撼。（智力+3）", effect: () => { P.i += 3; } },
+            "克苏鲁触手海鲜档": { triggerAge: [23, 42], text: "【世界突变】不可名状的存在对你耳语，你理智崩塌但卡里凭空多出一笔巨款。（财富+4，智力-2）", effect: () => { P.m += 4; P.i -= 2; } },
+            "规则怪谈恐怖高校": { triggerAge: [19, 34], text: "【世界突变】你破解了怪谈：‘伪装成垃圾桶可以逃学’，并顺便白嫖了奖学金。（智力+2，财富+2）", effect: () => { P.i += 2; P.m += 2; } },
+            "远古石器疯狂原始人": { triggerAge: [16, 28], text: "【世界突变】部落遭遇恐龙大迁徙，你拼死抗击并炖了一锅霸王龙蛋吃！（体质+4）", effect: () => { P.h += 4; } }
         };
 
         const TALENT_POOL = [
             { id: 1, name: '生而为男', desc: '性别必定为男', effect: () => { gender = '男'; } },
             { id: 2, name: '面部纳米重塑', desc: '颜值 +4，初始财富 -1', effect: () => { P.f += 4; P.m -= 1; } },
-            { id: 3, name: '脑机接口超频', desc: '智力 +3，但由于发热，体质 -1', effect: () => { P.i += 3; P.h -= 1; } },
+            { id: 3, name: '脑机接口超频', desc: '智力 +3，体质 -1', effect: () => { P.i += 3; P.h -= 1; } },
             { id: 4, name: '继承神秘矿山', desc: '初始财富 +5，智力 -1', effect: () => { P.m += 5; P.i -= 1; } },
             { id: 5, name: '量子养生大师', desc: '体质 +4，颜值 -1', effect: () => { P.h += 4; P.f -= 1; } },
             { id: 6, name: '欧皇转世', desc: '全属性各分配 +1 点', effect: () => { P.f += 1; P.m += 1; P.i += 1; P.h += 1; } },
@@ -177,120 +133,158 @@
             { id: 10, name: '金刚不坏', desc: '体质 +5', effect: () => { P.h += 5; } }
         ];
 
+        // 50种常规命运交互事件
         const BASE_EVENTS = {
             child: [
-                { text: '你在班里掀起了“量子速读”的风潮，因为翻书声音太大，被班主任当成电风扇关掉了。', tag: 'funny', effect: () => {} },
-                { text: '你瞒着父母偷偷去铁匠铺定制了一把重达三十斤的铁琵琶，结果把自己的脚趾头给砸飞了。（体质-1）', tag: 'bad', effect: () => { P.h -= 1; } },
-                { text: '上学路上试图用意念控制红绿灯，驻足观看了半小时后，智商受到了路人的质疑。', tag: 'funny', effect: () => {} },
-                { text: '你在学校门口的自动贩卖机前表演“机械舞”，贩卖机判定故障，疯狂吐出了十瓶快乐水！（财富+1）', tag: 'good', effect: () => { P.m += 1; } },
-                { text: '你上幼儿园大班，用AI写了一篇三万字的小说，震惊了整个幼教界。（智力+2）', tag: 'good', effect: () => { P.i += 2; } },
-                { text: '你试图和家里的智能机械狗抢骨头吃，被当场电击，头发变成了爆炸头。（体质-1）', tag: 'bad', effect: () => { P.h -= 1; } },
-                { text: '你在泥坑里捡到了一块发光的古代晶片，擦干净卖掉了。（财富+2）', tag: 'good', effect: () => { P.m += 2; } },
-                { text: '你在全校大会上作为代表发言，结果一开口把“老师好”说成了“太上皇吉祥”，全场笑翻。', tag: 'funny', effect: () => {} },
-                { text: '你疯狂练习单手倒立洗头，虽然经常栽进水桶，但脖子肌肉得到了大幅增强。（体质+1）', tag: 'good', effect: () => { P.h += 1; } },
-                { text: '你跟同学打赌吞下了一颗发光糖果，结果在晚上拉出来的粑粑居然是自带荧光的。（智力-1）', tag: 'bad', effect: () => { P.i -= 1; } },
-                { text: '你长得太清秀可爱，被小区的王大妈强行拉去当童装网店模特，赚到了零花钱。（财富+1，颜值+1）', tag: 'good', effect: () => { P.m += 1; P.f += 1; } },
-                { text: '你把家里的智能马桶魔改成了一个能弹射起步的卡丁车，拆完之后彻底装不回去了。（财富-1，智力+1）', tag: 'funny', effect: () => { P.m -= 1; P.i += 1; } }
+                { text: '你在班里掀起了“量子速读”风潮，因为翻书声音太大，被班主任强行关掉。', tag: 'funny', effect: () => {} },
+                { text: '你瞒着父母去定制重达三十斤的铁琵琶，结果把自己的大脚趾砸青了。（体质-1）', tag: 'bad', effect: () => { P.h -= 1; } },
+                { text: '上学路上试图用意念控制红绿灯，驻足观看了半小时后，智商遭到了路人质疑。', tag: 'funny', effect: () => {} },
+                { text: '你在学校门口的自动贩卖机前蹦迪，贩卖机判定故障吐出了十瓶快乐水！（财富+1）', tag: 'good', effect: () => { P.m += 1; } },
+                { text: '你上幼儿园大班用AI写了一篇三万字科幻小说，震惊了幼教界。（智力+2）', tag: 'good', effect: () => { P.i += 2; } },
+                { text: '你试图抢智能机械狗嘴里的骨头，被当场电击，头发变成了非主流爆炸头。（体质-1）', tag: 'bad', effect: () => { P.h -= 1; } },
+                { text: '你在烂泥坑里捡到了一块发光的古代高能晶片，擦干净后卖出去了。（财富+2）', tag: 'good', effect: () => { P.m += 2; } },
+                { text: '你在国旗下演讲，一开口把“老师好”说成了“太上皇吉祥”，全校笑翻。', tag: 'funny', effect: () => {} },
+                { text: '你疯狂练习单手倒立洗头，虽然经常栽进桶里，但颈椎肌肉得到了大幅增强。（体质+1）', tag: 'good', effect: () => { P.h += 1; } },
+                { text: '你和同学打赌吞下一颗发光原石，晚上上厕所时发现马桶里在闪烁绿光。（智力-1）', tag: 'bad', effect: () => { P.i -= 1; } },
+                { text: '你长得太清秀可爱，被王大妈拉去给童装网店做模特，赚到了人生第一桶金。（财富+1，颜值+1）', tag: 'good', effect: () => { P.m += 1; P.f += 1; } },
+                { text: '你把家里的智能马桶魔改成了一个弹射赛车，结果彻底组装不回去了。（财富-1，智力+1）', tag: 'funny', effect: () => { P.m -= 1; P.i += 1; } }
             ],
             young: [
-                { text: '你跟风买了一种宣称能百分百赚钱的‘赛博空气币’，第二天发行方跑路去火星了。（财富-3）', tag: 'bad', effect: () => { P.m -= 3; } },
-                { text: '入职新公司后，你凭借“用模板写周报、用假笑做PPT”的精湛技术，获封“办公室摸鱼大师”。', tag: 'good', effect: () => {} },
-                { text: '你下定决心去健身房办了年卡，坚持锻炼了一整年，练出了令人羡慕的腹肌！（体质+2，颜值+1）', tag: 'good', effect: () => { P.h += 2; P.f += 1; } },
-                { text: '你尝试跟风炒股，精准踩中了所有的暴跌节点，你的账户绿得像一片大草原。（财富-2）', tag: 'bad', effect: () => { P.m -= 2; } },
-                { text: '你在路边大排档吃烧烤，旁边的仿生人因为漏电突然开始跳霹雳舞，把你的烤串全震飞了。', tag: 'funny', effect: () => {} },
-                { text: '你沉迷于通宵拼装乐高机甲，由于经常熬夜，你的黑眼圈已经浓郁得像一只熊猫。（颜值-1）', tag: 'bad', effect: () => { P.f -= 1; } },
-                { text: '你在网上连夜发表了一篇《论如何利用量子纠缠教鹦鹉说脏话》，瞬间爆火并拿到了稿费。（智力+1，财富+2）', tag: 'good', effect: () => { P.i += 1; P.m += 2; } },
-                { text: '你报名参加了“全星际大胃王争霸赛”，因为高强度吞噬压缩饼干，胃部大受重创。（体质-2）', tag: 'bad', effect: () => { P.h -= 2; } },
-                { text: '你鼓起勇气跟心仪的虚拟主播告白，结果发现对方背后的动捕演员其实是你五十岁的亲叔叔。', tag: 'funny', effect: () => {} },
-                { text: '你买了一件自称能自动搭配的“智能发光西装”，穿上后走在路上因为漏电狂跳探戈。（颜值-1）', tag: 'bad', effect: () => { P.f -= 1; } },
-                { text: '你在垃圾堆里淘到一本《速成秘籍：从入门到入土》，瞎练了一年居然真的气沉丹田了！（体质+2）', tag: 'good', effect: () => { P.h += 2; } },
-                { text: '你凭借高超的聊天话术，成功在兼职中忽悠了三个大老板投资你的“空气炸锅魔改计划”。（财富+3）', tag: 'good', effect: () => { P.m += 3; } },
-                { text: '相亲时你展示了高超的“单手敲代码”技能，对方觉得你可能脑子有坑，起身顺走了你的单反。（财富-1）', tag: 'funny', effect: () => { P.m -= 1; } }
+                { text: '你跟风买了自称能暴富的‘赛博空气币’，第二天发行方跑路去火星了。（财富-3）', tag: 'bad', effect: () => { P.m -= 3; } },
+                { text: '入职新公司，你凭借“用模板写周报、用假笑做PPT”的精湛技术，获封摸鱼大师。', tag: 'good', effect: () => {} },
+                { text: '你下定决心去健身房狂练一整年，练出了令人羡慕的八块腹肌！（体质+2，颜值+1）', tag: 'good', effect: () => { P.h += 2; P.f += 1; } },
+                { text: '你跟风炒股，精准踩中了所有暴跌节点，你的账户比青青草原还要绿。（财富-2）', tag: 'bad', effect: () => { P.m -= 2; } },
+                { text: '街边大排档吃烧烤，旁边的仿生人因为短路突然开始疯狂跳霹雳舞，把你的烤串震飞。', tag: 'funny', effect: () => {} },
+                { text: '你沉迷通宵拼装硬核乐高高达，由于熬夜严重，黑眼圈浓得像大熊猫。（颜值-1）', tag: 'bad', effect: () => { P.f -= 1; } },
+                { text: '你连夜发表了一篇《论量子力学如何应用在鹦鹉对骂中》，瞬间爆火并斩获大笔稿费。（智力+1，财富+2）', tag: 'good', effect: () => { P.i += 1; P.m += 2; } },
+                { text: '你报名参加大胃王比赛，因高强度吞噬高度压缩饼干，胃部大受重创。（体质-2）', tag: 'bad', effect: () => { P.h -= 2; } },
+                { text: '你鼓起勇气跟心仪的虚拟主播告白，却发现对方背后的动捕演员其实是你五十岁的亲叔叔。', tag: 'funny', effect: () => {} },
+                { text: '你买了一件自称全自动搭配的智能服装，走在路上漏电带偏了你的走路姿势。（颜值-1）', tag: 'bad', effect: () => { P.f -= 1; } },
+                { text: '垃圾堆里淘到一本《速成气功：从入门到入土》，瞎练一年居然真的气沉丹田。（体质+2）', tag: 'good', effect: () => { P.h += 2; } },
+                { text: '你凭借高超的话术，成功在兼职中忽悠了三个老板投资你的空气炸锅火箭推进计划。（财富+3）', tag: 'good', effect: () => { P.m += 3; } },
+                { text: '相亲时你展示了高超的“单手单指敲代码”技术，对方以为你多动症，起身顺走了你的微单。（财富-1）', tag: 'funny', effect: () => { P.m -= 1; } }
             ],
             middle: [
-                { text: '人到中年，你终于放弃了拯救世界的梦想，加入了‘河边钓仿真机械鱼’的佛系大军。', tag: 'normal', effect: () => {} },
-                { text: '你买了一个全自动颈椎按摩仪，结果该设备系统中毒，差点把你旋转360度送走。（体质-1）', tag: 'funny', effect: () => { P.h -= 1; } },
-                { text: '你终于攒够了钱，给自己的腰椎换成了钛合金不锈钢版本的，下雨天走路会发出交响乐。（体质+3，财富-2）', tag: 'good', effect: () => { P.h += 3; P.m -= 2; } },
-                { text: '你在打坐冥想时，脑子里全是昨天排练的劲爆鼓点，导致功法逆流。（智力-1，体质-1）', tag: 'funny', effect: () => { P.i -= 1; P.h -= 1; } },
-                { text: '你跟风投资了“火星生蚝养殖基地”，因为火星没有水，你的投资血本无归。（财富-3）', tag: 'bad', effect: () => { P.m -= 3; } },
-                { text: '为了防止中年脱发，你斥巨资购买了强力生发头盔，由于辐射太高，头发没长出来，智力似乎变高了。（智力+2，财富-2）', tag: 'good', effect: () => { P.i += 2; P.m -= 2; } },
-                { text: '你在小区里和刘大爷因为一盘象棋争得面红耳赤，最后通过“赛博掰手腕”赢了对方。（体质+1）', tag: 'good', effect: () => { P.h += 1; } },
-                { text: '你的脸部皮肤遭遇了不可逆的“地心引力大摧毁”，整个人看起来老了二十岁。（颜值-2）', tag: 'bad', effect: () => { P.f -= 2; } },
-                { text: '因为长时间坐在电脑前不挪窝，你的腰间盘高调突出，疼得你在床上躺了半个月。（体质-1）', tag: 'bad', effect: () => { P.h -= 1; } },
-                { text: '你在大扫除时发现了年轻时藏在全息相框后面的私房钱，激动得老泪纵横。（财富+1）', tag: 'good', effect: () => { P.m += 1; } },
-                { text: '你试图教孩子写脑波微积分，由于孩子实在太笨，你气得血压飙升。', tag: 'funny', effect: () => {} },
-                { text: '你因为长年累月的行业经验，成功晋升为单位的技术总监，虽然工资涨了，但头彻底秃了。（财富+2，颜值-1）', tag: 'good', effect: () => { P.m += 2; P.f -= 1; } }
+                { text: '人到中年，你终于放弃了拯救世界的幻想，加入了‘钓仿真机械鱼’的佛系大军。', tag: 'normal', effect: () => {} },
+                { text: '你买了个二手全自动颈椎按摩仪，结果设备系统中毒，差点把你脑袋旋转360度送走。（体质-1）', tag: 'funny', effect: () => { P.h -= 1; } },
+                { text: '你攒够了钱，给自己的腰椎换成了钛合金防弹版的，下雨天走路会自带打击乐。（体质+3', tag: 'good', effect: () => { P.h += 3; P.m -= 2; } },
+                { text: '你在打坐冥想时，脑子里全是昨天排练的劲爆DJ鼓点，导致体内的功法逆流。（智力-1，体质-1）', tag: 'funny', effect: () => { P.i -= 1; P.h -= 1; } },
+                { text: '投资了“火星大闸蟹养殖计划”，因火星没有水，项目直接暴雷破产。（财富-3）', tag: 'bad', effect: () => { P.m -= 3; } },
+                { text: '为防脱发购买了强力生发头盔，辐射太高导致头顶更光了，但脑算力飙升。（智力+2，财富-2）', tag: 'good', effect: () => { P.i += 2; P.m -= 2; } },
+                { text: '你在小区和张大爷因为一盘残局发生争执，最后通过赛博手工业掰手腕完胜对方。（体质+1）', tag: 'good', effect: () => { P.h += 1; } },
+                { text: '中年危机来临，你的皮肤遭遇了地心引力毁灭性打击，看起来老了三十岁。（颜值-2）', tag: 'bad', effect: () => { P.f -= 2; } },
+                { text: '由于长时间久坐电脑前不动弹，你的腰椎间盘高调突出，疼得在床上平躺了半个月。（体质-1）', tag: 'bad', effect: () => { P.h -= 1; } },
+                { text: '翻箱倒柜时意外发现了自己二十年前藏在全息相框夹层里的私房钱，激动得老泪纵横。（财富+1）', tag: 'good', effect: () => { P.m += 1; } },
+                { text: '试图辅导孩子高能脑波微积分，由于孩子资质太愚钝，你气得高血压飙升。', tag: 'funny', effect: () => {} },
+                { text: '因经验丰富你晋升成了公司的核心总监，工资暴涨，然而头发彻底掉光了。（财富+2，颜值-1）', tag: 'good', effect: () => { P.m += 2; P.f -= 1; } }
             ],
             old: [
-                { text: '在小区的广场舞争霸赛中，由于你使用了最新的外骨骼辅助器，跳出一套极其硬核的机械舞，震惊全场。（颜值+1）', tag: 'good', effect: () => { P.f += 1; } },
-                { text: '身体零部件老化严重，你现在去医院体检，医生第一句话总是：‘你这主板该清灰了’。（体质-1）', tag: 'bad', effect: () => { P.h -= 1; } },
-                { text: '遭遇了专门针对老年人的“神医包治百病”磁场床垫骗局，幸好你卡里没钱，骗子把你拉黑了。', tag: 'funny', effect: () => {} },
-                { text: '你瞒着老伴参加了“夕阳红跨星系超远程旅游团”，结果飞船因为欠费被扣押在月球服务区。', tag: 'funny', effect: () => {} },
-                { text: '你脑子越来越忘事，出去买菜不仅忘记带钱包，甚至把大孙子落在了菜市场。（智力-1）', tag: 'bad', effect: () => { P.i -= 1; } },
-                { text: '因为坚持每天打八段锦，你的身体骨骼依然硬朗，去医院体检把年轻的主治医生惊呆了。（体质+2）', tag: 'good', effect: () => { P.h += 2; } },
-                { text: '你尝试戴上墨镜去河边用高科技量子鱼竿钓鱼，结果除了一只破烂的机械拖鞋什么也没钓上来。', tag: 'funny', effect: () => {} },
-                { text: '你在老年大学里自学了“全息水彩画”，你的画作被赞誉为“当代最迷幻的抽象艺术”，卖了一笔好钱。（财富+2）', tag: 'good', effect: () => { P.m += 2; } },
-                { text: '因为长相慈祥，你在小区里深受野猫们的喜爱，每天被十多只猫猫围观蹭裤脚。（颜值+1）', tag: 'good', effect: () => { P.f += 1; } },
-                { text: '你跟隔壁张大爷用高科技手段下盲棋，结果因算力不足系统当场死机，你输掉了半个月低保。（财富-1）', tag: 'bad', effect: () => { P.m -= 1; } },
-                { text: '你坐在藤椅上晒太阳，突然看透了年轻时拼死拼活争夺的各种虚名，内心得到了极大的平静。（智力+1）', tag: 'special', effect: () => { P.i += 1; } },
-                { text: '你决定给自己的假牙升级成具有独立音响功能的“蓝牙蹦迪款”，晚上睡觉时嘴巴里一直在放重金属摇滚。', tag: 'funny', effect: () => {} },
-                { text: '你突然想起来年轻时好像借给过隔壁王路飞一笔巨款，现在去要账，王路飞表示自己早就不当海贼改去种地了。', tag: 'funny', effect: () => {} }
+                { text: '小区广场舞大赛中，你开启外骨骼辅助器跳出一套极其硬核的震感舞，震惊全场。（颜值+1）', tag: 'good', effect: () => { P.f += 1; } },
+                { text: '身体零部件老化严重，去医院体检，AI医生叹了口气说：‘老哥，你这主板该清灰了’。（体质-1）', tag: 'bad', effect: () => { P.h -= 1; } },
+                { text: '遭遇针对老年人的磁场床垫骗局，幸好你卡里为0，骗子直呼晦气当场把你踢出群聊。', tag: 'funny', effect: () => {} },
+                { text: '瞒着老伴参加了“夕阳红跨星系超远旅行团”，结果飞船因为燃料欠费被扣在了月球。', tag: 'funny', effect: () => {} },
+                { text: '你越来越健忘，出门不仅忘了穿裤子，还把脑机接口的内存条落在了菜市场。（智力-1）', tag: 'bad', effect: () => { P.i -= 1; } },
+                { text: '坚持每天打量子太极拳，你的骨骼依旧非常硬朗，体检把年轻医生惊呆了。（体质+2）', tag: 'good', effect: () => { P.h += 2; } },
+                { text: '你戴上老花镜去河边用高科技量子竿钓鱼，结果除了勾上一只破机械鞋外一无所获。', tag: 'funny', effect: () => {} },
+                { text: '在老年大学里自学了全息水彩，作品被赞誉为“迷幻流派巅峰之作”，大卖了一笔。（财富+2）', tag: 'good', effect: () => { P.m += 2; } },
+                { text: '因为长相极其慈祥老实，你在小区极招野猫喜欢，每天出门脚上都缠着十几只猫。', tag: 'good', effect: () => { P.f += 1; } },
+                { text: '和隔壁大爷用算法下盲棋，因为算力不够导致系统烧毁，你赔了对方一笔低保费。（财富-1）', tag: 'bad', effect: () => { P.m -= 1; } },
+                { text: '坐在摇椅上晒太阳，突然顿悟了过去几十年争夺的虚名不过是大脑皮层的电信号，心境圆满。（智力+1）', tag: 'special', effect: () => { P.i += 1; } },
+                { text: '你给假牙升级了无线蓝牙播放功能，晚上睡觉时你的嘴巴一直在大声外放重金属摇滚。', tag: 'funny', effect: () => {} },
+                { text: '突然想起年轻时好像借给了隔壁王路飞一笔巨款，现在去催债，对方说自己早就不当海贼改去抓虾了。', tag: 'funny', effect: () => {} }
             ]
         };
 
         const HIGH_ATTR_EVENTS = {
             rich: [
-                { text: '【财富线】你动用名下的数字资产包下了市中心整栋全息投影大楼，用来播放你昨晚连夜录制的洗脑山歌。（财富-1，颜值+2）', tag: 'special', effect: () => { P.m -= 1; P.f += 2; } },
-                { text: '【财富线】你购买了一辆限量版全金箔磁悬浮超跑，走在路上反光极其耀眼，路人纷纷大呼闪瞎狗眼。（财富-2，颜值+3）', tag: 'special', effect: () => { P.m -= 2; P.f += 3; } }
+                { text: '【财富线触发】你动用万贯家财包下了全城所有的全息大楼，循环播放你录制的山歌。（财富-1，颜值+2）', tag: 'special', effect: () => { P.m -= 1; P.f += 2; } },
+                { text: '【财富线触发】你定制了一辆纯金打造的磁悬浮跑车，反光极其刺眼，路人惊呼闪瞎钛合金狗眼。（财富-2，颜值+3）', tag: 'special', effect: () => { P.m -= 2; P.f += 3; } }
             ],
             smart: [
-                { text: '【天才线】你闭关三天，成功破译了隔壁宗门防御大阵的代码，并顺手植入了一个自动帮人签到的脚本。（智力+3）', tag: 'special', effect: () => { P.i += 3; } },
-                { text: '【天才线】你利用量子力学原理发明了一种“永远不会在泡面时浮起来的盖子”，申请专利赚了一大笔！（智力+1，财富+3）', tag: 'special', effect: () => { P.i += 1; P.m += 3; } }
-            ],
-            sick: [
-                { text: '【体弱线】由于长期的体质虚弱，你连吸入含有高浓度灵气的空气都会剧烈咳嗽，感觉自己快要风化了。（体质-1）', tag: 'bad', effect: () => { P.h -= 1; } }
-            ],
-            handsome: [
-                { text: '【魅力线】你因为长得太好看，走在路上被星探强行拉去录制赛博偶像选秀，一不小心成了人气王。（财富+2，颜值+1）', tag: 'special', effect: () => { P.m += 2; P.f += 1; } }
+                { text: '【天才线触发】你闭关一宿成功破译了天道防线大阵的绝密代码，顺手改写了期末考试的分数。（智力+3）', tag: 'special', effect: () => { P.i += 3; } },
+                { text: '【天才线触发】你利用量子纠缠发明了永远不会漏汤的吸管，申请专利让你狠赚了一大笔！（智力+1，财富+3）', tag: 'special', effect: () => { P.i += 1; P.m += 3; } }
             ]
         };
 
+        const LOW_ATTR_EVENTS = {
+            sick: [{ text: '【体弱线触发】由于体质太差，你吸入带有少量风沙的空气都开始吐血，感觉生命快要蒸发。（体质-1）', tag: 'bad', effect: () => { P.h -= 1; } }],
+            poor: [{ text: '【贫困线触发】你穷得只能去工厂大门口排队领废弃机油拌面吃，面黄肌瘦。（体质-1）', tag: 'bad', effect: () => { P.h -= 1; } }]
+        };
+
         // ============================================================
-        //  控制逻辑
+        //  控制流程逻辑
         // ============================================================
         window.onload = function() {
+            // 初始化世界背景选择
+            const worldDiv = document.getElementById('worldList');
+            WORLD_BACKGROUNDS.forEach(w => {
+                const item = document.createElement('div');
+                item.className = 'card-item';
+                item.innerHTML = `<div class="card-name">🌍 ${w.name}</div><div class="card-desc">${w.desc}</div><div class="card-bonus">🎁 加成：${w.bonusDesc}</div>`;
+                item.onclick = () => selectWorld(item, w);
+                worldDiv.appendChild(item);
+            });
+        };
+
+        function selectWorld(element, world) {
+            document.querySelectorAll('#worldList .card-item').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            currentWorld = world;
+            const btn = document.getElementById('worldBtn');
+            btn.disabled = false;
+            btn.className = 'btn btn-start active';
+            btn.textContent = '下一步：选择随机天赋';
+        }
+
+        function goToTalent() {
+            // 先将世界背景带有的属性直接应用
+            currentWorld.effect();
+            
+            document.getElementById('worldPanel').classList.add('hidden');
+            document.getElementById('talentPanel').classList.remove('hidden');
+            
+            // 初始化随机天赋
             const listDiv = document.getElementById('talentList');
+            listDiv.innerHTML = "";
             const shuffled = [...TALENT_POOL].sort(() => 0.5 - Math.random());
             shuffled.slice(0, 3).forEach(t => {
                 const item = document.createElement('div');
-                item.className = 'talent-item';
-                item.innerHTML = `<div class="talent-name">【${t.name}】</div><div class="talent-desc">${t.desc}</div>`;
+                item.className = 'card-item';
+                item.innerHTML = `<div class="card-name">【${t.name}】</div><div class="card-desc">${t.desc}</div>`;
                 item.onclick = () => selectTalent(item, t);
                 listDiv.appendChild(item);
             });
-            currentWorld = WORLD_BACKGROUNDS[Math.floor(Math.random() * WORLD_BACKGROUNDS.length)];
-        };
+        }
 
         function selectTalent(element, talent) {
-            document.querySelectorAll('.talent-item').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('#talentList .card-item').forEach(el => el.classList.remove('selected'));
             element.classList.add('selected');
             selectedTalent = talent;
             const btn = document.getElementById('talentBtn');
             btn.disabled = false;
             btn.className = 'btn btn-start active';
-            btn.textContent = '下一步：分配属性';
+            btn.textContent = '下一步：分配自由属性';
         }
 
         function goToSetup() {
             document.getElementById('talentPanel').classList.add('hidden');
             document.getElementById('setupPanel').classList.remove('hidden');
+            // 显示面板中因背景产生的默认基础点数
+            updateAttrDisplay();
+        }
+
+        function updateAttrDisplay() {
+            document.getElementById('ptsNum').textContent = rem;
+            document.getElementById('fVal').textContent = P.f;
+            document.getElementById('iVal').textContent = P.i;
+            document.getElementById('hVal').textContent = P.h;
+            document.getElementById('mVal').textContent = P.m;
         }
 
         function adj(key, delta) {
-            if ((rem <= 0 && delta > 0) || (P[key] <= 0 && delta < 0)) return;
+            if ((rem <= 0 && delta > 0) || (P[key] + delta < -5 && delta < 0)) return; 
             P[key] += delta; rem -= delta;
-            document.getElementById('ptsNum').textContent = rem;
-            document.getElementById(key + 'Val').textContent = P[key];
+            updateAttrDisplay();
             
             const btn = document.getElementById('startBtn');
             if (rem === 0) {
@@ -300,7 +294,7 @@
             } else {
                 btn.disabled = true;
                 btn.className = 'btn btn-start';
-                btn.textContent = '请分配完点数';
+                btn.textContent = '请分配完所有自由点数';
             }
         }
 
@@ -313,37 +307,30 @@
             document.getElementById('gamePanel').classList.remove('hidden');
             age = 0;
             renderYear(0);
-            }
+        }
 
         function getEvents(age) {
             if (age === 0) {
-                let desc = `【世界背景：${currentWorld.name}】${currentWorld.desc}<br>你在该背景下出生了，性别为【${gender}】，自带天赋【${selectedTalent.name}】。`;
-                desc += P.m >= 6 ? ' 你家甚至雇得起高算力智能保姆。' : ' 你家甚至连扫地机都是垃圾堆里捡的。';
+                let desc = `【世界背景：${currentWorld.name}】${currentWorld.desc}<br>你在此处出生，性别为【${gender}】，天赋为【${selectedTalent.name}】。`;
                 return [{ text: desc, tag: 'special', effect: () => {} }];
             }
-            if (age === 6) return [{ text: '你上学了。学校今年取消了传统的授课模式，全部采用量子脑波芯片直连大脑。', tag: 'special', effect: () => {} }];
-            if (age === 18) return [{ text: '你18岁成年了！这标志着你必须开始独立面对这个宏大且荒诞的世界。', tag: 'special', effect: () => {} }];
-            if (age === 60) return [{ text: '你六十岁退休了。领到了第一笔数字养老低保，你立刻给自己换了一把按摩藤椅。', tag: 'special', effect: () => {} }];
+            if (age === 6) return [{ text: '你上学了。学校今年取消了纸质书，全面采用高算力脑芯植入。', tag: 'special', effect: () => {} }];
+            if (age === 18) return [{ text: '你18岁成年了！这标志着你必须开始独自面对这个宏大残酷的世界。', tag: 'special', effect: () => {} }];
+            if (age === 60) return [{ text: '你六十岁退休。领到第一笔低保，你给自己换了一把全自动声光按摩椅。', tag: 'special', effect: () => {} }];
 
+            // 世界突变事件
             const mutation = MUTATION_EVENTS[currentWorld.name];
-            if (mutation && !mutationTriggered && mutation.triggerAge.includes(age) && Math.random() < 0.5) {
+            if (mutation && !mutationTriggered && mutation.triggerAge.includes(age) && Math.random() < 0.45) {
                 mutationTriggered = true;
                 return [mutation];
             }
 
-            if (Math.random() < 0.35) {
-                if (P.m >= 7 && HIGH_ATTR_EVENTS.rich.length > 0) {
-                    return [HIGH_ATTR_EVENTS.rich[Math.floor(Math.random() * HIGH_ATTR_EVENTS.rich.length)]];
-                }
-                if (P.i >= 7 && HIGH_ATTR_EVENTS.smart.length > 0) {
-                    return [HIGH_ATTR_EVENTS.smart[Math.floor(Math.random() * HIGH_ATTR_EVENTS.smart.length)]];
-                }
-                if (P.f >= 7 && HIGH_ATTR_EVENTS.handsome.length > 0) {
-                    return [HIGH_ATTR_EVENTS.handsome[Math.floor(Math.random() * HIGH_ATTR_EVENTS.handsome.length)]];
-                }
-                if (P.h <= 2 && HIGH_ATTR_EVENTS.sick.length > 0) {
-                    return [HIGH_ATTR_EVENTS.sick[Math.floor(Math.random() * HIGH_ATTR_EVENTS.sick.length)]];
-                }
+            // 属性驱动高级分支（高/低属性对人生有极大干预影响）
+            if (Math.random() < 0.4) {
+                if (P.h <= 2) return [LOW_ATTR_EVENTS.sick[0]];
+                if (P.m <= 2) return [LOW_ATTR_EVENTS.poor[0]];
+                if (P.m >= 8) return [HIGH_ATTR_EVENTS.rich[Math.floor(Math.random() * HIGH_ATTR_EVENTS.rich.length)]];
+                if (P.i >= 8) return [HIGH_ATTR_EVENTS.smart[Math.floor(Math.random() * HIGH_ATTR_EVENTS.smart.length)]];
             }
 
             let pool = BASE_EVENTS.child;
@@ -360,8 +347,6 @@
         }
 
         function renderYear(age) {
-            const fix = (val) => val < 0 ? 0 : val;
-
             const wrap = document.getElementById('logWrap');
             const events = getEvents(age);
             
@@ -370,26 +355,56 @@
                 wrap.innerHTML = `<div class="log-item"><span class="age-tag">${age}岁</span><span class="${ev.tag}">${ev.text}</span></div>` + wrap.innerHTML;
             });
 
+            // 同步顶部实时属性
             document.getElementById('ageDisplay').textContent = age + '岁';
             document.getElementById('gDisp').textContent = gender;
-            document.getElementById('mDisp').textContent = fix(P.m);
-            document.getElementById('iDisp').textContent = fix(P.i);
-            document.getElementById('hDisp').textContent = fix(P.h);
-            document.getElementById('fDisp').textContent = fix(P.f);
+            document.getElementById('mDisp').textContent = P.m;
+            document.getElementById('iDisp').textContent = P.i;
+            document.getElementById('hDisp').textContent = P.h;
+            document.getElementById('fDisp').textContent = P.f;
 
+            // ============================================================
+            // 核心功能：严酷的属性死线崩塌死结局判定！
+            // ============================================================
             let die = false;
-            if (age <= 5 && P.h <= 2 && Math.random() < 0.15) die = true;
-            let dieChance = (age - 68) * 0.022 - (P.h * 0.005);
-            if (dieChance < 0.01) dieChance = 0.01;
-            if (age >= 72 && Math.random() < dieChance) die = true;
-            
-            const MAX_AGE = 120;
-            if (age >= MAX_AGE) die = true;
+            let dieReason = "";
+
+            if (P.h <= 0) {
+                die = true;
+                dieReason = "【属性归零暴毙】你的体质降低到了 0，免疫系统彻底崩塌，在寒风中突发全身器官衰竭，当场去世。";
+            } else if (P.m <= 0) {
+                die = true;
+                dieReason = "【属性归零结局】你的财富降低到了 0。你失去了住所与食物来源，最终沦落街头，依靠在桥洞下抢狗剩饭艰难流浪度日，人生提前画上句号。";
+            } else if (P.i <= 0) {
+                die = true;
+                dieReason = " *【属性归零结局】你的智力降低到了 0。严重的脑神经萎缩让你丧失了理智与常识。你坚信自己是一只高频尖叫的烧水壶，被社区强制扭送至精神病院终身看管。*";
+            } else if (P.f <= 0) {
+                die = true;
+                dieReason = "【属性归零结局】你的颜值降低到了 0。由于多次离奇辐射或面部重塑失败，你的面容长得极其违背人类生物学。你出门买盐时当场吓死了路边三名无辜群众，被治安队作为危险生化武器逮捕关押。";
+            }
+
+            // 常规自然衰老死亡几率判定
+            if (!die) {
+                if (age <= 5 && P.h <= 2 && Math.random() < 0.15) {
+                    die = true;
+                    dieReason = "幼年夭折：你因体质过于虚弱没能熬过这个冬天。";
+                }
+                let dieChance = (age - 68) * 0.022 - (P.h * 0.005);
+                if (dieChance < 0.01) dieChance = 0.01;
+                if (age >= 72 && Math.random() < dieChance) {
+                    die = true;
+                    dieReason = "寿终正寝：你在睡梦中安详地闭上了双眼。";
+                }
+                if (age >= 120) {
+                    die = true;
+                    dieReason = "人类极限：你活到了120岁，身体细胞达到了分裂上限。";
+                }
+            }
 
             if (die) {
-                wrap.innerHTML = `<div class="log-item"><span class="age-tag">${age}岁</span><span class="special">【游戏结束】你在这一年闭上了双眼（享年${age}岁）。</span></div>` + wrap.innerHTML;
+                wrap.innerHTML = `<div class="log-item"><span class="age-tag">${age}岁</span><span class="bad" style="font-weight:bold;">【游戏结束】${dieReason}（享年${age}岁）。</span></div>` + wrap.innerHTML;
                 const btn = document.getElementById('nextBtn');
-                btn.textContent = '再次重开';
+                btn.textContent = '再次重开新人生';
                 btn.className = 'btn btn-danger';
                 btn.onclick = () => location.reload();
             }
